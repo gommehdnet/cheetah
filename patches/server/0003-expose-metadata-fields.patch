@@ -1,0 +1,45 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lukas81298 <lukas81298@gommehd.net>
+Date: Tue, 7 Sep 2021 22:31:39 +0200
+Subject: [PATCH] expose metadata fields
+
+
+diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundSetEntityDataPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundSetEntityDataPacket.java
+index 3e17f6131bf590d7c4a16b79c1c145cb4f565bc9..ac4a7c0a6605bacc8099aee4114e82788ba6dd0c 100644
+--- a/src/main/java/net/minecraft/network/protocol/game/ClientboundSetEntityDataPacket.java
++++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundSetEntityDataPacket.java
+@@ -22,6 +22,13 @@ public class ClientboundSetEntityDataPacket implements Packet<ClientGamePacketLi
+ 
+     }
+ 
++    // Cheetah start
++    public ClientboundSetEntityDataPacket(int id, @Nullable List<SynchedEntityData.DataItem<?>> packedItems) {
++        this.id = id;
++        this.packedItems = packedItems;
++    }
++    // Cheetah end
++
+     public ClientboundSetEntityDataPacket(FriendlyByteBuf buf) {
+         this.id = buf.readVarInt();
+         this.packedItems = SynchedEntityData.unpack(buf);
+@@ -43,7 +50,20 @@ public class ClientboundSetEntityDataPacket implements Packet<ClientGamePacketLi
+         return this.packedItems;
+     }
+ 
++    // Cheetah start
++    @Nullable
++    public List<SynchedEntityData.DataItem<?>> getWatcherElements() {
++        return this.packedItems;
++    }
++    // Cheetah end
++
+     public int getId() {
+         return this.id;
+     }
++
++    // Cheetah start
++    public int getEntityId() {
++        return this.id;
++    }
++    // Cheetah end
+ }
