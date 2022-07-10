@@ -90,3 +90,28 @@ index ccad692aba2ed77259f6814d88f01b91ed9d229b..5a5ce021627ab44526d607d9b4ad83ab
          itemstack.setCount(moved);
  
          if (!skipPullModeEventFire) {
+diff --git a/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java b/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
+index 15e72d2e15106cd009eb19a839af0b67a48fadfd..af330add515cab837d8abef6dd0162a9ec51f7e3 100644
+--- a/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
++++ b/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
+@@ -25,4 +25,20 @@ public class CraftHopper extends CraftLootable<HopperBlockEntity> implements Hop
+ 
+         return new CraftInventory(this.getTileEntity());
+     }
++
++    // Cheetah start
++
++    @Override
++    public float getTransferMultiplier() {
++        return this.getTileEntity().getHopperTransferMultiplier();
++    }
++
++    @Override
++    public void setTransferMultiplier(float transferMultiplier) {
++        if(transferMultiplier < 0) {
++            throw new IllegalArgumentException("transferMultiplier cannot be negative for hopper at " + getLocation());
++        }
++        this.getTileEntity().setHopperTransferMultiplier(transferMultiplier);
++    }
++    // Cheetah end
+ }

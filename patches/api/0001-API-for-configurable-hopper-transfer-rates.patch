@@ -1,0 +1,41 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lukas81298 <lukas81298@gommehd.net>
+Date: Sun, 10 Jul 2022 22:50:44 +0200
+Subject: [PATCH] API for configurable hopper transfer rates
+
+
+diff --git a/src/main/java/org/bukkit/block/Hopper.java b/src/main/java/org/bukkit/block/Hopper.java
+index 7ade312f180b7e30871d3a3240c76325cc369c26..debaa52845bc82ddf4a60c77b032642a3fcd20b1 100644
+--- a/src/main/java/org/bukkit/block/Hopper.java
++++ b/src/main/java/org/bukkit/block/Hopper.java
+@@ -6,4 +6,29 @@ import org.bukkit.loot.Lootable;
+ /**
+  * Represents a captured state of a hopper.
+  */
+-public interface Hopper extends Container, LootableBlockInventory { } // Paper
++public interface Hopper extends Container, LootableBlockInventory {
++
++    // Cheetah start
++    /**
++     * Returns the current transfer multiplier for this hopper
++     * Default value: 1.0
++     * If set to 2.0, twice as many items will be transferred per time unit
++     * @return transfer multiplier for this hopper
++     */
++    float getTransferMultiplier();
++
++    /**
++     * Sets the transfer multiplier for this hopper. The value is stored persistently.
++     * Default value: 1.0
++     * If set to 2.0, twice as many items will be transferred per time unit
++     */
++    void setTransferMultiplier(float transferMultiplier);
++
++    /**
++     * Resets the transfer multiplier to the default value
++     */
++    default void resetTransferMultiplier() {
++        this.setTransferMultiplier(0F);
++    }
++    // Cheetah end
++}
