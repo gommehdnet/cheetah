@@ -1,4 +1,4 @@
-# GommeHD.net Cheetah 1.18
+# GommeHD.net Cheetah 1.19.2
 
 This is a fork of PaperSpigot tailored for the use at GommeHD.net
 
@@ -9,7 +9,7 @@ This is a fork of PaperSpigot tailored for the use at GommeHD.net
 - Run `./gradlew applyPatches` to apply the patches
 - Run `./gradlew build` to build the jar files
 - Run `./gradlew createReobfBundlerJar` to create the final jar file
-- The final jar file can be found in `build/libs/cheetah-1.18-bundler-1.18.1-R0.1-SNAPSHOT-reobf.jar`
+- The final jar file can be found in `build/libs/cheetah-1.19-bundler-1.19.2-R0.1-SNAPSHOT-reobf.jar`
 
 ## How to use the API with Maven?
 Currently, it is not possible to add a dependency containing NMS code, the API, and dependencies to the classpath. The current solution is to use the cheetah API combined with the normal Spigot NMS. 
@@ -20,7 +20,7 @@ Thus, changes to the NMS code will not be reflected to plugins using it.
 <dependency>
   <groupId>net.gommehd.cheetah</groupId>
   <artifactId>cheetah-api</artifactId>
-  <version>1.19-R0.1-SNAPSHOT</version>
+  <version>1.19.2-R0.1-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -32,5 +32,14 @@ Thus, changes to the NMS code will not be reflected to plugins using it.
 - Switch back to the project root and rebuild the patches: `./gradlew rebuildPatches`
 - Commit the changed patch files the `patches/` folder to the root git repository
 
+## Update upstream
+- Make sure all changes are committed and patches have been rebuilt
+- Run `./gradlew clean` and `./gradlew cleanCache`
+- Identify the latest commit in https://github.com/PaperMC/Paper/commits/master and copy its hash. Update `paperRef` in `gradle.properties` accordingly.
+- Run `./gradlew applyPatches`
+- Fix potential conflicts during merges and update your code to the latest version
+- Run `./gradlew rebuildPatches`
+- Validate that everything works and commit your changes
+- 
 ## Contributing
 Only pull requests of the GommeHD.net dev team members are accepted. If you want to add a patch others could benefit from as well, consider submitting it to the upstream (https://github.com/PaperMC/Paper).
