@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lukas81298 <lukas81298@gommehd.net>
+Date: Wed, 17 Aug 2022 22:17:27 +0200
+Subject: [PATCH] Updated to latest mojangapi
+
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index c2bba1c8145a7844d3644e42268760b357717742..873e4c248655c3f681790379dcea6d762cc9a01f 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -11,7 +11,7 @@ plugins {
+ dependencies {
+     // Cheetah start
+     implementation(project(":cheetah-api"))
+-    implementation("io.papermc.paper:paper-mojangapi:1.18-R0.1-SNAPSHOT") {
++    implementation("io.papermc.paper:paper-mojangapi:1.19.2-R0.1-SNAPSHOT") {
+         exclude("io.papermc.paper", "paper-api")
+     }
+     // Cheetah end
