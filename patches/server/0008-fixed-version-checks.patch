@@ -1,0 +1,51 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lukas81298 <lukas81298@gommehd.net>
+Date: Fri, 21 Oct 2022 17:52:57 +0200
+Subject: [PATCH] fixed version checks
+
+
+diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
+index bf42969859545a8a520923ef1836ffa4a5cc24a0..9dd39b900d6d7fe5ace92994a14858d5dc69fd59 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
++++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
+@@ -31,8 +31,8 @@ public class PaperVersionFetcher implements VersionFetcher {
+     @Nonnull
+     @Override
+     public Component getVersionMessage(@Nonnull String serverVersion) {
+-        String[] parts = serverVersion.substring("git-Paper-".length()).split("[-\\s]");
+-        final Component updateMessage = getUpdateStatusMessage("PaperMC/Paper", GITHUB_BRANCH_NAME, parts[0]);
++        String[] parts = serverVersion.substring("git-Cheetah-".length()).split("[-\\s]");
++        final Component updateMessage = getUpdateStatusMessage("gommehdnet/cheetah-1.19", GITHUB_BRANCH_NAME, parts[0]);
+         final Component history = getHistory();
+ 
+         return history != null ? TextComponent.ofChildren(updateMessage, Component.newline(), history) : updateMessage;
+@@ -56,13 +56,13 @@ public class PaperVersionFetcher implements VersionFetcher {
+ 
+     private static Component getUpdateStatusMessage(@Nonnull String repo, @Nonnull String branch, @Nonnull String versionInfo) {
+         int distance;
+-        try {
++        /*try {
+             int jenkinsBuild = Integer.parseInt(versionInfo);
+             distance = fetchDistanceFromSiteApi(jenkinsBuild, getMinecraftVersion());
+-        } catch (NumberFormatException ignored) {
++        } catch (NumberFormatException ignored) {*/
+             versionInfo = versionInfo.replace("\"", "");
+             distance = fetchDistanceFromGitHub(repo, branch, versionInfo);
+-        }
++        //}
+ 
+         switch (distance) {
+             case -1:
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+index d62fac1aa2778f0cd5eeefc9fdf57c2ab33fcbad..bedccc22c501a249ddf0f5f8560ae0246cee1281 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+@@ -11,7 +11,7 @@ public final class Versioning {
+     public static String getBukkitVersion() {
+         String result = "Unknown-Version";
+ 
+-        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/com.example.paperfork/cheetah-api/pom.properties"); // Cheetah
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/net.gommehd.cheetah/cheetah-api/pom.properties"); // Cheetah
+         Properties properties = new Properties();
+ 
+         if (stream != null) {
