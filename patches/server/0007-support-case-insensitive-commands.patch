@@ -5,15 +5,29 @@ Subject: [PATCH] support case insensitive commands
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 63c9040ed2349eec500ba6e9090440347c514a3b..808b1116314e1a07a0d281ae9ae1c0d99091bacc 100644
+index 63c9040ed2349eec500ba6e9090440347c514a3b..aa55ab7804052a72f68dab8bffaf32d6369e06e1 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2332,7 +2332,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -2329,10 +2329,21 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+         return map;
+     }
+ 
++    // Cheetah start
++    private static String commandToLower(String command) {
++        if(command.isEmpty()) {
++            return command;
++        }
++        String[] split = command.split(" ");
++        split[0] = split[0].toLowerCase();
++        return String.join(" ", split);
++    }
++    // Cheetah end
++
      private ParseResults<CommandSourceStack> parseCommand(String command) {
          com.mojang.brigadier.CommandDispatcher<CommandSourceStack> com_mojang_brigadier_commanddispatcher = this.server.getCommands().getDispatcher();
  
 -        return com_mojang_brigadier_commanddispatcher.parse(command, this.player.createCommandSourceStack());
-+        return com_mojang_brigadier_commanddispatcher.parse(command.toLowerCase(), this.player.createCommandSourceStack()); // Cheetah - added toLowerCase()
++        return com_mojang_brigadier_commanddispatcher.parse(commandToLower(command), this.player.createCommandSourceStack()); // Cheetah - added commandToLower()
      }
  
      private boolean tryHandleChat(String message, Instant timestamp, LastSeenMessages.Update acknowledgment) {
