@@ -5,10 +5,10 @@ Subject: [PATCH] Build changes
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 44e0f265432487fe5c3c00c5245041298ade16a0..d3ce5c21bbb79b3f889fcdda3a143c0738a093bc 100644
+index b0e4f11e8af4b909a56bb5576d05ef0537fb25f7..ccc7224a02fd8e9a88beb45275d345660b7a7ecd 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -9,8 +9,12 @@ plugins {
+@@ -7,8 +7,12 @@ plugins {
  }
  
  dependencies {
@@ -23,7 +23,7 @@ index 44e0f265432487fe5c3c00c5245041298ade16a0..d3ce5c21bbb79b3f889fcdda3a143c07
      // Paper start
      implementation("org.jline:jline-terminal-jansi:3.21.0")
      implementation("net.minecrell:terminalconsoleappender:1.3.0")
-@@ -64,7 +68,7 @@ tasks.jar {
+@@ -62,7 +66,7 @@ tasks.jar {
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
              "Implementation-Title" to "CraftBukkit",
@@ -32,7 +32,7 @@ index 44e0f265432487fe5c3c00c5245041298ade16a0..d3ce5c21bbb79b3f889fcdda3a143c07
              "Implementation-Vendor" to date, // Paper
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
-@@ -163,7 +167,7 @@ fun TaskContainer.registerRunTask(
+@@ -134,7 +138,7 @@ fun TaskContainer.registerRunTask(
      name: String,
      block: JavaExec.() -> Unit
  ): TaskProvider<JavaExec> = register<JavaExec>(name) {
@@ -42,7 +42,7 @@ index 44e0f265432487fe5c3c00c5245041298ade16a0..d3ce5c21bbb79b3f889fcdda3a143c07
      standardInput = System.`in`
      workingDir = rootProject.layout.projectDirectory
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index ce81ba5345c8d2fde8a2534b9673275c7e86af8b..870356582b9301b733f3e16438b8782d5028e29a 100644
+index 6dc6c3bccb4ba34268a87b0754c87eb1e0df4135..c1f12af6884c1359194659a4ebea3c4d15d1fcbc 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1654,7 +1654,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -55,7 +55,7 @@ index ce81ba5345c8d2fde8a2534b9673275c7e86af8b..870356582b9301b733f3e16438b8782d
  
      public SystemReport fillSystemReport(SystemReport details) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 111f8276f26350a5c62a7b8577b4598978b5355d..e4f2ddf4071d208628e07ff110139cb3c9518979 100644
+index 07eac5439164a7345476c55277538a152359630a..ae1843735a31ea202846b11e062e61cbe1c26d8d 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -248,7 +248,7 @@ import javax.annotation.Nullable; // Paper

@@ -5,10 +5,10 @@ Subject: [PATCH] Updated to latest mojangapi
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index c2bba1c8145a7844d3644e42268760b357717742..873e4c248655c3f681790379dcea6d762cc9a01f 100644
+index ccc7224a02fd8e9a88beb45275d345660b7a7ecd..1f3158a6aa78d1a0bcb4b0b73ac1c4e7e88886aa 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -11,7 +11,7 @@ plugins {
+@@ -9,7 +9,7 @@ plugins {
  dependencies {
      // Cheetah start
      implementation(project(":cheetah-api"))
