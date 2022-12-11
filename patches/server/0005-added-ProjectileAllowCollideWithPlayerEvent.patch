@@ -5,7 +5,7 @@ Subject: [PATCH] added ProjectileAllowCollideWithPlayerEvent
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/projectile/Projectile.java b/src/main/java/net/minecraft/world/entity/projectile/Projectile.java
-index c61ed38d0a824fee9b45acfc862baf03c85fe54b..352f5f4c70ec3fcb50d2620e902a70218626386b 100644
+index 66476b33cede1e44db5ec166a0cea81f82ffe47a..930aaecd24f94316f93becea3ab5e5050a13550f 100644
 --- a/src/main/java/net/minecraft/world/entity/projectile/Projectile.java
 +++ b/src/main/java/net/minecraft/world/entity/projectile/Projectile.java
 @@ -4,6 +4,8 @@ import com.google.common.base.MoreObjects;
@@ -17,7 +17,7 @@ index c61ed38d0a824fee9b45acfc862baf03c85fe54b..352f5f4c70ec3fcb50d2620e902a7021
  import net.minecraft.core.BlockPos;
  import net.minecraft.nbt.CompoundTag;
  import net.minecraft.network.protocol.Packet;
-@@ -22,6 +24,7 @@ import net.minecraft.world.phys.EntityHitResult;
+@@ -23,6 +25,7 @@ import net.minecraft.world.phys.EntityHitResult;
  import net.minecraft.world.phys.HitResult;
  import net.minecraft.world.phys.Vec3;
  // CraftBukkit start
@@ -25,7 +25,7 @@ index c61ed38d0a824fee9b45acfc862baf03c85fe54b..352f5f4c70ec3fcb50d2620e902a7021
  import org.bukkit.projectiles.ProjectileSource;
  // CraftBukkit end
  
-@@ -227,7 +230,8 @@ public abstract class Projectile extends Entity {
+@@ -228,7 +231,8 @@ public abstract class Projectile extends Entity {
              if (entity1 instanceof net.minecraft.server.level.ServerPlayer && entity instanceof net.minecraft.server.level.ServerPlayer) {
                  org.bukkit.entity.Player collided = (org.bukkit.entity.Player) entity.getBukkitEntity();
                  org.bukkit.entity.Player shooter = (org.bukkit.entity.Player) entity1.getBukkitEntity();
@@ -36,7 +36,7 @@ index c61ed38d0a824fee9b45acfc862baf03c85fe54b..352f5f4c70ec3fcb50d2620e902a7021
              return entity1 == null || this.leftOwner || !entity1.isPassengerOfSameVehicle(entity);
              // Paper end
 diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-index 03b3f29bde2bf6cb4e7b08a775bcc380a9404543..582451212b4b0c384dfa38bfcbbb4d5d13513f12 100644
+index ae59a1259db4c4cef6f0cd128850229a63491845..9ee531dc2f6c86d19b4f963340aa53aa58fd5246 100644
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 @@ -12,6 +12,8 @@ import java.util.List;

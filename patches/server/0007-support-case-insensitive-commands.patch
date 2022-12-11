@@ -1,20 +1,36 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: lukas81298 <lukas81298@gommehd.net>
-Date: Thu, 20 Oct 2022 22:50:39 +0200
-Subject: [PATCH] support case insensitive commands
+Date: Sun, 11 Dec 2022 19:52:20 +0100
+Subject: [PATCH] =?UTF-8?q?support=20case=20insensitive=20commands=C3=82?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
+diff --git a/build.gradle.kts b/build.gradle.kts
+index bbf1e0f4dd166104e62d08915de3c4a8c7542d31..ac18911747282de653c7f31ce9c4fd9b8716f147 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -9,7 +9,7 @@ plugins {
+ dependencies {
+     // Cheetah start
+     implementation(project(":cheetah-api"))
+-    implementation("io.papermc.paper:paper-mojangapi:1.19.2-R0.1-SNAPSHOT") {
++    implementation("io.papermc.paper:paper-mojangapi:1.19.3-R0.1-SNAPSHOT") {
+         exclude("io.papermc.paper", "paper-api")
+     }
+     // Cheetah end
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 63c9040ed2349eec500ba6e9090440347c514a3b..aa55ab7804052a72f68dab8bffaf32d6369e06e1 100644
+index 0c2255b6e2fb7752f85b0f83d4f84732758bd14d..c06e08229633567336b9f0a556a2511e6d2302da 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2329,10 +2329,21 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -2314,10 +2314,21 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          return map;
      }
  
 +    // Cheetah start
 +    private static String commandToLower(String command) {
-+        if(command.isEmpty()) {
++        if (command.isEmpty()) {
 +            return command;
 +        }
 +        String[] split = command.split(" ");
@@ -30,7 +46,7 @@ index 63c9040ed2349eec500ba6e9090440347c514a3b..aa55ab7804052a72f68dab8bffaf32d6
 +        return com_mojang_brigadier_commanddispatcher.parse(commandToLower(command), this.player.createCommandSourceStack()); // Cheetah - added commandToLower()
      }
  
-     private boolean tryHandleChat(String message, Instant timestamp, LastSeenMessages.Update acknowledgment) {
+     private Optional<LastSeenMessages> tryHandleChat(String message, Instant timestamp, LastSeenMessages.Update acknowledgment) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
 index 6035af2cf08353b3d3801220d8116d8611a0cd37..c7ecfd648142284c2f9884c0dfb5f35af2879c05 100644
 --- a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java

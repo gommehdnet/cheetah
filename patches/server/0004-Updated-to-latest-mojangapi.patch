@@ -5,7 +5,7 @@ Subject: [PATCH] Updated to latest mojangapi
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index ccc7224a02fd8e9a88beb45275d345660b7a7ecd..1f3158a6aa78d1a0bcb4b0b73ac1c4e7e88886aa 100644
+index 4ebc1f7b475e6976057deb3f0f69a09556888020..bbf1e0f4dd166104e62d08915de3c4a8c7542d31 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -9,7 +9,7 @@ plugins {
