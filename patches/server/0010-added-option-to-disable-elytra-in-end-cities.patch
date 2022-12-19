@@ -1,0 +1,38 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lukas <lukas81298@gommehd.net>
+Date: Mon, 19 Dec 2022 13:48:19 +0100
+Subject: [PATCH] added option to disable elytra in end cities
+
+
+diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
+index 63ec2ebb71aa0e0dbb64bbce7cd3c9494e9ce2e7..8fde48e6b4de1116452c3cde0a07e4008ca75a45 100644
+--- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
++++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
+@@ -286,5 +286,6 @@ public class GlobalConfiguration extends ConfigurationPart {
+         public boolean lagCompensateBlockBreaking = true;
+         public boolean useDimensionTypeForCustomSpawners = false;
+         public boolean strictAdvancementDimensionCheck = false;
++        public boolean enableElytraInEndCities = true;
+     }
+ }
+diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
+index 8ab3921db122e0bbd60e689d07e99b4847ce9613..0caf7b74fbfb7cf9c42087f63094cef43f2f4cbe 100644
+--- a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
++++ b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
+@@ -2,6 +2,7 @@ package net.minecraft.world.level.levelgen.structure.structures;
+ 
+ import com.google.common.collect.Lists;
+ import java.util.List;
++
+ import net.minecraft.core.BlockPos;
+ import net.minecraft.core.Direction;
+ import net.minecraft.nbt.CompoundTag;
+@@ -269,7 +270,7 @@ public class EndCityPieces {
+                         shulker.setPos((double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D);
+                         world.addFreshEntity(shulker);
+                     }
+-                } else if (metadata.startsWith("Elytra")) {
++                } else if (metadata.startsWith("Elytra") && io.papermc.paper.configuration.GlobalConfiguration.get().misc.enableElytraInEndCities) {
+                     ItemFrame itemFrame = new ItemFrame(world.getLevel(), pos, this.placeSettings.getRotation().rotate(Direction.SOUTH));
+                     itemFrame.setItem(new ItemStack(Items.ELYTRA), false);
+                     world.addFreshEntity(itemFrame);
