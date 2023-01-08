@@ -21,10 +21,10 @@ index bbf1e0f4dd166104e62d08915de3c4a8c7542d31..ac18911747282de653c7f31ce9c4fd9b
      }
      // Cheetah end
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 0c2255b6e2fb7752f85b0f83d4f84732758bd14d..c06e08229633567336b9f0a556a2511e6d2302da 100644
+index 50d8d16b1856c0c875ccabbcfc240379a7669559..2412ad068f616302df7e206895bf7a59ed135e83 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2314,10 +2314,21 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -2312,10 +2312,21 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          return map;
      }
  
