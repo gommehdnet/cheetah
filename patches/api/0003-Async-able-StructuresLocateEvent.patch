@@ -1,0 +1,25 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Summerfeeling <summerfeelingmc@gmail.com>
+Date: Wed, 11 Jan 2023 14:11:21 +0100
+Subject: [PATCH] Async-able StructuresLocateEvent
+
+
+diff --git a/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java b/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
+index 566f9df8f615142e14330965f3491f4e83846783..cd9050513fb2ed225cb7f1c2197b2d3a80f5ff3b 100644
+--- a/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
++++ b/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
+@@ -43,6 +43,14 @@ public class StructuresLocateEvent extends WorldEvent implements Cancellable {
+         this.findUnexplored = findUnexplored;
+     }
+ 
++    public StructuresLocateEvent(@NotNull World world, @NotNull Location origin, @NotNull List<ConfiguredStructure> configuredStructures, int radius, boolean findUnexplored, boolean async) {
++        super(world, async);
++        this.origin = origin;
++        this.configuredStructures = configuredStructures;
++        this.radius = radius;
++        this.findUnexplored = findUnexplored;
++    }
++
+     /**
+      * Gets the {@link Location} from which the search is to be conducted.
+      *

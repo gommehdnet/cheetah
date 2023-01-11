@@ -1,0 +1,27 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Summerfeeling <summerfeelingmc@gmail.com>
+Date: Wed, 11 Jan 2023 14:11:27 +0100
+Subject: [PATCH] Async-able StructuresLocateEvent
+
+
+diff --git a/src/main/java/net/minecraft/world/level/chunk/ChunkGenerator.java b/src/main/java/net/minecraft/world/level/chunk/ChunkGenerator.java
+index 7e9c388179c75a233d9b179ea1e00428ac65ee99..3e9e2a5a30a996ee8ea210d4a06e1672009c9fb9 100644
+--- a/src/main/java/net/minecraft/world/level/chunk/ChunkGenerator.java
++++ b/src/main/java/net/minecraft/world/level/chunk/ChunkGenerator.java
+@@ -3,6 +3,7 @@ package net.minecraft.world.level.chunk;
+ import com.google.common.base.Suppliers;
+ import com.mojang.datafixers.util.Pair;
+ import com.mojang.serialization.Codec;
++import io.papermc.paper.util.MCUtil;
+ import it.unimi.dsi.fastutil.ints.IntArraySet;
+ import it.unimi.dsi.fastutil.longs.LongSet;
+ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+@@ -128,7 +129,7 @@ public abstract class ChunkGenerator {
+         final List<io.papermc.paper.world.structure.ConfiguredStructure> configuredStructures = new ArrayList<>();
+         paperRegistry.convertToApi(structures, configuredStructures::add, false); // gracefully handle missing api, use tests to check (or exclude)
+         if (!configuredStructures.isEmpty()) {
+-            final io.papermc.paper.event.world.StructuresLocateEvent event = new io.papermc.paper.event.world.StructuresLocateEvent(bukkitWorld, origin, configuredStructures, radius, skipReferencedStructures);
++            final io.papermc.paper.event.world.StructuresLocateEvent event = new io.papermc.paper.event.world.StructuresLocateEvent(bukkitWorld, origin, configuredStructures, radius, skipReferencedStructures, !MCUtil.isMainThread());
+             if (!event.callEvent()) {
+                 return null;
+             }
