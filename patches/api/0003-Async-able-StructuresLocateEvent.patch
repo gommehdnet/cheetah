@@ -5,10 +5,10 @@ Subject: [PATCH] Async-able StructuresLocateEvent
 
 
 diff --git a/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java b/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
-index 566f9df8f615142e14330965f3491f4e83846783..cd9050513fb2ed225cb7f1c2197b2d3a80f5ff3b 100644
+index 1648ed317145eb73c0cca431823449b2adc43e04..50210c967d5106ed81d9a221471a2f7d7ccde851 100644
 --- a/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
 +++ b/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
-@@ -43,6 +43,14 @@ public class StructuresLocateEvent extends WorldEvent implements Cancellable {
+@@ -48,6 +48,14 @@ public class StructuresLocateEvent extends WorldEvent implements Cancellable {
          this.findUnexplored = findUnexplored;
      }
  
