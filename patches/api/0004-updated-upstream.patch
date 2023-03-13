@@ -1,0 +1,28 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lukas81298 <lukas81298@gommehd.net>
+Date: Mon, 13 Mar 2023 18:35:28 +0100
+Subject: [PATCH] updated upstream
+
+
+diff --git a/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java b/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
+index 50210c967d5106ed81d9a221471a2f7d7ccde851..006b5d37295acec1698ad60fa48fd1ae9f1532ab 100644
+--- a/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
++++ b/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
+@@ -48,13 +48,15 @@ public class StructuresLocateEvent extends WorldEvent implements Cancellable {
+         this.findUnexplored = findUnexplored;
+     }
+ 
+-    public StructuresLocateEvent(@NotNull World world, @NotNull Location origin, @NotNull List<ConfiguredStructure> configuredStructures, int radius, boolean findUnexplored, boolean async) {
++    // Cheetah start - added async parameter
++    public StructuresLocateEvent(@NotNull World world, @NotNull Location origin, @NotNull List<Structure> structures, int radius, boolean findUnexplored, boolean async) {
+         super(world, async);
+         this.origin = origin;
+-        this.configuredStructures = configuredStructures;
++        this.setStructures(structures);
+         this.radius = radius;
+         this.findUnexplored = findUnexplored;
+     }
++    // Cheetah end
+ 
+     /**
+      * Gets the {@link Location} from which the search is to be conducted.
