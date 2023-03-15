@@ -5,7 +5,7 @@ Subject: [PATCH] added ProjectileAllowCollideWithPlayerEvent
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/projectile/Projectile.java b/src/main/java/net/minecraft/world/entity/projectile/Projectile.java
-index 66476b33cede1e44db5ec166a0cea81f82ffe47a..930aaecd24f94316f93becea3ab5e5050a13550f 100644
+index 8b2a3a8482018b7db7de81bc295862f783e17ce5..01abec845f213ba94dab025b4acb8128222aff33 100644
 --- a/src/main/java/net/minecraft/world/entity/projectile/Projectile.java
 +++ b/src/main/java/net/minecraft/world/entity/projectile/Projectile.java
 @@ -4,6 +4,8 @@ import com.google.common.base.MoreObjects;
@@ -17,7 +17,7 @@ index 66476b33cede1e44db5ec166a0cea81f82ffe47a..930aaecd24f94316f93becea3ab5e505
  import net.minecraft.core.BlockPos;
  import net.minecraft.nbt.CompoundTag;
  import net.minecraft.network.protocol.Packet;
-@@ -23,6 +25,7 @@ import net.minecraft.world.phys.EntityHitResult;
+@@ -24,6 +26,7 @@ import net.minecraft.world.phys.EntityHitResult;
  import net.minecraft.world.phys.HitResult;
  import net.minecraft.world.phys.Vec3;
  // CraftBukkit start
@@ -25,18 +25,18 @@ index 66476b33cede1e44db5ec166a0cea81f82ffe47a..930aaecd24f94316f93becea3ab5e505
  import org.bukkit.projectiles.ProjectileSource;
  // CraftBukkit end
  
-@@ -228,7 +231,8 @@ public abstract class Projectile extends Entity {
+@@ -232,7 +235,8 @@ public abstract class Projectile extends Entity implements TraceableEntity {
              if (entity1 instanceof net.minecraft.server.level.ServerPlayer && entity instanceof net.minecraft.server.level.ServerPlayer) {
                  org.bukkit.entity.Player collided = (org.bukkit.entity.Player) entity.getBukkitEntity();
                  org.bukkit.entity.Player shooter = (org.bukkit.entity.Player) entity1.getBukkitEntity();
--                if (!shooter.canSee(collided)) return false;
+-                if (!shooter.canSee(collided)) {
 +                ProjectileAllowCollideWithPlayerEvent allowCollideEvent = CraftEventFactory.callProjectileAllowCollideWithPlayerEvent(this, entity); // Cheetah - ProjectileAllowCollideWithPlayerEvent
-+                if (!allowCollideEvent.isAllowCollide() && !shooter.canSee(collided)) return false;
++                if (!allowCollideEvent.isAllowCollide() && !shooter.canSee(collided)) {
+                     return false;
+                 }
              }
-             return entity1 == null || this.leftOwner || !entity1.isPassengerOfSameVehicle(entity);
-             // Paper end
 diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-index 6a52ae70b5f7fd9953b6b2605cae722f606e7fec..e34651a92beb1663e2e6bd411e4af71d1f2d6fac 100644
+index 21ebe0316211179dbf9db82f5170cbb3c0345269..8ba383f7d40af4ee95d1437bfddae79e0ed7f87b 100644
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 @@ -12,6 +12,8 @@ import java.util.List;
