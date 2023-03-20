@@ -20,7 +20,7 @@ index a05acf709735b40ca86f978508c63a86065fd405..292895bf87538ae1474225d3df355918
 +    // Cheetah end
  }
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index 789e5458f4a137694563a22612455506807de51b..fab1e367210cfa7225a307282c2f92af30fd6942 100644
+index cba114f554644a37339c93026630c66c43f524b9..225dc8bd73f53ba9fac2e442e682474e80e10d62 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 @@ -50,6 +50,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
@@ -72,24 +72,24 @@ index 789e5458f4a137694563a22612455506807de51b..fab1e367210cfa7225a307282c2f92af
      }
  
      @Override
-@@ -210,7 +231,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
-                         // ItemStack itemstack1 = addItem(iinventory, iinventory1, iinventory.removeItem(i, 1), enumdirection);
+@@ -209,7 +230,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+                 ItemStack movedItem = origItemStack;
  
-                         // CraftBukkit start - Call event when pushing items into other inventories
--                        CraftItemStack oitemstack = CraftItemStack.asCraftMirror(iinventory.removeItem(i, world.spigotConfig.hopperAmount)); // Spigot
-+                        CraftItemStack oitemstack = CraftItemStack.asCraftMirror(iinventory.removeItem(i, (int) (world.spigotConfig.hopperAmount * hopper.hopperTransferMultiplier))); // Spigot
+                 final int originalItemCount = origItemStack.getCount();
+-                final int movedItemCount = Math.min(level.spigotConfig.hopperAmount, originalItemCount);
++                final int movedItemCount = Math.min((int) (level.spigotConfig.hopperAmount * hopper.hopperTransferMultiplier), originalItemCount); // Cheetah - customizable hopper multiplier
+                 origItemStack.setCount(movedItemCount);
  
-                         Inventory destinationInventory;
-                         // Have to special case large chests as they work oddly
-@@ -299,7 +320,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
-             ItemStack itemstack1 = itemstack.copy();
-             // ItemStack itemstack2 = addItem(iinventory, ihopper, iinventory.removeItem(i, 1), (EnumDirection) null);
-             // CraftBukkit start - Call event on collection of items from inventories into the hopper
--            CraftItemStack oitemstack = CraftItemStack.asCraftMirror(iinventory.removeItem(i, world.spigotConfig.hopperAmount)); // Spigot
-+            CraftItemStack oitemstack = CraftItemStack.asCraftMirror(iinventory.removeItem(i, (int) (world.spigotConfig.hopperAmount * ihopper.getHopperTransferMultiplier()))); // Spigot
+                 // We only need to fire the event once to give protection plugins a chance to cancel this event
+@@ -246,7 +267,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+     private static boolean hopperPull(final Level level, final Hopper hopper, final Container container, ItemStack origItemStack, final int i) {
+         ItemStack movedItem = origItemStack;
+         final int originalItemCount = origItemStack.getCount();
+-        final int movedItemCount = Math.min(level.spigotConfig.hopperAmount, originalItemCount);
++        final int movedItemCount = Math.min((int) (level.spigotConfig.hopperAmount * hopper.getHopperTransferMultiplier()), originalItemCount); // Cheetah - customizable hopper transfer multiplier
+         movedItem.setCount(movedItemCount);
  
-             Inventory sourceInventory;
-             // Have to special case large chests as they work oddly
+         if (!skipPullModeEventFire) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java b/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
 index 15e72d2e15106cd009eb19a839af0b67a48fadfd..af330add515cab837d8abef6dd0162a9ec51f7e3 100644
 --- a/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
