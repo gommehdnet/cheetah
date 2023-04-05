@@ -5,10 +5,10 @@ Subject: [PATCH] hide IP address is log files
 
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index c0c14766adaac855112f85a203a6163b8adfdded..80062e3f14204fc34a1a60b9b1a682206d5d66b4 100644
+index a1096ea424c0724af93a2dc65512ee71f4a0bf72..4479995b81e1dc6c5140a3a7f24e07689569e6ce 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -463,7 +463,7 @@ public abstract class PlayerList {
+@@ -467,7 +467,7 @@ public abstract class PlayerList {
          }
          // Paper end
          // CraftBukkit - Moved from above, added world

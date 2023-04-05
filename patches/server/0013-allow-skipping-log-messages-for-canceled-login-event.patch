@@ -1,0 +1,92 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lukas81298 <lukas81298@gommehd.net>
+Date: Wed, 5 Apr 2023 22:12:16 +0200
+Subject: [PATCH] allow skipping log messages for canceled login events
+
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+index 2ff578e4a953ffcf5176815ba8e3f06f73499989..02750806aacdc08abb36811b99fd30a93a4427c0 100644
+--- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+@@ -62,6 +62,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+     private ServerPlayer delayedAcceptPlayer;
+     public boolean iKnowThisMayNotBeTheBestIdeaButPleaseDisableUsernameValidation = false; // Paper - username validation overriding
+     private int velocityLoginMessageId = -1; // Paper - Velocity support
++    private boolean disconnectLogged = false; // Cheetah
+ 
+     public ServerLoginPacketListenerImpl(MinecraftServer server, Connection connection) {
+         this.state = ServerLoginPacketListenerImpl.State.HELLO;
+@@ -114,8 +115,13 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+     }
+ 
+     public void disconnect(Component reason) {
++        disconnect(reason, false);
++    }
++
++    public void disconnect(Component reason, boolean skipLog) { // Cheetah
+         try {
+-            ServerLoginPacketListenerImpl.LOGGER.info("Disconnecting {}: {}", this.getUserName(), reason.getString());
++            this.disconnectLogged = true; // Cheetah
++            if(!skipLog) ServerLoginPacketListenerImpl.LOGGER.info("Disconnecting {}: {}", this.getUserName(), reason.getString()); // Cheetah
+             this.connection.send(new ClientboundLoginDisconnectPacket(reason));
+             this.connection.disconnect(reason);
+         } catch (Exception exception) {
+@@ -204,7 +210,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+ 
+     @Override
+     public void onDisconnect(Component reason) {
+-        ServerLoginPacketListenerImpl.LOGGER.info("{} lost connection: {}", this.getUserName(), reason.getString());
++        if (!disconnectLogged) ServerLoginPacketListenerImpl.LOGGER.info("{} lost connection: {}", this.getUserName(), reason.getString()); // Cheetah
+     }
+ 
+     public String getUserName() {
+@@ -396,12 +402,14 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+                         playerName = gameProfile.getName();
+                         uniqueId = gameProfile.getId();
+                         // Paper end
++                         boolean skipLog = asyncEvent.isSkipLog(); // Cheetah
+ 
+                         if (PlayerPreLoginEvent.getHandlerList().getRegisteredListeners().length != 0) {
+                             final PlayerPreLoginEvent event = new PlayerPreLoginEvent(playerName, address, uniqueId);
+                             if (asyncEvent.getResult() != PlayerPreLoginEvent.Result.ALLOWED) {
+                                 event.disallow(asyncEvent.getResult(), asyncEvent.kickMessage()); // Paper - Adventure
+                             }
++                            event.setSkipLog(skipLog);
+                             Waitable<PlayerPreLoginEvent.Result> waitable = new Waitable<PlayerPreLoginEvent.Result>() {
+                                 @Override
+                                 protected PlayerPreLoginEvent.Result evaluate() {
+@@ -411,17 +419,18 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+ 
+                             ServerLoginPacketListenerImpl.this.server.processQueue.add(waitable);
+                             if (waitable.get() != PlayerPreLoginEvent.Result.ALLOWED) {
+-                                ServerLoginPacketListenerImpl.this.disconnect(io.papermc.paper.adventure.PaperAdventure.asVanilla(event.kickMessage())); // Paper - Adventure
++                                skipLog = event.isSkipLog();
++                                ServerLoginPacketListenerImpl.this.disconnect(io.papermc.paper.adventure.PaperAdventure.asVanilla(event.kickMessage()), skipLog); // Paper - Adventure
+                                 return;
+                             }
+                         } else {
+                             if (asyncEvent.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
+-                                ServerLoginPacketListenerImpl.this.disconnect(io.papermc.paper.adventure.PaperAdventure.asVanilla(asyncEvent.kickMessage())); // Paper - Adventure
++                                ServerLoginPacketListenerImpl.this.disconnect(io.papermc.paper.adventure.PaperAdventure.asVanilla(asyncEvent.kickMessage()), skipLog); // Paper - Adventure
+                                 return;
+                             }
+                         }
+                         // CraftBukkit end
+-                        ServerLoginPacketListenerImpl.LOGGER.info("UUID of player {} is {}", ServerLoginPacketListenerImpl.this.gameProfile.getName(), ServerLoginPacketListenerImpl.this.gameProfile.getId());
++                        if (!skipLog) ServerLoginPacketListenerImpl.LOGGER.info("UUID of player {} is {}", ServerLoginPacketListenerImpl.this.gameProfile.getName(), ServerLoginPacketListenerImpl.this.gameProfile.getId()); // Cheetah
+                         ServerLoginPacketListenerImpl.this.state = ServerLoginPacketListenerImpl.State.READY_TO_ACCEPT;
+         }
+     }
+diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
+index 80062e3f14204fc34a1a60b9b1a682206d5d66b4..d61cf6f82bf815efc83be8f1ff91bbac8c2b7d8d 100644
+--- a/src/main/java/net/minecraft/server/players/PlayerList.java
++++ b/src/main/java/net/minecraft/server/players/PlayerList.java
+@@ -731,7 +731,7 @@ public abstract class PlayerList {
+ 
+         this.cserver.getPluginManager().callEvent(event);
+         if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
+-            loginlistener.disconnect(PaperAdventure.asVanilla(event.kickMessage())); // Paper - Adventure
++            loginlistener.disconnect(PaperAdventure.asVanilla(event.kickMessage()), event.isSkipLog()); // Paper - Adventure
+             return null;
+         }
+         return entity;
