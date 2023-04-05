@@ -1,0 +1,88 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lukas81298 <lukas81298@gommehd.net>
+Date: Wed, 5 Apr 2023 22:55:11 +0200
+Subject: [PATCH] allow skipping log messages for canceled login events
+
+
+diff --git a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
+index fc2d9e85b65347b90bde3b0b13ccae759e33d466..56dd974bbfd400f5e2df743e32738aff73131b2f 100644
+--- a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
++++ b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
+@@ -23,6 +23,7 @@ public class AsyncPlayerPreLoginEvent extends Event {
+     private final InetAddress rawAddress; // Paper
+     //private UUID uniqueId; // Paper - Not used anymore
+     private final String hostname; // Paper
++    private boolean skipLog;
+ 
+     @Deprecated
+     public AsyncPlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress) {
+@@ -284,6 +285,15 @@ public class AsyncPlayerPreLoginEvent extends Event {
+     }
+     // Paper end
+ 
++
++    public boolean isSkipLog() {
++        return skipLog;
++    }
++
++    public void setSkipLog(boolean skipLog) {
++        this.skipLog = skipLog;
++    }
++
+     @NotNull
+     @Override
+     public HandlerList getHandlers() {
+diff --git a/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java b/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
+index 62fb782baad5c80a3daaa557c0faa674c58a98cf..115e9e963bed606162b8a272f7ae28e5c0673aeb 100644
+--- a/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
++++ b/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
+@@ -19,6 +19,7 @@ public class PlayerLoginEvent extends PlayerEvent {
+     private Result result = Result.ALLOWED;
+     private net.kyori.adventure.text.Component message = net.kyori.adventure.text.Component.empty();
+     private final InetAddress realAddress; // Spigot
++    private boolean skipLog;
+ 
+     /**
+      * This constructor defaults message to an empty string, and result to
+@@ -166,6 +167,14 @@ public class PlayerLoginEvent extends PlayerEvent {
+         return hostname;
+     }
+ 
++    public boolean isSkipLog() {
++        return skipLog;
++    }
++
++    public void setSkipLog(boolean skipLog) {
++        this.skipLog = skipLog;
++    }
++
+     /**
+      * Allows the player to log in
+      */
+diff --git a/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java b/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
+index 6800132c6288b4588fd02b08d26f016c38f27129..23cd3fc37ae2a08f43eb0fbd8618268fb43bd179 100644
+--- a/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
++++ b/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
+@@ -23,6 +23,7 @@ public class PlayerPreLoginEvent extends Event {
+     private final String name;
+     private final InetAddress ipAddress;
+     private final UUID uniqueId;
++    private boolean skipLog;
+ 
+     @Deprecated
+     public PlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress) {
+@@ -169,6 +170,14 @@ public class PlayerPreLoginEvent extends Event {
+         return uniqueId;
+     }
+ 
++    public boolean isSkipLog() {
++        return skipLog;
++    }
++
++    public void setSkipLog(boolean skipLog) {
++        this.skipLog = skipLog;
++    }
++
+     @NotNull
+     public static HandlerList getHandlerList() {
+         return handlers;
