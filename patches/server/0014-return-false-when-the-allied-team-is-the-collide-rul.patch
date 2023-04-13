@@ -1,0 +1,29 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jendrik Eggers <jendrikeggerskapp@web.de>
+Date: Thu, 13 Apr 2023 17:21:06 +0200
+Subject: [PATCH] return false when the allied team is the collide rule team
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
+index 4705d7066207250c03a5f98eef61554c901f2e35..4411946967670eb460960f8bad7555b3d1af5726 100644
+--- a/src/main/java/net/minecraft/world/entity/Entity.java
++++ b/src/main/java/net/minecraft/world/entity/Entity.java
+@@ -3099,7 +3099,17 @@ public abstract class Entity implements Nameable, EntityAccess, CommandSource {
+     }
+ 
+     public boolean isAlliedTo(Team team) {
+-        return this.getTeam() != null ? this.getTeam().isAlliedTo(team) : false;
++        // Cheetah start
++        final Team ownTeam = this.getTeam();
++        if (ownTeam != null) {
++            if (!io.papermc.paper.configuration.GlobalConfiguration.get().collisions.enablePlayerCollisions &&
++                ownTeam.getName().equals(MinecraftServer.getServer().getPlayerList().collideRuleTeamName)) {
++                return false;
++            }
++            return ownTeam.isAlliedTo(team);
++        }
++        return false;
++        // Cheetah end
+     }
+ 
+     // CraftBukkit - start
