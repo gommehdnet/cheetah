@@ -5,10 +5,10 @@ Subject: [PATCH] updated upstream
 
 
 diff --git a/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java b/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
-index 50210c967d5106ed81d9a221471a2f7d7ccde851..006b5d37295acec1698ad60fa48fd1ae9f1532ab 100644
+index 6f913cf5e617c7cb65e7343e6f8e5d9e98d4867b..aaf618d506c1042004d18bc7776c7c45a6d5bdfe 100644
 --- a/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
 +++ b/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
-@@ -48,13 +48,15 @@ public class StructuresLocateEvent extends WorldEvent implements Cancellable {
+@@ -50,13 +50,15 @@ public class StructuresLocateEvent extends WorldEvent implements Cancellable {
          this.findUnexplored = findUnexplored;
      }
  
