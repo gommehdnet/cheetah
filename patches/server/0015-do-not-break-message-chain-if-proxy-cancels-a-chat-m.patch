@@ -1,0 +1,68 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lukas81298 <lukas81298@gommehd.net>
+Date: Thu, 27 Apr 2023 17:06:53 +0200
+Subject: [PATCH] do not break message chain if proxy cancels a chat message
+
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 3780fc5ca3b1f956e39c3a33a7ec81cd49b22128..a179e3b6b8a1f5aa3dc430941b9cbe54cedb2a33 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -2201,6 +2201,14 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+         if (this.server.isStopped()) {
+             return;
+         }
++        // Cheetah start
++        boolean cancelled = packet.lastSeenMessages().offset() < 0; // Canceling the signed chat packet on bungeecord side will break the chat chain on spigot side. Thus, the server will no longer be able to validate subsequent chat messages.
++                                                                    // We implement a little hack here: If the offset in the lastSeenMessages field is negative, the message will be correctly validated and the chat chain will be updated
++                                                                    // but the server will ignore the chat message, i.e. no events are called, it is not logged, and no player will see the message
++        if (cancelled)  {
++            packet = new ServerboundChatPacket(packet.message(), packet.timeStamp(), packet.salt(), packet.signature(), new LastSeenMessages.Update(packet.lastSeenMessages().offset() == Integer.MIN_VALUE ? 0 : -packet.lastSeenMessages().offset(), packet.lastSeenMessages().acknowledged())); // Restore the correct offset (copy packet here, packet itself is immutable record)
++        }
++        // Cheetah end
+         // CraftBukkit end
+         if (ServerGamePacketListenerImpl.isChatMessageIllegal(packet.message())) {
+             this.server.scheduleOnMain(() -> { // Paper - push to main for event firing
+@@ -2220,6 +2228,12 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+                         return;
+                     }
+ 
++                    // Cheetah start
++                    if (cancelled) {
++                        LOGGER.info("Skipping message of " + player.getScoreboardName() + ": '" + playerchatmessage.signedContent() + " because it was cancelled by BungeeCord.");
++                        return;
++                    }
++                    // Cheetah end
+                     CompletableFuture<FilteredText> completablefuture = this.filterTextPacket(playerchatmessage.signedContent());
+                     CompletableFuture<net.minecraft.network.chat.ChatDecorator.Result> completablefuture1 = this.server.getChatDecorator().decorate(this.player, null, playerchatmessage.decoratedContent()); // Paper
+ 
+@@ -2243,12 +2257,27 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+             this.disconnect(Component.translatable("multiplayer.disconnect.illegal_characters"), org.bukkit.event.player.PlayerKickEvent.Cause.ILLEGAL_CHARACTERS); // Paper
+             }); // Paper - push to main for event firing
+         } else {
++            // Cheetah start
++            boolean cancelled = packet.lastSeenMessages().offset() < 0; // Same behavior as for ServerboundChatPacket
++            ServerboundChatCommandPacket packet1;
++            if(cancelled) {
++                packet1 = new ServerboundChatCommandPacket(packet.command(), packet.timeStamp(), packet.salt(), packet.argumentSignatures(), new LastSeenMessages.Update(packet.lastSeenMessages().offset() == Integer.MIN_VALUE ? 0 : -packet.lastSeenMessages().offset(), packet.lastSeenMessages().acknowledged())); // Restore the correct offset (copy packet here, packet itself is immutable record)
++            } else {
++                packet1 = packet;
++            }
++            // Cheetah end
+             Optional<LastSeenMessages> optional = this.tryHandleChat(packet.command(), packet.timeStamp(), packet.lastSeenMessages());
+ 
+             if (optional.isPresent()) {
++                // Cheetah start
++                if (cancelled) {
++                    LOGGER.info("Skipping command of " + player.getScoreboardName() + ": '" + packet1.command() + " because it was cancelled by BungeeCord.");
++                    return;
++                }
++                // Cheetah end
+                 this.server.submit(() -> {
+-                    this.performChatCommand(packet, (LastSeenMessages) optional.get());
+-                    this.detectRateSpam("/" + packet.command()); // Spigot
++                    this.performChatCommand(packet1, (LastSeenMessages) optional.get());
++                    this.detectRateSpam("/" + packet1.command()); // Spigot
+                 });
+             }
+ 
