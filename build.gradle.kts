@@ -12,6 +12,8 @@ repositories {
     maven(paperMavenPublicUrl) {
         content { onlyForConfigurations(configurations.paperclip.name) }
     }
+    maven("https://repo.gomme.dev/repository/snapshots/")
+    maven("https://repo.gomme.dev/repository/releases/")
 }
 
 dependencies {
