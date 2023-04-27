@@ -2,7 +2,7 @@
 
 [![Patch and Build](https://github.com/gommehdnet/cheetah-1.19/actions/workflows/build.yml/badge.svg)](https://github.com/gommehdnet/cheetah-1.19/actions/workflows/build.yml)
 
-This is a fork of PaperSpigot tailored for the use at GommeHD.net
+This is a fork of Paper tailored for the use at GommeHD.net
 
 ## How to build
 - Clone this repository
@@ -16,7 +16,7 @@ This is a fork of PaperSpigot tailored for the use at GommeHD.net
 ## How to use the API with Maven?
 Currently, it is not possible to add a dependency containing NMS code, the API, and dependencies to the classpath. The current solution is to use the cheetah API combined with the normal Spigot NMS. 
 Thus, changes to the NMS code will not be reflected to plugins using it.
-- Run `./gradlew publishToMavenLocal`
+- Run `./gradlew publishToMavenLocal` (The API artifacts are published to GommeHD.net internal repositories as well)
 - Add the following maven dependency:
 ```
 <dependency>
@@ -30,13 +30,12 @@ Thus, changes to the NMS code will not be reflected to plugins using it.
 - First apply the patches using `./gradlew applyPatches`
 - Perform the changes to the code
 - If you are a missing file, you can import it from NMS. For this, add a new line to `build-data/dev-imports.txt`, e.g. `minecraft net.minecraft.world.level.entity.LevelEntityGetterAdapter` to import the LevelEntityGetterAdapter. Then apply the patches again (`./gradlew applyPatches`). Keep in mind that all uncommited changes to the code will get LOST by this!
-- Once all changes have been applied, switch to the Subproject in your Shell (`cd Cheetah-Server` or `cd Cheetah-API`) and run `git add .`. Then, commit your changes using `git commit -m "NAME OF PATCH"`
+- Once all changes have been applied, switch to the subproject in your shell (`cd cheetah-server` or `cd cheetah-api`) and run `git add .`. Then, commit your changes using `git commit -m "NAME OF PATCH"`
 - Switch back to the project root and rebuild the patches: `./gradlew rebuildPatches`
 - Commit the changed patch files the `patches/` folder to the root git repository
 
 ## Update upstream
 - Make sure all changes are committed and patches have been rebuilt
-- Run `./gradlew clean` and `./gradlew cleanCache`
 - Identify the latest commit in https://github.com/PaperMC/Paper/commits/master and copy its hash. Update `paperRef` in `gradle.properties` accordingly.
 - Run `./gradlew applyPatches`
 - Fix potential conflicts during merges and update your code to the latest version
