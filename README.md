@@ -1,5 +1,7 @@
 # GommeHD.net Cheetah 1.19.4
 
+[![Patch and Build](https://github.com/gommehdnet/cheetah-1.19/actions/workflows/build.yml/badge.svg)](https://github.com/gommehdnet/cheetah-1.19/actions/workflows/build.yml)
+
 This is a fork of PaperSpigot tailored for the use at GommeHD.net
 
 ## How to build
