@@ -29,6 +29,16 @@ jobs:
       - name: Clean
         run: ./gradlew clean
       - name: Apply Patches
-        run: ./gradlew applyPatches --stacktrace
+        run: ./gradlew applyPatches --info
       - name: Build
-        run: ./gradlew build --stacktrace
+        run: ./gradlew build --info
+      - name: Bundle
+        run: ./gradlew createReobfBundlerJar --info
+      - name: Rename Artifact
+        run: mv build/libs/cheetah-1.19-bundler-1.19.4-R0.1-SNAPSHOT-reobf.jar build/libs/cheetah-1.19.4.jar
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Cheetah-1.19.4
+          path: build/libs/cheetah-1.19.4.jar
+          if-no-files-found: error
