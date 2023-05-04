@@ -1,0 +1,60 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Summerfeeling <summerfeelingmc@gmail.com>
+Date: Thu, 4 May 2023 12:08:19 +0200
+Subject: [PATCH] Added VillagerGiveGiftToHeroEvent
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/ai/behavior/GiveGiftToHero.java b/src/main/java/net/minecraft/world/entity/ai/behavior/GiveGiftToHero.java
+index 688301f43a26c8727870052945a241fa7ec184a1..c6bb99d1e852c6a382998de2d4a74a64fe415fa6 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/behavior/GiveGiftToHero.java
++++ b/src/main/java/net/minecraft/world/entity/ai/behavior/GiveGiftToHero.java
+@@ -3,9 +3,13 @@ package net.minecraft.world.entity.ai.behavior;
+ import com.google.common.collect.ImmutableList;
+ import com.google.common.collect.ImmutableMap;
+ import com.google.common.collect.Maps;
++
++import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Map;
+ import java.util.Optional;
++import java.util.stream.Collectors;
++
+ import net.minecraft.Util;
+ import net.minecraft.core.BlockPos;
+ import net.minecraft.resources.ResourceLocation;
+@@ -24,6 +28,9 @@ import net.minecraft.world.level.storage.loot.LootContext;
+ import net.minecraft.world.level.storage.loot.LootTable;
+ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
++import org.bukkit.Bukkit;
++import org.bukkit.craftbukkit.inventory.CraftItemStack;
++import org.bukkit.event.entity.VillagerGiveGiftToHeroEvent;
+ 
+ public class GiveGiftToHero extends Behavior<Villager> {
+     private static final int THROW_GIFT_AT_DISTANCE = 5;
+@@ -104,10 +111,22 @@ public class GiveGiftToHero extends Behavior<Villager> {
+     }
+ 
+     private void throwGift(Villager villager, LivingEntity recipient) {
+-        for(ItemStack itemStack : this.getItemToThrow(villager)) {
+-            BehaviorUtils.throwItem(villager, itemStack, recipient.position());
+-        }
++        // Cheetah start - added VillagerGiveGiftToHeroEvent
++        List<ItemStack> itemStacks = this.getItemToThrow(villager);
++
++        List<org.bukkit.inventory.ItemStack> convertedItemStacks = itemStacks.stream().map(CraftItemStack::asCraftMirror).collect(Collectors.toList());
+ 
++        VillagerGiveGiftToHeroEvent event = new VillagerGiveGiftToHeroEvent(villager.getBukkitEntity(), recipient.getBukkitLivingEntity(), convertedItemStacks);
++        Bukkit.getPluginManager().callEvent(event);
++
++        if (!event.isCancelled() && !event.getItemStacks().isEmpty()) {
++            itemStacks = event.getItemStacks().stream().map(CraftItemStack::asNMSCopy).toList();
++
++            for (ItemStack itemStack : itemStacks) {
++                BehaviorUtils.throwItem(villager, itemStack, recipient.position());
++            }
++        }
++        // Cheetah end
+     }
+ 
+     private List<ItemStack> getItemToThrow(Villager villager) {
