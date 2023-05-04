@@ -11,4 +11,5 @@
 minecraft net.minecraft.server.dedicated.DedicatedServerProperties
 minecraft net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket
 minecraft net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket
+#minecraft net.minecraft.world.entity.ai.behavior.GiveGiftToHero
 #minecraft net.minecraft.world.level.levelgen.structure.structures.EndCityPieces

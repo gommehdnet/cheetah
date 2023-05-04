@@ -5,10 +5,10 @@ Subject: [PATCH] do not suppress protocol errors
 
 
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
-index fa1d325034dafdb9f1da546a6f9c5e88d2b67749..07d771298211f61c4d825795b7227c39d0714880 100644
+index f9e10bf048929886db3c414038d2c7e9f84226a6..667ae49f0f051801eebee8f5ce442d6a29545143 100644
 --- a/src/main/java/net/minecraft/network/Connection.java
 +++ b/src/main/java/net/minecraft/network/Connection.java
-@@ -234,7 +234,7 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -237,7 +237,7 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
  
                      if (player != null) player.quitReason = org.bukkit.event.player.PlayerQuitEvent.QuitReason.ERRONEOUS_STATE; // Paper
                      if (flag) {
