@@ -78,10 +78,10 @@ index 2ff578e4a953ffcf5176815ba8e3f06f73499989..02750806aacdc08abb36811b99fd30a9
          }
      }
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 842424b4f208449874b44784b3f2101dee4c963e..a5ba6975c8a49d4709d119341893c286aae6b4b4 100644
+index 475e9037722d310e8dafffb8584d33379f8ff4bf..32131b5a6135bdf29d89ff0c2a864483f468e5d2 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -736,7 +736,7 @@ public abstract class PlayerList {
+@@ -738,7 +738,7 @@ public abstract class PlayerList {
  
          this.cserver.getPluginManager().callEvent(event);
          if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
