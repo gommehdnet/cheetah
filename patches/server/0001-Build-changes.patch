@@ -5,7 +5,7 @@ Subject: [PATCH] Build changes
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 9cf389defdaeb887e9cad4f0fed3f3b95667b238..4793a1f80112368b17552bc0306a2d89a08d03ef 100644
+index e7a03ea1dab56e7725f718da0b44c736018ac995..81f7cf4bc18ee6643a990c450e70abfb0c9b0430 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -7,8 +7,12 @@ plugins {
@@ -42,10 +42,10 @@ index 9cf389defdaeb887e9cad4f0fed3f3b95667b238..4793a1f80112368b17552bc0306a2d89
      standardInput = System.`in`
      workingDir = rootProject.layout.projectDirectory
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 9f15d9dbdfa74a0640b1a2b4ff695609d4758a4c..3734d87463e77ea5e9a80a5008cee97bdff3cac0 100644
+index fb82bb52f219e7683fe1d3c0fb3acbe2251de8d4..e1a1a28e166e7fbe5990d4d712477781fe1bbe02 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1682,7 +1682,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1681,7 +1681,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      @DontObfuscate
      public String getServerModName() {
@@ -55,10 +55,10 @@ index 9f15d9dbdfa74a0640b1a2b4ff695609d4758a4c..3734d87463e77ea5e9a80a5008cee97b
  
      public SystemReport fillSystemReport(SystemReport details) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index e769f7b0904814ee63e2a73dca57e5dc33382fba..9214e4160cbf463e6d638551e11d5747c6128fd0 100644
+index ffa27c9c02dc4d12411fc089de3af8e8e12ba06e..4493fd31b4bf371e27a7931ab700b8a57d88d1a8 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -257,7 +257,7 @@ import javax.annotation.Nullable; // Paper
+@@ -262,7 +262,7 @@ import javax.annotation.Nullable; // Paper
  import javax.annotation.Nonnull; // Paper
  
  public final class CraftServer implements Server {

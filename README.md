@@ -1,6 +1,6 @@
-# GommeHD.net Cheetah 1.19.4
+# GommeHD.net Cheetah 1.20
 
-[![Patch and Build](https://github.com/gommehdnet/cheetah-1.19/actions/workflows/build.yml/badge.svg)](https://github.com/gommehdnet/cheetah-1.19/actions/workflows/build.yml)
+[![Patch and Build](https://github.com/gommehdnet/cheetah/actions/workflows/build.yml/badge.svg)](https://github.com/gommehdnet/cheetah/actions/workflows/build.yml)
 
 This is a fork of Paper tailored for the use at GommeHD.net
 
@@ -11,7 +11,7 @@ This is a fork of Paper tailored for the use at GommeHD.net
 - Run `./gradlew applyPatches` to apply the patches
 - Run `./gradlew build` to build the jar files
 - Run `./gradlew createReobfBundlerJar` to create the final jar file
-- The final jar file can be found in `build/libs/cheetah-1.19-bundler-1.19.4-R0.1-SNAPSHOT-reobf.jar`
+- The final jar file can be found in `build/libs/cheetah-1.20-bundler-1.20-R0.1-SNAPSHOT-reobf.jar`
 
 ## How to use the API with Maven?
 Currently, it is not possible to add a dependency containing NMS code, the API, and dependencies to the classpath. The current solution is to use the cheetah API combined with the normal Spigot NMS. 
@@ -22,7 +22,7 @@ Thus, changes to the NMS code will not be reflected to plugins using it.
 <dependency>
   <groupId>net.gommehd.cheetah</groupId>
   <artifactId>cheetah-api</artifactId>
-  <version>1.19.4-R0.1-SNAPSHOT</version>
+  <version>1.20-R0.1-SNAPSHOT</version>
 </dependency>
 ```
 
