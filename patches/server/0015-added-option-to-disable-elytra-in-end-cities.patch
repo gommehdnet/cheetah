@@ -1,0 +1,31 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lukas81298 <lukas81298@gommehd.net>
+Date: Fri, 9 Jun 2023 18:23:30 +0200
+Subject: [PATCH] added option to disable elytra in end cities
+
+
+diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
+index 77d05f7efdcdceef681a75692c208075d873d368..71b39e315973989a8d78de8df6fe232cae88bcc7 100644
+--- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
++++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
+@@ -271,6 +271,7 @@ public class GlobalConfiguration extends ConfigurationPart {
+         public boolean lagCompensateBlockBreaking = true;
+         public boolean useDimensionTypeForCustomSpawners = false;
+         public boolean strictAdvancementDimensionCheck = false;
++        public boolean enableElytraInEndCities = true;
+     }
+ 
+     public ChunkLoadingBasic chunkLoadingBasic;
+diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
+index 8ab3921db122e0bbd60e689d07e99b4847ce9613..616d5ad34087f951c52b904d5d39a8868760482d 100644
+--- a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
++++ b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
+@@ -269,7 +269,7 @@ public class EndCityPieces {
+                         shulker.setPos((double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D);
+                         world.addFreshEntity(shulker);
+                     }
+-                } else if (metadata.startsWith("Elytra")) {
++                } else if (metadata.startsWith("Elytra") && io.papermc.paper.configuration.GlobalConfiguration.get().misc.enableElytraInEndCities) {
+                     ItemFrame itemFrame = new ItemFrame(world.getLevel(), pos, this.placeSettings.getRotation().rotate(Direction.SOUTH));
+                     itemFrame.setItem(new ItemStack(Items.ELYTRA), false);
+                     world.addFreshEntity(itemFrame);

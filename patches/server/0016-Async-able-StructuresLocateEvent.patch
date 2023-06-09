@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lukas81298 <lukas81298@gommehd.net>
+Date: Fri, 9 Jun 2023 18:24:40 +0200
+Subject: [PATCH] Async-able StructuresLocateEvent
+
+
+diff --git a/src/main/java/net/minecraft/world/level/chunk/ChunkGenerator.java b/src/main/java/net/minecraft/world/level/chunk/ChunkGenerator.java
+index 8bab3fcfc6aa6c0b37621474a69f15e94bda2113..c470bc9a31aa37c6ab904f5d040363f5c43b93e2 100644
+--- a/src/main/java/net/minecraft/world/level/chunk/ChunkGenerator.java
++++ b/src/main/java/net/minecraft/world/level/chunk/ChunkGenerator.java
+@@ -126,7 +126,7 @@ public abstract class ChunkGenerator {
+         final org.bukkit.Location origin = io.papermc.paper.util.MCUtil.toLocation(world, center);
+         final List<org.bukkit.generator.structure.Structure> apiStructures = structures.stream().map(Holder::value).map(nms -> org.bukkit.craftbukkit.generator.structure.CraftStructure.minecraftToBukkit(nms, world.registryAccess())).toList();
+         if (!apiStructures.isEmpty()) {
+-            final io.papermc.paper.event.world.StructuresLocateEvent event = new io.papermc.paper.event.world.StructuresLocateEvent(bukkitWorld, origin, apiStructures, radius, skipReferencedStructures);
++            final io.papermc.paper.event.world.StructuresLocateEvent event = new io.papermc.paper.event.world.StructuresLocateEvent(bukkitWorld, origin, apiStructures, radius, skipReferencedStructures, !io.papermc.paper.util.MCUtil.isMainThread()); // Cheetah - added async parameter
+             if (!event.callEvent()) {
+                 return null;
+             }
