@@ -5,10 +5,10 @@ Subject: [PATCH] do not break message chain if proxy cancels a chat message
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 41b4c98452423b61a2d0ab500ddcba2ecfc05cff..38429845e8263388ca368914eb3c9612255aef53 100644
+index dbd7b0ace004095ad41624cbeba03fe0aa0d7502..743a561b577db356943faa36780609d65fa0bc6e 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2202,6 +2202,14 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -2200,6 +2200,14 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          if (this.server.isStopped()) {
              return;
          }
@@ -23,7 +23,7 @@ index 41b4c98452423b61a2d0ab500ddcba2ecfc05cff..38429845e8263388ca368914eb3c9612
          // CraftBukkit end
          if (ServerGamePacketListenerImpl.isChatMessageIllegal(packet.message())) {
              this.server.scheduleOnMain(() -> { // Paper - push to main for event firing
-@@ -2221,6 +2229,12 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -2219,6 +2227,12 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
                          return;
                      }
  
@@ -36,7 +36,7 @@ index 41b4c98452423b61a2d0ab500ddcba2ecfc05cff..38429845e8263388ca368914eb3c9612
                      CompletableFuture<FilteredText> completablefuture = this.filterTextPacket(playerchatmessage.signedContent());
                      CompletableFuture<net.minecraft.network.chat.ChatDecorator.Result> completablefuture1 = this.server.getChatDecorator().decorate(this.player, null, playerchatmessage.decoratedContent()); // Paper
  
-@@ -2244,9 +2258,24 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -2242,9 +2256,24 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
              this.disconnect(Component.translatable("multiplayer.disconnect.illegal_characters"), org.bukkit.event.player.PlayerKickEvent.Cause.ILLEGAL_CHARACTERS); // Paper
              }); // Paper - push to main for event firing
          } else {
