@@ -8,7 +8,7 @@ Content-Transfer-Encoding: 8bit
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index a7251bc0ae2638a15970012c6283a05ca28b9cee..94b755cb469805d08cc9a02f9acb897da8f92ab7 100644
+index f3ea90d40389ab54d9b5e2a2b99b8b220215c300..9d8c444e204336babf64f1fc09f0c4d70071df9e 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -9,7 +9,7 @@ plugins {
@@ -21,10 +21,10 @@ index a7251bc0ae2638a15970012c6283a05ca28b9cee..94b755cb469805d08cc9a02f9acb897d
      }
      // Cheetah end
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index ae82ab0e3d8e99f87ca8465fbcbb44b5ce18bf96..dbd7b0ace004095ad41624cbeba03fe0aa0d7502 100644
+index d9c2d06ae24dcf80a497e75f4c7f63d401b77f9b..eb5ac11015a087931ed26c015462406095ca42fd 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2319,10 +2319,21 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -2322,10 +2322,21 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          return map;
      }
  
@@ -48,11 +48,11 @@ index ae82ab0e3d8e99f87ca8465fbcbb44b5ce18bf96..dbd7b0ace004095ad41624cbeba03fe0
  
      private Optional<LastSeenMessages> tryHandleChat(String message, Instant timestamp, LastSeenMessages.Update acknowledgment) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
-index 6035af2cf08353b3d3801220d8116d8611a0cd37..c7ecfd648142284c2f9884c0dfb5f35af2879c05 100644
+index eb20ac9d0e70c48c2c671109b7706c56ff0f10f6..138e2d4ea98f88e3560556c22cc35bf3712ededb 100644
 --- a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
 +++ b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
 @@ -53,7 +53,7 @@ public final class VanillaCommandWrapper extends BukkitCommand {
-         Validate.notNull(alias, "Alias cannot be null");
+         Preconditions.checkArgument(alias != null, "Alias cannot be null");
  
          CommandSourceStack icommandlistener = VanillaCommandWrapper.getListener(sender);
 -        ParseResults<CommandSourceStack> parsed = this.dispatcher.getDispatcher().parse(this.toDispatcher(args, getName()), icommandlistener);
