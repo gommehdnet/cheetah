@@ -8,7 +8,7 @@ Content-Transfer-Encoding: 8bit
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index f3ea90d40389ab54d9b5e2a2b99b8b220215c300..9d8c444e204336babf64f1fc09f0c4d70071df9e 100644
+index f62a7216cc4f4b77daf982e90231dcb6c9183056..2ee23053bf5edf7f6efe787fc85b354896810778 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -9,7 +9,7 @@ plugins {
@@ -21,10 +21,10 @@ index f3ea90d40389ab54d9b5e2a2b99b8b220215c300..9d8c444e204336babf64f1fc09f0c4d7
      }
      // Cheetah end
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index d9c2d06ae24dcf80a497e75f4c7f63d401b77f9b..eb5ac11015a087931ed26c015462406095ca42fd 100644
+index 2a609e43370e68943c580083f7f7d8c9b0972955..f026b49d0b7a356094d416e2fe1b30c6a10f76d6 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2322,10 +2322,21 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -2323,10 +2323,21 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          return map;
      }
  
