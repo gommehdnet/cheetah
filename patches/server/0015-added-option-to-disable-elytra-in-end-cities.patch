@@ -5,7 +5,7 @@ Subject: [PATCH] added option to disable elytra in end cities
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index ffbab76e55807f04ebb25242eadbea114004b1b3..3e8cd2982d99b36f026f09df1a91db378f04d610 100644
+index 4ac3fa45cd155ae8a852e26d4d4d1f16b28efdc2..78fdc4002f5dd2efb0f0aa346c2d0a966bd6715e 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -270,6 +270,7 @@ public class GlobalConfiguration extends ConfigurationPart {
@@ -15,7 +15,7 @@ index ffbab76e55807f04ebb25242eadbea114004b1b3..3e8cd2982d99b36f026f09df1a91db37
 +        public boolean enableElytraInEndCities = true;
      }
  
-     public ChunkLoadingBasic chunkLoadingBasic;
+     public BlockUpdates blockUpdates;
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
 index 8ab3921db122e0bbd60e689d07e99b4847ce9613..616d5ad34087f951c52b904d5d39a8868760482d 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
