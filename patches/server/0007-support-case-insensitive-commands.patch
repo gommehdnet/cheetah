@@ -8,10 +8,10 @@ Content-Transfer-Encoding: 8bit
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index f62a7216cc4f4b77daf982e90231dcb6c9183056..2ee23053bf5edf7f6efe787fc85b354896810778 100644
+index f8788803e5c23423cf1d388fbcb092abf902d161..0c685a0d5b8c6a37bfef02c5696c2a441e0ae4b3 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -9,7 +9,7 @@ plugins {
+@@ -15,7 +15,7 @@ val alsoShade: Configuration by configurations.creating
  dependencies {
      // Cheetah start
      implementation(project(":cheetah-api"))
@@ -21,7 +21,7 @@ index f62a7216cc4f4b77daf982e90231dcb6c9183056..2ee23053bf5edf7f6efe787fc85b3548
      }
      // Cheetah end
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 2a609e43370e68943c580083f7f7d8c9b0972955..f026b49d0b7a356094d416e2fe1b30c6a10f76d6 100644
+index b777547cb9f8edf4e7b3c2cfb894f8cd1b1a35a5..e6aea52c4525a896ebbc5492f9915ec7ce0cb5a9 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2323,10 +2323,21 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic

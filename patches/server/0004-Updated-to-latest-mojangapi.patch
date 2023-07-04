@@ -5,10 +5,10 @@ Subject: [PATCH] Updated to latest mojangapi
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 4ebc1f7b475e6976057deb3f0f69a09556888020..bbf1e0f4dd166104e62d08915de3c4a8c7542d31 100644
+index 265722f2c1bb055dfa6f94f7520b96008140f92f..f8788803e5c23423cf1d388fbcb092abf902d161 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -9,7 +9,7 @@ plugins {
+@@ -15,7 +15,7 @@ val alsoShade: Configuration by configurations.creating
  dependencies {
      // Cheetah start
      implementation(project(":cheetah-api"))
