@@ -20,7 +20,7 @@ index a05acf709735b40ca86f978508c63a86065fd405..292895bf87538ae1474225d3df355918
 +    // Cheetah end
  }
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index cba114f554644a37339c93026630c66c43f524b9..225dc8bd73f53ba9fac2e442e682474e80e10d62 100644
+index b11f51762ca289d99eaa49e66e31e58595bcea4e..d8b650532adcf5f4f7d621636e4e4503a55bc4b7 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 @@ -50,6 +50,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
@@ -87,9 +87,9 @@ index cba114f554644a37339c93026630c66c43f524b9..225dc8bd73f53ba9fac2e442e682474e
          final int originalItemCount = origItemStack.getCount();
 -        final int movedItemCount = Math.min(level.spigotConfig.hopperAmount, originalItemCount);
 +        final int movedItemCount = Math.min((int) (level.spigotConfig.hopperAmount * hopper.getHopperTransferMultiplier()), originalItemCount); // Cheetah - customizable hopper transfer multiplier
+         container.setChanged(); // original logic always marks source inv as changed even if no move happens.
          movedItem.setCount(movedItemCount);
  
-         if (!skipPullModeEventFire) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java b/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
 index 15e72d2e15106cd009eb19a839af0b67a48fadfd..af330add515cab837d8abef6dd0162a9ec51f7e3 100644
 --- a/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
