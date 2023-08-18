@@ -5,7 +5,7 @@ Subject: [PATCH] expose constructor for player info update packet
 
 
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerInfoUpdatePacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerInfoUpdatePacket.java
-index 4cd1cce5641c6001b34b9da6aac779bf6e8480d1..0a29a4a58f336c14910b5f69582c10ccdcf2db92 100644
+index 4aa8b483841028fbcc43f9ed47730881263e5065..4c184d784b13634c20c6c1b99e6eb2c22c30ae9c 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerInfoUpdatePacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerInfoUpdatePacket.java
 @@ -29,6 +29,18 @@ public class ClientboundPlayerInfoUpdatePacket implements Packet<ClientGamePacke

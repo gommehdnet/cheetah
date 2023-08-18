@@ -7,21 +7,8 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 
-diff --git a/build.gradle.kts b/build.gradle.kts
-index b3bb3022d6b0987cd003c22015fb92737fc35fc3..c917af17e801c0ae75caf4a44cd80e48fc7dec4a 100644
---- a/build.gradle.kts
-+++ b/build.gradle.kts
-@@ -15,7 +15,7 @@ val alsoShade: Configuration by configurations.creating
- dependencies {
-     // Cheetah start
-     implementation(project(":cheetah-api"))
--    implementation("io.papermc.paper:paper-mojangapi:1.19.2-R0.1-SNAPSHOT") {
-+    implementation("io.papermc.paper:paper-mojangapi:1.19.3-R0.1-SNAPSHOT") {
-         exclude("io.papermc.paper", "paper-api")
-     }
-     // Cheetah end
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 80e050603e36134754136a8ee2bd14624f976e91..0cbea8459afe281a0db71387f6dac72357891893 100644
+index 721243ebf0fb126cf5c0de76c6bd990807f097f4..6cbe110335f1a498b3e5dad5a6aeddfa77260d92 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2366,10 +2366,21 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
@@ -48,7 +35,7 @@ index 80e050603e36134754136a8ee2bd14624f976e91..0cbea8459afe281a0db71387f6dac723
  
      private Optional<LastSeenMessages> tryHandleChat(String message, Instant timestamp, LastSeenMessages.Update acknowledgment) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
-index eb20ac9d0e70c48c2c671109b7706c56ff0f10f6..138e2d4ea98f88e3560556c22cc35bf3712ededb 100644
+index c3742b6c4abea173b38307048091fc56bd5051d7..d4e89b61a1406b9a56c4fecd891d1deccd6fcef7 100644
 --- a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
 +++ b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
 @@ -53,7 +53,7 @@ public final class VanillaCommandWrapper extends BukkitCommand {

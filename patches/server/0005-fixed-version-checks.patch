@@ -5,7 +5,7 @@ Subject: [PATCH] fixed version checks
 
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-index bf42969859545a8a520923ef1836ffa4a5cc24a0..9dd39b900d6d7fe5ace92994a14858d5dc69fd59 100644
+index 9d687da5bdf398bb3f6c84cdf1249a7213d09f2e..537a53cd64e448a918370ff8774be4a989125386 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 @@ -31,8 +31,8 @@ public class PaperVersionFetcher implements VersionFetcher {
@@ -15,7 +15,7 @@ index bf42969859545a8a520923ef1836ffa4a5cc24a0..9dd39b900d6d7fe5ace92994a14858d5
 -        String[] parts = serverVersion.substring("git-Paper-".length()).split("[-\\s]");
 -        final Component updateMessage = getUpdateStatusMessage("PaperMC/Paper", GITHUB_BRANCH_NAME, parts[0]);
 +        String[] parts = serverVersion.substring("git-Cheetah-".length()).split("[-\\s]");
-+        final Component updateMessage = getUpdateStatusMessage("gommehdnet/cheetah-1.19", GITHUB_BRANCH_NAME, parts[0]);
++        final Component updateMessage = getUpdateStatusMessage("gommehdnet/cheetah", GITHUB_BRANCH_NAME, parts[0]);
          final Component history = getHistory();
  
          return history != null ? TextComponent.ofChildren(updateMessage, Component.newline(), history) : updateMessage;

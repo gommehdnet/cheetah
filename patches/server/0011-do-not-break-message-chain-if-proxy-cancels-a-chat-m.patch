@@ -5,7 +5,7 @@ Subject: [PATCH] do not break message chain if proxy cancels a chat message
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 0cbea8459afe281a0db71387f6dac72357891893..c504e29fc277735216ff1c97549d0492ef456463 100644
+index 6cbe110335f1a498b3e5dad5a6aeddfa77260d92..c667dc0503632575b7df8c7ccdf2ae212fa1711f 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2247,6 +2247,14 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic

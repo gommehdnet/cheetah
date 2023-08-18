@@ -5,7 +5,7 @@ Subject: [PATCH] do not suppress protocol errors
 
 
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
-index 1b634b303105a0f8424e1e40b7c39f9938232d95..fa7daf2e2ec39640930a2788f2880870ebaa5f11 100644
+index cf20f0983fc25b26cf92b9d3a28746b1909fc56b..abc783a96047c1e08526f079de1e62138fa42849 100644
 --- a/src/main/java/net/minecraft/network/Connection.java
 +++ b/src/main/java/net/minecraft/network/Connection.java
 @@ -241,7 +241,7 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
