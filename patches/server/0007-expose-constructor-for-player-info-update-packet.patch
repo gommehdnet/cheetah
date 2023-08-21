@@ -5,19 +5,14 @@ Subject: [PATCH] expose constructor for player info update packet
 
 
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerInfoUpdatePacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerInfoUpdatePacket.java
-index 4aa8b483841028fbcc43f9ed47730881263e5065..4c184d784b13634c20c6c1b99e6eb2c22c30ae9c 100644
+index 0a233051c75dddeb7a5f4de8de39fe1afce75e4a..9f5d9bc5541cf0fc64c670544fb2a75959666cbd 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerInfoUpdatePacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerInfoUpdatePacket.java
-@@ -29,6 +29,18 @@ public class ClientboundPlayerInfoUpdatePacket implements Packet<ClientGamePacke
-         this.entries = List.of(new ClientboundPlayerInfoUpdatePacket.Entry(player));
+@@ -40,6 +40,13 @@ public class ClientboundPlayerInfoUpdatePacket implements Packet<ClientGamePacke
      }
+     // Paper end
  
 +    // Cheetah start
-+    public ClientboundPlayerInfoUpdatePacket(EnumSet<ClientboundPlayerInfoUpdatePacket.Action> actions, List<Entry> entries) {
-+        this.actions = actions;
-+        this.entries = entries;
-+    }
-+
 +    public ClientboundPlayerInfoUpdatePacket(Action action, Entry entry) {
 +        this.actions = EnumSet.of(action);
 +        this.entries = List.of(entry);

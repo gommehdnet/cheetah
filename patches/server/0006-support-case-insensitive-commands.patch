@@ -8,10 +8,10 @@ Content-Transfer-Encoding: 8bit
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 721243ebf0fb126cf5c0de76c6bd990807f097f4..6cbe110335f1a498b3e5dad5a6aeddfa77260d92 100644
+index e8923befdee3514be5346c6e6c8e7236e7e6e668..b960836b92ef423acf4aa3bc2423a25b3e2995a6 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2366,10 +2366,21 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -2371,10 +2371,21 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          return map;
      }
  
