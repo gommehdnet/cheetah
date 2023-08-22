@@ -5,11 +5,11 @@ Subject: [PATCH] added option to disable elytra in end cities
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index d225c35b8a91296d007b92d112639ff76948391e..38732bde72af3a40a060d19838d8e875957366c6 100644
+index 019d3bbd78fb0b06861979d223915fedb6c99442..4541d238900146da30558bfedcae3edbed76d5ed 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -317,6 +317,7 @@ public class GlobalConfiguration extends ConfigurationPart {
-         public boolean lagCompensateBlockBreaking = true;
+@@ -316,6 +316,7 @@ public class GlobalConfiguration extends ConfigurationPart {
+         public boolean useAlternativeLuckFormula = false;
          public boolean useDimensionTypeForCustomSpawners = false;
          public boolean strictAdvancementDimensionCheck = false;
 +        public boolean enableElytraInEndCities = true;
