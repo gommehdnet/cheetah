@@ -20,7 +20,7 @@ index a05acf709735b40ca86f978508c63a86065fd405..292895bf87538ae1474225d3df355918
 +    // Cheetah end
  }
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index b11f51762ca289d99eaa49e66e31e58595bcea4e..d8b650532adcf5f4f7d621636e4e4503a55bc4b7 100644
+index 1d9b23c6e458caddc2c738164e6c079cd85d3ce9..e3b28d3939d90366c0e3910ed09f2437426e5571 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 @@ -50,6 +50,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
@@ -72,7 +72,7 @@ index b11f51762ca289d99eaa49e66e31e58595bcea4e..d8b650532adcf5f4f7d621636e4e4503
      }
  
      @Override
-@@ -209,7 +230,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -248,7 +269,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
                  ItemStack movedItem = origItemStack;
  
                  final int originalItemCount = origItemStack.getCount();
@@ -81,7 +81,7 @@ index b11f51762ca289d99eaa49e66e31e58595bcea4e..d8b650532adcf5f4f7d621636e4e4503
                  origItemStack.setCount(movedItemCount);
  
                  // We only need to fire the event once to give protection plugins a chance to cancel this event
-@@ -246,7 +267,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -285,7 +306,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
      private static boolean hopperPull(final Level level, final Hopper hopper, final Container container, ItemStack origItemStack, final int i) {
          ItemStack movedItem = origItemStack;
          final int originalItemCount = origItemStack.getCount();

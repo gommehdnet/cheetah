@@ -35,10 +35,10 @@ jobs:
       - name: Bundle
         run: ./gradlew createReobfBundlerJar --info
       - name: Rename Artifact
-        run: mv build/libs/cheetah-1.20.1-bundler-1.20.1-R0.1-SNAPSHOT-reobf.jar build/libs/cheetah-1.20.1.jar
+        run: mv build/libs/cheetah-1.20.2-bundler-1.20.2-R0.1-SNAPSHOT-reobf.jar build/libs/cheetah-1.20.2.jar
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: Cheetah-1.20.1
-          path: build/libs/cheetah-1.20.1.jar
+          name: Cheetah-1.20.2
+          path: build/libs/cheetah-1.20.2.jar
           if-no-files-found: error

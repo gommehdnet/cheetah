@@ -5,15 +5,15 @@ Subject: [PATCH] do not suppress protocol errors
 
 
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
-index cf20f0983fc25b26cf92b9d3a28746b1909fc56b..abc783a96047c1e08526f079de1e62138fa42849 100644
+index 91fcb63835b0b725c53bc75be782b5c5bcc870e7..d5895128bb53fa21fd6701a93ef44a9ab7581a5e 100644
 --- a/src/main/java/net/minecraft/network/Connection.java
 +++ b/src/main/java/net/minecraft/network/Connection.java
-@@ -241,7 +241,7 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -209,7 +209,7 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
  
                      if (player != null) player.quitReason = org.bukkit.event.player.PlayerQuitEvent.QuitReason.ERRONEOUS_STATE; // Paper
                      if (flag) {
 -                        Connection.LOGGER.debug("Failed to sent packet", throwable);
 +                        Connection.LOGGER.warn("Failed to send to " + player.getName() + " packet", throwable);
-                         ConnectionProtocol enumprotocol = this.getCurrentProtocol();
-                         Packet<?> packet = enumprotocol == ConnectionProtocol.LOGIN ? new ClientboundLoginDisconnectPacket(ichatmutablecomponent) : new ClientboundDisconnectPacket(ichatmutablecomponent);
- 
+                         if (this.getSending() == PacketFlow.CLIENTBOUND) {
+                             ConnectionProtocol enumprotocol = ((ConnectionProtocol.CodecData) this.channel.attr(Connection.ATTRIBUTE_CLIENTBOUND_PROTOCOL).get()).protocol();
+                             Packet<?> packet = enumprotocol == ConnectionProtocol.LOGIN ? new ClientboundLoginDisconnectPacket(ichatmutablecomponent) : new ClientboundDisconnectPacket(ichatmutablecomponent);
