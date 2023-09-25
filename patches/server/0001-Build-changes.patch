@@ -5,7 +5,7 @@ Subject: [PATCH] Build changes
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index f1ade7432ae6fae1bceb90f975448ab43543942f..57c40652bb0bd54b9e50dd9030c5143cdec65e95 100644
+index 683159586641dd9aa42ae96fa51602469755723f..88f823950c2de3257eb92e8375f766acbb7a2627 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -13,8 +13,12 @@ configurations.named(log4jPlugins.compileClasspathConfigurationName) {
@@ -32,7 +32,7 @@ index f1ade7432ae6fae1bceb90f975448ab43543942f..57c40652bb0bd54b9e50dd9030c5143c
              "Implementation-Vendor" to date, // Paper
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
-@@ -149,7 +153,7 @@ fun TaskContainer.registerRunTask(
+@@ -156,7 +160,7 @@ fun TaskContainer.registerRunTask(
      name: String,
      block: JavaExec.() -> Unit
  ): TaskProvider<JavaExec> = register<JavaExec>(name) {

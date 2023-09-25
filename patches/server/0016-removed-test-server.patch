@@ -5,10 +5,10 @@ Subject: [PATCH] removed test server
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index e30718236920d7988b6b4f412a5ff063437bddce..99df469ba81812812a46e2f3f6efd31894d4dbbe 100644
+index 88f823950c2de3257eb92e8375f766acbb7a2627..74d220acf7491a862265d19f49944a35594d4bd9 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -207,9 +207,3 @@ val runtimeClasspathForRunDev = sourceSets.main.flatMap { src ->
+@@ -214,9 +214,3 @@ val runtimeClasspathForRunDev = sourceSets.main.flatMap { src ->
          elements.filterNot { file -> file.asFile.endsWith("minecraft.jar") }
      }
  }
