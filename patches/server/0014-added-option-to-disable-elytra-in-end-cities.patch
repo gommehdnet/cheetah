@@ -17,15 +17,15 @@ index 97a9ce438afc9094dca4a44cb25b37d5f88dcf43..31e68cbcba8e297cae717309ac1c9e30
  
      public BlockUpdates blockUpdates;
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
-index 8ab3921db122e0bbd60e689d07e99b4847ce9613..616d5ad34087f951c52b904d5d39a8868760482d 100644
+index 2c8b0cfe6da4fc01c4dbab23bf8dcd8070974465..66326778044b6e0094d5a4a758877e6c7c7a1be4 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
-@@ -269,7 +269,7 @@ public class EndCityPieces {
-                         shulker.setPos((double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D);
-                         world.addFreshEntity(shulker);
+@@ -298,7 +298,7 @@ public class EndCityPieces {
+                         entityshulker.setPos((double) pos.getX() + 0.5D, (double) pos.getY(), (double) pos.getZ() + 0.5D);
+                         world.addFreshEntity(entityshulker);
                      }
 -                } else if (metadata.startsWith("Elytra")) {
 +                } else if (metadata.startsWith("Elytra") && io.papermc.paper.configuration.GlobalConfiguration.get().misc.enableElytraInEndCities) {
-                     ItemFrame itemFrame = new ItemFrame(world.getLevel(), pos, this.placeSettings.getRotation().rotate(Direction.SOUTH));
-                     itemFrame.setItem(new ItemStack(Items.ELYTRA), false);
-                     world.addFreshEntity(itemFrame);
+                     ItemFrame entityitemframe = new ItemFrame(world.getLevel(), pos, this.placeSettings.getRotation().rotate(Direction.SOUTH));
+ 
+                     entityitemframe.setItem(new ItemStack(Items.ELYTRA), false);

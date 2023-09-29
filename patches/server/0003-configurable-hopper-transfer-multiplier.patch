@@ -91,16 +91,15 @@ index 1d9b23c6e458caddc2c738164e6c079cd85d3ce9..e3b28d3939d90366c0e3910ed09f2437
          movedItem.setCount(movedItemCount);
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java b/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
-index 15e72d2e15106cd009eb19a839af0b67a48fadfd..af330add515cab837d8abef6dd0162a9ec51f7e3 100644
+index d446f18df647484e2f05ab642b73e914b06fdfed..fc0f488a754f21dfe0464f712e70dcf2e72f7daa 100644
 --- a/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
 +++ b/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
-@@ -25,4 +25,20 @@ public class CraftHopper extends CraftLootable<HopperBlockEntity> implements Hop
- 
-         return new CraftInventory(this.getTileEntity());
+@@ -34,4 +34,19 @@ public class CraftHopper extends CraftLootable<HopperBlockEntity> implements Hop
+     public CraftHopper copy() {
+         return new CraftHopper(this);
      }
 +
 +    // Cheetah start
-+
 +    @Override
 +    public float getTransferMultiplier() {
 +        return this.getTileEntity().getHopperTransferMultiplier();
