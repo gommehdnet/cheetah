@@ -8,7 +8,7 @@ Content-Transfer-Encoding: 8bit
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index b5fe3786b337fb99920aac72b865e6a25bcb9649..3fa0cea7ac6035dbb415a2cd1bcd2fee25059acf 100644
+index 8bca5ba75977c0a61197eb47c94f0456d66b29a4..d04599b50bc3fcde175a3dd9fb026910069fa5cf 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2231,10 +2231,21 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
@@ -35,15 +35,15 @@ index b5fe3786b337fb99920aac72b865e6a25bcb9649..3fa0cea7ac6035dbb415a2cd1bcd2fee
  
      private Optional<LastSeenMessages> tryHandleChat(String message, Instant timestamp, LastSeenMessages.Update acknowledgment) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
-index c429e580ac791d181916aea2776c558d576d5b3a..5b34a7bee7e8efb00610f4e23cbc52f5a4ed3bcd 100644
+index 3453eccf524d58c25f09b7a9772da703b85f4865..72c0dabd385d3e8a51fc6975e6bf98b7fedd6b19 100644
 --- a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
 +++ b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
 @@ -53,7 +53,7 @@ public final class VanillaCommandWrapper extends BukkitCommand {
          Preconditions.checkArgument(alias != null, "Alias cannot be null");
  
          CommandSourceStack icommandlistener = VanillaCommandWrapper.getListener(sender);
--        ParseResults<CommandSourceStack> parsed = this.dispatcher.getDispatcher().parse(this.toDispatcher(args, getName()), icommandlistener);
-+        ParseResults<CommandSourceStack> parsed = this.dispatcher.getDispatcher().parse(this.toDispatcher(args, getName().toLowerCase()), icommandlistener); // Cheetah - added to lower case
+-        ParseResults<CommandSourceStack> parsed = this.dispatcher.getDispatcher().parse(this.toDispatcher(args, this.getName()), icommandlistener);
++        ParseResults<CommandSourceStack> parsed = this.dispatcher.getDispatcher().parse(this.toDispatcher(args, this.getName().toLowerCase()), icommandlistener); // Cheetah - added to lower case
  
          List<String> results = new ArrayList<>();
          this.dispatcher.getDispatcher().getCompletionSuggestions(parsed).thenAccept((suggestions) -> {
