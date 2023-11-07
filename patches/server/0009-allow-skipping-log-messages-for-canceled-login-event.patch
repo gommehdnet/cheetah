@@ -5,7 +5,7 @@ Subject: [PATCH] allow skipping log messages for canceled login events
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-index ff2dd53e9e943aa929188fd9d4c35498b78c497a..1738196aeaa726884dbd4023534909dd832600db 100644
+index 1c4f272219e68373eaae93fc5ea9af7d8f3fd6f9..8ff5091ad394c4981592790035eb1aceb851c3da 100644
 --- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 @@ -64,6 +64,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
@@ -78,10 +78,10 @@ index ff2dd53e9e943aa929188fd9d4c35498b78c497a..1738196aeaa726884dbd4023534909dd
          }
      }
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 3614cbc46da7e5333f24dc4c09502b7c25791c45..b84a715805bec3d72bc94bb0fbe8e57a83cb15be 100644
+index c7206875478a37cf98877220ea6b14bc1ff08eb5..b1b65b2b755dd225317f982bfd66ac2a9308d97f 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -741,7 +741,7 @@ public abstract class PlayerList {
+@@ -762,7 +762,7 @@ public abstract class PlayerList {
  
          this.cserver.getPluginManager().callEvent(event);
          if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
