@@ -5,10 +5,10 @@ Subject: [PATCH] do not break message chain if proxy cancels a chat message
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 3fa0cea7ac6035dbb415a2cd1bcd2fee25059acf..abb8c7d8770df3678b6aead19e94e6d3a74caf38 100644
+index bda185b1bb1a257fe6b366fdf2aaa8a6581a0bfa..8d722381bef7e0c29f0f853ad2451aa7d33c2fcc 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2113,6 +2113,14 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2114,6 +2114,14 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
          if (this.server.isStopped()) {
              return;
          }
@@ -23,7 +23,7 @@ index 3fa0cea7ac6035dbb415a2cd1bcd2fee25059acf..abb8c7d8770df3678b6aead19e94e6d3
          // CraftBukkit end
          if (ServerGamePacketListenerImpl.isChatMessageIllegal(packet.message())) {
              this.server.scheduleOnMain(() -> { // Paper - push to main for event firing
-@@ -2132,6 +2140,12 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2133,6 +2141,12 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
                          return;
                      }
  
@@ -36,7 +36,7 @@ index 3fa0cea7ac6035dbb415a2cd1bcd2fee25059acf..abb8c7d8770df3678b6aead19e94e6d3
                      CompletableFuture<FilteredText> completablefuture = this.filterTextPacket(playerchatmessage.signedContent());
                      CompletableFuture<ChatDecorator.Result> componentFuture = this.server.getChatDecorator().decorate(this.player, null, playerchatmessage.decoratedContent()); // Paper
  
-@@ -2154,9 +2168,24 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2155,9 +2169,24 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
              this.disconnect(Component.translatable("multiplayer.disconnect.illegal_characters"), org.bukkit.event.player.PlayerKickEvent.Cause.ILLEGAL_CHARACTERS); // Paper
              }); // Paper - push to main for event firing
          } else {
