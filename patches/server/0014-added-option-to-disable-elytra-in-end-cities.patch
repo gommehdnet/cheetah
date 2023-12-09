@@ -17,10 +17,10 @@ index a6f58b3457b7477015c5c6d969e7d83017dd3fa1..ab97becccd31c0705459423400ec17e5
  
      public BlockUpdates blockUpdates;
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
-index 2c8b0cfe6da4fc01c4dbab23bf8dcd8070974465..66326778044b6e0094d5a4a758877e6c7c7a1be4 100644
+index d859c1ce8d60920669d9d1afb3b71692375800a8..3682283cf32b9e7ec6adb4b9b1c30fed599eb08f 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
-@@ -298,7 +298,7 @@ public class EndCityPieces {
+@@ -299,7 +299,7 @@ public class EndCityPieces {
                          entityshulker.setPos((double) pos.getX() + 0.5D, (double) pos.getY(), (double) pos.getZ() + 0.5D);
                          world.addFreshEntity(entityshulker);
                      }

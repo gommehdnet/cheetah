@@ -5,10 +5,10 @@ Subject: [PATCH] do not break message chain if proxy cancels a chat message
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index bda185b1bb1a257fe6b366fdf2aaa8a6581a0bfa..8d722381bef7e0c29f0f853ad2451aa7d33c2fcc 100644
+index 90d0142f0f89e462641a0f90dec39f430ed737ea..aa63f314c7d989ad6d860b53f39fe0c97d1dacee 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2114,6 +2114,14 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2141,6 +2141,14 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
          if (this.server.isStopped()) {
              return;
          }
@@ -22,8 +22,8 @@ index bda185b1bb1a257fe6b366fdf2aaa8a6581a0bfa..8d722381bef7e0c29f0f853ad2451aa7
 +        // Cheetah end
          // CraftBukkit end
          if (ServerGamePacketListenerImpl.isChatMessageIllegal(packet.message())) {
-             this.server.scheduleOnMain(() -> { // Paper - push to main for event firing
-@@ -2133,6 +2141,12 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+             this.disconnect(Component.translatable("multiplayer.disconnect.illegal_characters"), org.bukkit.event.player.PlayerKickEvent.Cause.ILLEGAL_CHARACTERS); // Paper - add cause
+@@ -2158,6 +2166,12 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
                          return;
                      }
  
@@ -33,12 +33,12 @@ index bda185b1bb1a257fe6b366fdf2aaa8a6581a0bfa..8d722381bef7e0c29f0f853ad2451aa7
 +                        return;
 +                    }
 +                    // Cheetah end
-                     CompletableFuture<FilteredText> completablefuture = this.filterTextPacket(playerchatmessage.signedContent());
+                     CompletableFuture<FilteredText> completablefuture = this.filterTextPacket(playerchatmessage.signedContent()).thenApplyAsync(Function.identity(), this.server.chatExecutor); // CraftBukkit - async chat
                      CompletableFuture<ChatDecorator.Result> componentFuture = this.server.getChatDecorator().decorate(this.player, null, playerchatmessage.decoratedContent()); // Paper
  
-@@ -2155,9 +2169,24 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2177,9 +2191,24 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+         if (ServerGamePacketListenerImpl.isChatMessageIllegal(packet.command())) {
              this.disconnect(Component.translatable("multiplayer.disconnect.illegal_characters"), org.bukkit.event.player.PlayerKickEvent.Cause.ILLEGAL_CHARACTERS); // Paper
-             }); // Paper - push to main for event firing
          } else {
 +            // Cheetah start
 +            boolean cancelled = packet.lastSeenMessages().offset() < 0; // Same behavior as for ServerboundChatPacket
@@ -49,7 +49,7 @@ index bda185b1bb1a257fe6b366fdf2aaa8a6581a0bfa..8d722381bef7e0c29f0f853ad2451aa7
 +                packet1 = packet;
 +            }
 +            // Cheetah end
-             Optional<LastSeenMessages> optional = this.tryHandleChat(packet.command(), packet.timeStamp(), packet.lastSeenMessages());
+             Optional<LastSeenMessages> optional = this.tryHandleChat(packet.lastSeenMessages());
  
              if (optional.isPresent()) {
 +                // Cheetah start

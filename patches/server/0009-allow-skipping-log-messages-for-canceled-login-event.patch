@@ -5,10 +5,10 @@ Subject: [PATCH] allow skipping log messages for canceled login events
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-index 1c4f272219e68373eaae93fc5ea9af7d8f3fd6f9..8ff5091ad394c4981592790035eb1aceb851c3da 100644
+index 89b3184be952fd0803520dd0f717f3acfc3cb496..6e896d5ec133c7411cdb7be75ec101f754e84e1d 100644
 --- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-@@ -64,6 +64,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -65,6 +65,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
      private ServerPlayer player; // CraftBukkit
      public boolean iKnowThisMayNotBeTheBestIdeaButPleaseDisableUsernameValidation = false; // Paper - username validation overriding
      private int velocityLoginMessageId = -1; // Paper - Velocity support
@@ -16,7 +16,7 @@ index 1c4f272219e68373eaae93fc5ea9af7d8f3fd6f9..8ff5091ad394c4981592790035eb1ace
  
      public ServerLoginPacketListenerImpl(MinecraftServer server, Connection connection) {
          this.state = ServerLoginPacketListenerImpl.State.HELLO;
-@@ -110,8 +111,13 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -111,8 +112,13 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
      }
  
      public void disconnect(Component reason) {
@@ -31,7 +31,7 @@ index 1c4f272219e68373eaae93fc5ea9af7d8f3fd6f9..8ff5091ad394c4981592790035eb1ace
              this.connection.send(new ClientboundLoginDisconnectPacket(reason));
              this.connection.disconnect(reason);
          } catch (Exception exception) {
-@@ -126,7 +132,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -127,7 +133,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
  
      @Override
      public void onDisconnect(Component reason) {
@@ -40,7 +40,7 @@ index 1c4f272219e68373eaae93fc5ea9af7d8f3fd6f9..8ff5091ad394c4981592790035eb1ace
      }
  
      public String getUserName() {
-@@ -352,12 +358,14 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -319,12 +325,14 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
                          playerName = gameprofile.getName();
                          uniqueId = gameprofile.getId();
                          // Paper end
@@ -55,7 +55,7 @@ index 1c4f272219e68373eaae93fc5ea9af7d8f3fd6f9..8ff5091ad394c4981592790035eb1ace
                              Waitable<PlayerPreLoginEvent.Result> waitable = new Waitable<PlayerPreLoginEvent.Result>() {
                                  @Override
                                  protected PlayerPreLoginEvent.Result evaluate() {
-@@ -367,17 +375,18 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -334,17 +342,18 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
  
                              ServerLoginPacketListenerImpl.this.server.processQueue.add(waitable);
                              if (waitable.get() != PlayerPreLoginEvent.Result.ALLOWED) {
@@ -78,10 +78,10 @@ index 1c4f272219e68373eaae93fc5ea9af7d8f3fd6f9..8ff5091ad394c4981592790035eb1ace
          }
      }
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index c7206875478a37cf98877220ea6b14bc1ff08eb5..b1b65b2b755dd225317f982bfd66ac2a9308d97f 100644
+index be6e2b07ad2bd66ac06be09ae3273b6ccb281423..a9f39866961843581040bde4cc695ad3c4dd8fa0 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -762,7 +762,7 @@ public abstract class PlayerList {
+@@ -760,7 +760,7 @@ public abstract class PlayerList {
  
          this.cserver.getPluginManager().callEvent(event);
          if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {

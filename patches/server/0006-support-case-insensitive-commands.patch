@@ -8,10 +8,10 @@ Content-Transfer-Encoding: 8bit
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 65bb221993147a558995b36fb835f7b82e0eb4bd..bda185b1bb1a257fe6b366fdf2aaa8a6581a0bfa 100644
+index 9073db9ad3627633f46314ae936d584fa400a9ce..90d0142f0f89e462641a0f90dec39f430ed737ea 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2232,10 +2232,21 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2255,10 +2255,21 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
          return map;
      }
  
@@ -33,7 +33,7 @@ index 65bb221993147a558995b36fb835f7b82e0eb4bd..bda185b1bb1a257fe6b366fdf2aaa8a6
 +        return com_mojang_brigadier_commanddispatcher.parse(commandToLower(command), this.player.createCommandSourceStack()); // Cheetah - added commandToLower()
      }
  
-     private Optional<LastSeenMessages> tryHandleChat(String message, Instant timestamp, LastSeenMessages.Update acknowledgment) {
+     private Optional<LastSeenMessages> tryHandleChat(LastSeenMessages.Update acknowledgment) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
 index 3453eccf524d58c25f09b7a9772da703b85f4865..72c0dabd385d3e8a51fc6975e6bf98b7fedd6b19 100644
 --- a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
