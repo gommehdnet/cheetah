@@ -1,0 +1,55 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jendrik Eggers <jendrikeggerskapp@web.de>
+Date: Mon, 11 Dec 2023 12:15:30 +0100
+Subject: [PATCH] fix some scoreboard issues
+
+
+diff --git a/src/main/java/org/bukkit/craftbukkit/scoreboard/CraftScore.java b/src/main/java/org/bukkit/craftbukkit/scoreboard/CraftScore.java
+index be020d6b686c1ad5bd8b7cee0b6050304d434022..77c109e3e8ca9210f232d525338dccc41f59cbde 100644
+--- a/src/main/java/org/bukkit/craftbukkit/scoreboard/CraftScore.java
++++ b/src/main/java/org/bukkit/craftbukkit/scoreboard/CraftScore.java
+@@ -42,7 +42,7 @@ final class CraftScore implements Score {
+     public int getScore() {
+         Scoreboard board = this.objective.checkState().board;
+ 
+-        if (board.getTrackedPlayers().contains(this.entry)) { // Lazy
++        if (containsTrackedPlayers(this.entry)) { // Lazy
+             ReadOnlyScoreInfo score = board.getPlayerScoreInfo(this.entry, this.objective.getHandle());
+             if (score != null) { // Lazy
+                 return score.value();
+@@ -61,7 +61,7 @@ final class CraftScore implements Score {
+     public boolean isScoreSet() {
+         Scoreboard board = this.objective.checkState().board;
+ 
+-        return board.getTrackedPlayers().contains(this.entry) && board.getPlayerScoreInfo(this.entry, this.objective.getHandle()) != null;
++        return containsTrackedPlayers(this.entry) && board.getPlayerScoreInfo(this.entry, this.objective.getHandle()) != null;
+     }
+ 
+     @Override
+@@ -76,4 +76,11 @@ final class CraftScore implements Score {
+         board.resetSinglePlayerScore(entry, this.objective.getHandle());
+     }
+     // Paper end
++
++    // Cheetah start
++    private boolean containsTrackedPlayers(final ScoreHolder scoreHolder) {
++        final Scoreboard board = this.objective.checkState().board;
++        return board.getTrackedPlayers().stream().anyMatch(filterScoreHolder -> filterScoreHolder.getScoreboardName().equals(scoreHolder.getScoreboardName()));
++    }
++    // Cheetah end
+ }
+diff --git a/src/main/java/org/bukkit/craftbukkit/scoreboard/CraftScoreboard.java b/src/main/java/org/bukkit/craftbukkit/scoreboard/CraftScoreboard.java
+index 81889e30a634ac84d996f688d0a2466e9efa19ca..475c56eda326dc8bba582f9653362fd15ee68112 100644
+--- a/src/main/java/org/bukkit/craftbukkit/scoreboard/CraftScoreboard.java
++++ b/src/main/java/org/bukkit/craftbukkit/scoreboard/CraftScoreboard.java
+@@ -223,8 +223,8 @@ public final class CraftScoreboard implements org.bukkit.scoreboard.Scoreboard {
+     @Override
+     public ImmutableSet<String> getEntries() {
+         ImmutableSet.Builder<String> entries = ImmutableSet.builder();
+-        for (Object entry : this.board.getTrackedPlayers()) {
+-            entries.add(entry.toString());
++        for (ScoreHolder entry : this.board.getTrackedPlayers()) {
++            entries.add(entry.getScoreboardName());
+         }
+         return entries.build();
+     }
