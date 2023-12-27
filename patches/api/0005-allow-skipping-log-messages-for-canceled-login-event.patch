@@ -33,18 +33,18 @@ index fc2d9e85b65347b90bde3b0b13ccae759e33d466..56dd974bbfd400f5e2df743e32738aff
      @Override
      public HandlerList getHandlers() {
 diff --git a/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java b/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
-index 62fb782baad5c80a3daaa557c0faa674c58a98cf..115e9e963bed606162b8a272f7ae28e5c0673aeb 100644
+index eaa0548cf430bf5b58ff84e0a4403c451699db28..953d6fdfd232fc3c9176c4f19601134b0241edf4 100644
 --- a/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
 @@ -19,6 +19,7 @@ public class PlayerLoginEvent extends PlayerEvent {
+     private final String hostname;
      private Result result = Result.ALLOWED;
      private net.kyori.adventure.text.Component message = net.kyori.adventure.text.Component.empty();
-     private final InetAddress realAddress; // Spigot
 +    private boolean skipLog;
  
      /**
       * This constructor defaults message to an empty string, and result to
-@@ -166,6 +167,14 @@ public class PlayerLoginEvent extends PlayerEvent {
+@@ -161,6 +162,14 @@ public class PlayerLoginEvent extends PlayerEvent {
          return hostname;
      }
  
