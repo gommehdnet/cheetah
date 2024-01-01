@@ -5,10 +5,10 @@ Subject: [PATCH] do not break message chain if proxy cancels a chat message
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 90d0142f0f89e462641a0f90dec39f430ed737ea..aa63f314c7d989ad6d860b53f39fe0c97d1dacee 100644
+index 35f977dc301e8801398350ecec7675d822f0b962..8f48bd2eed1315ba52a91421a872ed6517c05ad4 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2141,6 +2141,14 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2145,6 +2145,14 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
          if (this.server.isStopped()) {
              return;
          }
@@ -23,7 +23,7 @@ index 90d0142f0f89e462641a0f90dec39f430ed737ea..aa63f314c7d989ad6d860b53f39fe0c9
          // CraftBukkit end
          if (ServerGamePacketListenerImpl.isChatMessageIllegal(packet.message())) {
              this.disconnect(Component.translatable("multiplayer.disconnect.illegal_characters"), org.bukkit.event.player.PlayerKickEvent.Cause.ILLEGAL_CHARACTERS); // Paper - add cause
-@@ -2158,6 +2166,12 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2162,6 +2170,12 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
                          return;
                      }
  
@@ -36,7 +36,7 @@ index 90d0142f0f89e462641a0f90dec39f430ed737ea..aa63f314c7d989ad6d860b53f39fe0c9
                      CompletableFuture<FilteredText> completablefuture = this.filterTextPacket(playerchatmessage.signedContent()).thenApplyAsync(Function.identity(), this.server.chatExecutor); // CraftBukkit - async chat
                      CompletableFuture<ChatDecorator.Result> componentFuture = this.server.getChatDecorator().decorate(this.player, null, playerchatmessage.decoratedContent()); // Paper
  
-@@ -2177,9 +2191,24 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2181,9 +2195,24 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
          if (ServerGamePacketListenerImpl.isChatMessageIllegal(packet.command())) {
              this.disconnect(Component.translatable("multiplayer.disconnect.illegal_characters"), org.bukkit.event.player.PlayerKickEvent.Cause.ILLEGAL_CHARACTERS); // Paper
          } else {

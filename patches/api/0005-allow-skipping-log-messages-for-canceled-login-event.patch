@@ -5,10 +5,10 @@ Subject: [PATCH] allow skipping log messages for canceled login events
 
 
 diff --git a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
-index fc2d9e85b65347b90bde3b0b13ccae759e33d466..56dd974bbfd400f5e2df743e32738aff73131b2f 100644
+index a74c88ef229b0e4d359978fd79b23b56141e7146..9037df22bda1b8eea7803bde35133f0a95914d82 100644
 --- a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
-@@ -23,6 +23,7 @@ public class AsyncPlayerPreLoginEvent extends Event {
+@@ -30,6 +30,7 @@ public class AsyncPlayerPreLoginEvent extends Event {
      private final InetAddress rawAddress; // Paper
      //private UUID uniqueId; // Paper - Not used anymore
      private final String hostname; // Paper
@@ -16,7 +16,7 @@ index fc2d9e85b65347b90bde3b0b13ccae759e33d466..56dd974bbfd400f5e2df743e32738aff
  
      @Deprecated
      public AsyncPlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress) {
-@@ -284,6 +285,15 @@ public class AsyncPlayerPreLoginEvent extends Event {
+@@ -291,6 +292,15 @@ public class AsyncPlayerPreLoginEvent extends Event {
      }
      // Paper end
  
@@ -60,10 +60,10 @@ index eaa0548cf430bf5b58ff84e0a4403c451699db28..953d6fdfd232fc3c9176c4f19601134b
       * Allows the player to log in
       */
 diff --git a/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java b/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
-index 6800132c6288b4588fd02b08d26f016c38f27129..23cd3fc37ae2a08f43eb0fbd8618268fb43bd179 100644
+index 175ed12dd1698f4d153c9acdac8340c15a427ea5..b9983f610ab86d27bc72ee90cc6747ea891f5d19 100644
 --- a/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
-@@ -23,6 +23,7 @@ public class PlayerPreLoginEvent extends Event {
+@@ -30,6 +30,7 @@ public class PlayerPreLoginEvent extends Event {
      private final String name;
      private final InetAddress ipAddress;
      private final UUID uniqueId;
@@ -71,7 +71,7 @@ index 6800132c6288b4588fd02b08d26f016c38f27129..23cd3fc37ae2a08f43eb0fbd8618268f
  
      @Deprecated
      public PlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress) {
-@@ -169,6 +170,14 @@ public class PlayerPreLoginEvent extends Event {
+@@ -176,6 +177,14 @@ public class PlayerPreLoginEvent extends Event {
          return uniqueId;
      }
  
