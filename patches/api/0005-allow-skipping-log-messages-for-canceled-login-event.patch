@@ -5,18 +5,18 @@ Subject: [PATCH] allow skipping log messages for canceled login events
 
 
 diff --git a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
-index a74c88ef229b0e4d359978fd79b23b56141e7146..9037df22bda1b8eea7803bde35133f0a95914d82 100644
+index bdb7d2345e7d3a48a2f0561832ce126a16781e89..281339e833d2829f1a3a05e774d0274c42f3d974 100644
 --- a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
-@@ -30,6 +30,7 @@ public class AsyncPlayerPreLoginEvent extends Event {
+@@ -28,6 +28,7 @@ public class AsyncPlayerPreLoginEvent extends Event {
+     private PlayerProfile profile; // Paper
      private final InetAddress rawAddress; // Paper
-     //private UUID uniqueId; // Paper - Not used anymore
      private final String hostname; // Paper
 +    private boolean skipLog;
  
      @Deprecated
      public AsyncPlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress) {
-@@ -291,6 +292,15 @@ public class AsyncPlayerPreLoginEvent extends Event {
+@@ -282,6 +283,15 @@ public class AsyncPlayerPreLoginEvent extends Event {
      }
      // Paper end
  

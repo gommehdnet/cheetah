@@ -48,5 +48,6 @@ run/
 
 cheetah-server
 cheetah-api
+paper-api-generator
 
 !gradle/wrapper/gradle-wrapper.jar
