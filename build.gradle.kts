@@ -15,7 +15,7 @@ repositories {
     maven {
         name = "gommeRepo"
         url = uri("https://repo.gomme.dev/repository/public/")
-        credentials(PasswordCredentials::class)
+        // credentials(PasswordCredentials::class)
     }
 }
 
