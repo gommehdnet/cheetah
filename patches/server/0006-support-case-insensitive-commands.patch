@@ -8,10 +8,10 @@ Content-Transfer-Encoding: 8bit
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 64255f7db85886421d5029766e8a6d1eadb94cff..35f977dc301e8801398350ecec7675d822f0b962 100644
+index 87e5ee042ab2c052d25ab4c2521a68cf2e2d67b6..6067621d1287a649dab5b91849c24e3e80dec060 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2259,10 +2259,21 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2255,10 +2255,21 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
          return map;
      }
  
@@ -35,7 +35,7 @@ index 64255f7db85886421d5029766e8a6d1eadb94cff..35f977dc301e8801398350ecec7675d8
  
      private Optional<LastSeenMessages> tryHandleChat(LastSeenMessages.Update acknowledgment) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
-index 11d7471faf35339b290b5b90c7db595e4813deb7..8c714f6e273d0f9f78d3972fbefd0f9181805850 100644
+index 61115db85b81e627d11a0de21691a2ca69aafe2c..042e2de5550de8a1cdd01ae32bf750f557e9c2e3 100644
 --- a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
 +++ b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
 @@ -51,7 +51,7 @@ public final class VanillaCommandWrapper extends BukkitCommand {

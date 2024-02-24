@@ -5,10 +5,10 @@ Subject: [PATCH] respect treasure map option for dolphins
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/animal/Dolphin.java b/src/main/java/net/minecraft/world/entity/animal/Dolphin.java
-index e555fd8ca61e1ce7a52ecd475cc3ea11dedcab08..293bb045c2b6a5a4df0200037f4192f5f5f0b286 100644
+index 45646c69ea73936a8916756fde37dd3f39db0d04..d36c32d8dc72f0b2a62ea226916b480a101999f4 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/Dolphin.java
 +++ b/src/main/java/net/minecraft/world/entity/animal/Dolphin.java
-@@ -159,7 +159,7 @@ public class Dolphin extends WaterAnimal {
+@@ -160,7 +160,7 @@ public class Dolphin extends WaterAnimal {
      protected void registerGoals() {
          this.goalSelector.addGoal(0, new BreathAirGoal(this));
          this.goalSelector.addGoal(0, new TryFindWaterGoal(this));

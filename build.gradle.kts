@@ -12,8 +12,11 @@ repositories {
     maven(paperMavenPublicUrl) {
         content { onlyForConfigurations(configurations.paperclip.name) }
     }
-    maven("https://repo.gomme.dev/repository/snapshots/")
-    maven("https://repo.gomme.dev/repository/releases/")
+    maven {
+        name = "gommeRepo"
+        url = uri("https://repo.gomme.dev/repository/public/")
+        credentials(PasswordCredentials::class)
+    }
 }
 
 dependencies {
@@ -97,7 +100,7 @@ allprojects {
     publishing {
         repositories {
             maven {
-                name = "myRepoSnapshots"
+                name = "gommeRepo"
                 url = uri("https://repo.gomme.dev/repository/snapshots/")
                 // See Gradle docs for how to provide credentials to PasswordCredentials
                 // https://docs.gradle.org/current/samples/sample_publishing_credentials.html
