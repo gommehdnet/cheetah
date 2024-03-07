@@ -5,6 +5,6 @@ pluginManagement {
     }
 }
 
-rootProject.name = "cheetah-1.20.1"
+rootProject.name = "cheetah-1.20.4"
 
 include("cheetah-api", "cheetah-server")

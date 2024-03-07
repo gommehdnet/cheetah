@@ -5,13 +5,13 @@ Subject: [PATCH] hide IP address is log files
 
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index f097ec5b4e3ad6b1a7c464a8cff4f8b2568fcf4f..600115595ac42748a0e31e5be7a4213d0c4c0fc6 100644
+index 1e5f709115007ff19901c0a6c3cf884d9e4d3a6c..ad09fb3b528455acbea70f859ddca8d4f5d9d6a7 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -485,7 +485,7 @@ public abstract class PlayerList {
+@@ -487,7 +487,7 @@ public abstract class PlayerList {
+             scoreboard.addPlayerToTeam(player.getScoreboardName(), collideRuleTeam);
          }
-         // Paper end
-         // CraftBukkit - Moved from above, added world
+         // Paper end - Configurable player collision
 -        PlayerList.LOGGER.info("{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", player.getName().getString(), s1, player.getId(), worldserver1.serverLevelData.getLevelName(), player.getX(), player.getY(), player.getZ());
 +        PlayerList.LOGGER.info("{} logged in with entity id {} at ([{}]{}, {}, {})", player.getName().getString(), player.getId(), worldserver1.serverLevelData.getLevelName(), player.getX(), player.getY(), player.getZ()); // Cheetah - removed ip address
      }

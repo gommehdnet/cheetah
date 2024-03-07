@@ -5,18 +5,18 @@ Subject: [PATCH] allow skipping log messages for canceled login events
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-index 2ff578e4a953ffcf5176815ba8e3f06f73499989..02750806aacdc08abb36811b99fd30a93a4427c0 100644
+index c5fa9f4d28f9a7f64a50a902ee5e631bfc00119c..fd5e62637982c7d470a1c2e9a74ab7303628968f 100644
 --- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-@@ -62,6 +62,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
-     private ServerPlayer delayedAcceptPlayer;
+@@ -65,6 +65,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+     private ServerPlayer player; // CraftBukkit
      public boolean iKnowThisMayNotBeTheBestIdeaButPleaseDisableUsernameValidation = false; // Paper - username validation overriding
-     private int velocityLoginMessageId = -1; // Paper - Velocity support
+     private int velocityLoginMessageId = -1; // Paper - Add Velocity IP Forwarding Support
 +    private boolean disconnectLogged = false; // Cheetah
  
      public ServerLoginPacketListenerImpl(MinecraftServer server, Connection connection) {
          this.state = ServerLoginPacketListenerImpl.State.HELLO;
-@@ -114,8 +115,13 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -111,8 +112,13 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
      }
  
      public void disconnect(Component reason) {
@@ -31,7 +31,7 @@ index 2ff578e4a953ffcf5176815ba8e3f06f73499989..02750806aacdc08abb36811b99fd30a9
              this.connection.send(new ClientboundLoginDisconnectPacket(reason));
              this.connection.disconnect(reason);
          } catch (Exception exception) {
-@@ -204,7 +210,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -127,7 +133,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
  
      @Override
      public void onDisconnect(Component reason) {
@@ -40,53 +40,46 @@ index 2ff578e4a953ffcf5176815ba8e3f06f73499989..02750806aacdc08abb36811b99fd30a9
      }
  
      public String getUserName() {
-@@ -396,12 +402,14 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
-                         playerName = gameProfile.getName();
-                         uniqueId = gameProfile.getId();
-                         // Paper end
-+                         boolean skipLog = asyncEvent.isSkipLog(); // Cheetah
+@@ -324,12 +330,14 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+         playerName = gameprofile.getName();
+         uniqueId = gameprofile.getId();
+         // Paper end - Add more fields to AsyncPlayerPreLoginEvent
++        boolean skipLog = asyncEvent.isSkipLog(); // Cheetah
  
-                         if (PlayerPreLoginEvent.getHandlerList().getRegisteredListeners().length != 0) {
-                             final PlayerPreLoginEvent event = new PlayerPreLoginEvent(playerName, address, uniqueId);
-                             if (asyncEvent.getResult() != PlayerPreLoginEvent.Result.ALLOWED) {
-                                 event.disallow(asyncEvent.getResult(), asyncEvent.kickMessage()); // Paper - Adventure
-                             }
-+                            event.setSkipLog(skipLog);
-                             Waitable<PlayerPreLoginEvent.Result> waitable = new Waitable<PlayerPreLoginEvent.Result>() {
-                                 @Override
-                                 protected PlayerPreLoginEvent.Result evaluate() {
-@@ -411,17 +419,18 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+         if (PlayerPreLoginEvent.getHandlerList().getRegisteredListeners().length != 0) {
+             final PlayerPreLoginEvent event = new PlayerPreLoginEvent(playerName, address, uniqueId);
+             if (asyncEvent.getResult() != PlayerPreLoginEvent.Result.ALLOWED) {
+                 event.disallow(asyncEvent.getResult(), asyncEvent.kickMessage()); // Paper - Adventure
+             }
++            event.setSkipLog(skipLog);
+             Waitable<PlayerPreLoginEvent.Result> waitable = new Waitable<PlayerPreLoginEvent.Result>() {
+                 @Override
+                 protected PlayerPreLoginEvent.Result evaluate() {
+@@ -340,11 +348,12 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
  
-                             ServerLoginPacketListenerImpl.this.server.processQueue.add(waitable);
-                             if (waitable.get() != PlayerPreLoginEvent.Result.ALLOWED) {
--                                ServerLoginPacketListenerImpl.this.disconnect(io.papermc.paper.adventure.PaperAdventure.asVanilla(event.kickMessage())); // Paper - Adventure
-+                                skipLog = event.isSkipLog();
-+                                ServerLoginPacketListenerImpl.this.disconnect(io.papermc.paper.adventure.PaperAdventure.asVanilla(event.kickMessage()), skipLog); // Paper - Adventure
-                                 return;
-                             }
-                         } else {
-                             if (asyncEvent.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
--                                ServerLoginPacketListenerImpl.this.disconnect(io.papermc.paper.adventure.PaperAdventure.asVanilla(asyncEvent.kickMessage())); // Paper - Adventure
-+                                ServerLoginPacketListenerImpl.this.disconnect(io.papermc.paper.adventure.PaperAdventure.asVanilla(asyncEvent.kickMessage()), skipLog); // Paper - Adventure
-                                 return;
-                             }
-                         }
-                         // CraftBukkit end
--                        ServerLoginPacketListenerImpl.LOGGER.info("UUID of player {} is {}", ServerLoginPacketListenerImpl.this.gameProfile.getName(), ServerLoginPacketListenerImpl.this.gameProfile.getId());
-+                        if (!skipLog) ServerLoginPacketListenerImpl.LOGGER.info("UUID of player {} is {}", ServerLoginPacketListenerImpl.this.gameProfile.getName(), ServerLoginPacketListenerImpl.this.gameProfile.getId()); // Cheetah
-                         ServerLoginPacketListenerImpl.this.state = ServerLoginPacketListenerImpl.State.READY_TO_ACCEPT;
+             ServerLoginPacketListenerImpl.this.server.processQueue.add(waitable);
+             if (waitable.get() != PlayerPreLoginEvent.Result.ALLOWED) {
+-                this.disconnect(io.papermc.paper.adventure.PaperAdventure.asVanilla(event.kickMessage())); // Paper - Adventure
++                skipLog = event.isSkipLog();
++                this.disconnect(io.papermc.paper.adventure.PaperAdventure.asVanilla(event.kickMessage()), skipLog); // Paper - Adventure
+             }
+         } else {
+             if (asyncEvent.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
+-                this.disconnect(io.papermc.paper.adventure.PaperAdventure.asVanilla(asyncEvent.kickMessage())); // Paper - Adventure
++                this.disconnect(io.papermc.paper.adventure.PaperAdventure.asVanilla(asyncEvent.kickMessage()), skipLog); // Paper - Adventure
+             }
          }
-     }
+         return gameprofile; // Paper - Add more fields to AsyncPlayerPreLoginEvent
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 600115595ac42748a0e31e5be7a4213d0c4c0fc6..3bfda0b2dc8c5910a17e516770296a9483711976 100644
+index ad09fb3b528455acbea70f859ddca8d4f5d9d6a7..644560509218cdd9485a29a3f465cfa5affb0936 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -754,7 +754,7 @@ public abstract class PlayerList {
+@@ -760,7 +760,7 @@ public abstract class PlayerList {
  
          this.cserver.getPluginManager().callEvent(event);
          if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
--            loginlistener.disconnect(PaperAdventure.asVanilla(event.kickMessage())); // Paper - Adventure
-+            loginlistener.disconnect(PaperAdventure.asVanilla(event.kickMessage()), event.isSkipLog()); // Paper - Adventure
+-            loginlistener.disconnect(io.papermc.paper.adventure.PaperAdventure.asVanilla(event.kickMessage())); // Paper - Adventure
++            loginlistener.disconnect(io.papermc.paper.adventure.PaperAdventure.asVanilla(event.kickMessage()), event.isSkipLog()); // Paper - Adventure
              return null;
          }
          return entity;

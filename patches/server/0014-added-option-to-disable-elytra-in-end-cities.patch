@@ -5,10 +5,10 @@ Subject: [PATCH] added option to disable elytra in end cities
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 3bc7230ca62ebe3426da293e436a962bb0134f85..0f47692f92a4b3e872faae1e31cfc30845739000 100644
+index b53b6cc4463675096b061b3b65f14a4695c742e2..8d32d1d5e085311560da720ab820805ae7c4f1bf 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -318,6 +318,7 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -333,6 +333,7 @@ public class GlobalConfiguration extends ConfigurationPart {
          public boolean useDimensionTypeForCustomSpawners = false;
          public boolean strictAdvancementDimensionCheck = false;
          public IntOr.Default compressionLevel = IntOr.Default.USE_DEFAULT;
@@ -17,15 +17,15 @@ index 3bc7230ca62ebe3426da293e436a962bb0134f85..0f47692f92a4b3e872faae1e31cfc308
  
      public BlockUpdates blockUpdates;
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
-index 8ab3921db122e0bbd60e689d07e99b4847ce9613..616d5ad34087f951c52b904d5d39a8868760482d 100644
+index d859c1ce8d60920669d9d1afb3b71692375800a8..3682283cf32b9e7ec6adb4b9b1c30fed599eb08f 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
-@@ -269,7 +269,7 @@ public class EndCityPieces {
-                         shulker.setPos((double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D);
-                         world.addFreshEntity(shulker);
+@@ -299,7 +299,7 @@ public class EndCityPieces {
+                         entityshulker.setPos((double) pos.getX() + 0.5D, (double) pos.getY(), (double) pos.getZ() + 0.5D);
+                         world.addFreshEntity(entityshulker);
                      }
 -                } else if (metadata.startsWith("Elytra")) {
 +                } else if (metadata.startsWith("Elytra") && io.papermc.paper.configuration.GlobalConfiguration.get().misc.enableElytraInEndCities) {
-                     ItemFrame itemFrame = new ItemFrame(world.getLevel(), pos, this.placeSettings.getRotation().rotate(Direction.SOUTH));
-                     itemFrame.setItem(new ItemStack(Items.ELYTRA), false);
-                     world.addFreshEntity(itemFrame);
+                     ItemFrame entityitemframe = new ItemFrame(world.getLevel(), pos, this.placeSettings.getRotation().rotate(Direction.SOUTH));
+ 
+                     entityitemframe.setItem(new ItemStack(Items.ELYTRA), false);

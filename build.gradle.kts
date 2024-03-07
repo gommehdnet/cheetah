@@ -2,7 +2,7 @@ plugins {
     java
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
-    id("io.papermc.paperweight.patcher") version "1.5.5"
+    id("io.papermc.paperweight.patcher") version "1.5.11"
 }
 
 val paperMavenPublicUrl = "https://papermc.io/repo/repository/maven-public/"
@@ -12,12 +12,15 @@ repositories {
     maven(paperMavenPublicUrl) {
         content { onlyForConfigurations(configurations.paperclip.name) }
     }
-    maven("https://repo.gomme.dev/repository/snapshots/")
-    maven("https://repo.gomme.dev/repository/releases/")
+    maven {
+        name = "gommeRepo"
+        url = uri("https://repo.gomme.dev/repository/public/")
+        // credentials(PasswordCredentials::class)
+    }
 }
 
 dependencies {
-    remapper("net.fabricmc:tiny-remapper:0.8.6:fat")
+    remapper("net.fabricmc:tiny-remapper:0.10.1:fat")
     decompiler("net.minecraftforge:forgeflower:2.0.627.2")
     paperclip("io.papermc:paperclip:3.0.3")
 }
@@ -28,7 +31,7 @@ allprojects {
 
     java {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
+            languageVersion = JavaLanguageVersion.of(17)
         }
     }
 }
@@ -36,7 +39,7 @@ allprojects {
 subprojects {
     tasks.withType<JavaCompile> {
         options.encoding = Charsets.UTF_8.name()
-        options.release.set(17)
+        options.release = 17
     }
     tasks.withType<Javadoc> {
         options.encoding = Charsets.UTF_8.name()
@@ -52,18 +55,25 @@ subprojects {
 }
 
 paperweight {
-    serverProject.set(project(":cheetah-server"))
+    serverProject = project(":cheetah-server")
 
-    remapRepo.set(paperMavenPublicUrl)
-    decompileRepo.set(paperMavenPublicUrl)
+    remapRepo = paperMavenPublicUrl
+    decompileRepo = paperMavenPublicUrl
 
     usePaperUpstream(providers.gradleProperty("paperRef")) {
         withPaperPatcher {
-            apiPatchDir.set(layout.projectDirectory.dir("patches/api"))
-            apiOutputDir.set(layout.projectDirectory.dir("cheetah-api"))
+            apiPatchDir = layout.projectDirectory.dir("patches/api")
+            apiOutputDir = layout.projectDirectory.dir("cheetah-api")
 
-            serverPatchDir.set(layout.projectDirectory.dir("patches/server"))
-            serverOutputDir.set(layout.projectDirectory.dir("cheetah-server"))
+            serverPatchDir = layout.projectDirectory.dir("patches/server")
+            serverOutputDir = layout.projectDirectory.dir("cheetah-server")
+        }
+
+        patchTasks.register("generatedApi") {
+            isBareDirectory = true
+            upstreamDirPath = "paper-api-generator/generated"
+            patchDir = layout.projectDirectory.dir("patches/generated-api")
+            outputDir = layout.projectDirectory.dir("paper-api-generator/generated")
         }
     }
 }
@@ -73,8 +83,8 @@ paperweight {
 //
 
 tasks.generateDevelopmentBundle {
-    apiCoordinates.set("net.gommehd.cheetah:cheetah-api")
-    mojangApiCoordinates.set("io.papermc.paper:paper-mojangapi")
+    apiCoordinates = "net.gommehd.cheetah:cheetah-api"
+    mojangApiCoordinates = "io.papermc.paper:paper-mojangapi"
     libraryRepositories.set(
             listOf(
                     "https://repo.maven.apache.org/maven2/",
@@ -90,7 +100,7 @@ allprojects {
     publishing {
         repositories {
             maven {
-                name = "myRepoSnapshots"
+                name = "gommeRepo"
                 url = uri("https://repo.gomme.dev/repository/snapshots/")
                 // See Gradle docs for how to provide credentials to PasswordCredentials
                 // https://docs.gradle.org/current/samples/sample_publishing_credentials.html

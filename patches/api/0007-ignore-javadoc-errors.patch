@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jendrik Eggers <jendrikeggerskapp@web.de>
+Date: Sat, 9 Dec 2023 03:37:57 +0100
+Subject: [PATCH] ignore javadoc errors
+
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index 9d817bf3f26ffd484945a00a6538970eca22ee20..d17adac57527d31830bb584a533b71c6c2aaa7e0 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -121,6 +121,7 @@ tasks.jar {
+ }
+ 
+ tasks.withType<Javadoc> {
++    (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet") // Cheetah - ignore javadoc errors
+     val options = options as StandardJavadocDocletOptions
+     options.overview = "src/main/javadoc/overview.html"
+     options.use()
