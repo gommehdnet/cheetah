@@ -68,7 +68,7 @@ index c490a29bcf7410bc54959ee71375605964379ed5..476f34bcf936a6c32af062fe1c0a5076
      private final String bukkitVersion = Versioning.getBukkitVersion();
      private final Logger logger = Logger.getLogger("Minecraft");
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-index 774556a62eb240da42e84db4502e2ed43495be17..d62fac1aa2778f0cd5eeefc9fdf57c2ab33fcbad 100644
+index 774556a62eb240da42e84db4502e2ed43495be17..b6c77b5e233ca817fec83f20b66cb40405daf63c 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 @@ -11,7 +11,7 @@ public final class Versioning {
@@ -76,7 +76,7 @@ index 774556a62eb240da42e84db4502e2ed43495be17..d62fac1aa2778f0cd5eeefc9fdf57c2a
          String result = "Unknown-Version";
  
 -        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/io.papermc.paper/paper-api/pom.properties");
-+        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/com.example.paperfork/cheetah-api/pom.properties"); // Cheetah
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/net.gommehd.cheetah/cheetah-api/pom.properties"); // Cheetah - Build changes
          Properties properties = new Properties();
  
          if (stream != null) {

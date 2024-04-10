@@ -36,16 +36,3 @@ index 9d687da5bdf398bb3f6c84cdf1249a7213d09f2e..537a53cd64e448a918370ff8774be4a9
  
          switch (distance) {
              case -1:
-diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-index d62fac1aa2778f0cd5eeefc9fdf57c2ab33fcbad..bedccc22c501a249ddf0f5f8560ae0246cee1281 100644
---- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-+++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-@@ -11,7 +11,7 @@ public final class Versioning {
-     public static String getBukkitVersion() {
-         String result = "Unknown-Version";
- 
--        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/com.example.paperfork/cheetah-api/pom.properties"); // Cheetah
-+        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/net.gommehd.cheetah/cheetah-api/pom.properties"); // Cheetah
-         Properties properties = new Properties();
- 
-         if (stream != null) {
