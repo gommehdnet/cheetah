@@ -20,7 +20,7 @@ index a05acf709735b40ca86f978508c63a86065fd405..9da6c1a71b86818c5a8ab231c58bce22
 +    // Cheetah end
  }
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index cdb739df2a285032d25d84f4464f202a7a3fa578..0988726a2fc7ad8305a13ee989e5cb02b365e60f 100644
+index cdb739df2a285032d25d84f4464f202a7a3fa578..03eab81d5929ba474f45f00d1e65b5b266b41e6e 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 @@ -51,6 +51,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
@@ -44,7 +44,7 @@ index cdb739df2a285032d25d84f4464f202a7a3fa578..0988726a2fc7ad8305a13ee989e5cb02
 +        this.hopperTransferMultiplier = hopperTransferMultiplier;
 +    }
 +    // Cheetah end
-+    
++
      public HopperBlockEntity(BlockPos pos, BlockState state) {
          super(BlockEntityType.HOPPER, pos, state);
          this.items = NonNullList.withSize(5, ItemStack.EMPTY);
