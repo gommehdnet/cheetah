@@ -5,14 +5,14 @@ Subject: [PATCH] do not break message chain if proxy cancels a chat message
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 6067621d1287a649dab5b91849c24e3e80dec060..dfbac0bd2c3f57f5d864ea5e4bbe7d13426192f4 100644
+index 66049d76ee156ffa34649dd50aaae67ecfd7c164..7f9d7d9c94cd4f8bc51780e37890ca3456b1ffce 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2141,6 +2141,14 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
          if (this.server.isStopped()) {
              return;
          }
-+        // Cheetah start
++        // Cheetah start - Do not break message chain if proxy cancels a chat message
 +        boolean cancelled = packet.lastSeenMessages().offset() < 0; // Canceling the signed chat packet on bungeecord side will break the chat chain on spigot side. Thus, the server will no longer be able to validate subsequent chat messages.
 +                                                                    // We implement a little hack here: If the offset in the lastSeenMessages field is negative, the message will be correctly validated and the chat chain will be updated
 +                                                                    // but the server will ignore the chat message, i.e. no events are called, it is not logged, and no player will see the message
@@ -27,7 +27,7 @@ index 6067621d1287a649dab5b91849c24e3e80dec060..dfbac0bd2c3f57f5d864ea5e4bbe7d13
                          return;
                      }
  
-+                    // Cheetah start
++                    // Cheetah start - Do not break message chain if proxy cancels a chat message
 +                    if (cancelled) {
 +                        LOGGER.info("Skipping message of " + player.getScoreboardName() + ": '" + playerchatmessage.signedContent() + " because it was cancelled by BungeeCord.");
 +                        return;
@@ -40,7 +40,7 @@ index 6067621d1287a649dab5b91849c24e3e80dec060..dfbac0bd2c3f57f5d864ea5e4bbe7d13
          if (ServerGamePacketListenerImpl.isChatMessageIllegal(packet.command())) {
              this.disconnect(Component.translatable("multiplayer.disconnect.illegal_characters"), org.bukkit.event.player.PlayerKickEvent.Cause.ILLEGAL_CHARACTERS); // Paper
          } else {
-+            // Cheetah start
++            // Cheetah start - Do not break message chain if proxy cancels a chat message
 +            boolean cancelled = packet.lastSeenMessages().offset() < 0; // Same behavior as for ServerboundChatPacket
 +            ServerboundChatCommandPacket packet1;
 +            if(cancelled) {
@@ -52,7 +52,7 @@ index 6067621d1287a649dab5b91849c24e3e80dec060..dfbac0bd2c3f57f5d864ea5e4bbe7d13
              Optional<LastSeenMessages> optional = this.tryHandleChat(packet.lastSeenMessages());
  
              if (optional.isPresent()) {
-+                // Cheetah start
++                // Cheetah start - Do not break message chain if proxy cancels a chat message
 +                if (cancelled) {
 +                    LOGGER.info("Skipping command of " + player.getScoreboardName() + ": '" + packet1.command() + " because it was cancelled by BungeeCord.");
 +                    return;

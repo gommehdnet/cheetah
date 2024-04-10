@@ -5,22 +5,22 @@ Subject: [PATCH] allow skipping log messages for canceled login events
 
 
 diff --git a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
-index bdb7d2345e7d3a48a2f0561832ce126a16781e89..281339e833d2829f1a3a05e774d0274c42f3d974 100644
+index bdb7d2345e7d3a48a2f0561832ce126a16781e89..07ea92f5b658174429fe7f070dcce828f3b7d183 100644
 --- a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
 @@ -28,6 +28,7 @@ public class AsyncPlayerPreLoginEvent extends Event {
      private PlayerProfile profile; // Paper
      private final InetAddress rawAddress; // Paper
      private final String hostname; // Paper
-+    private boolean skipLog;
++    private boolean skipLog; // Cheetah - Allow skipping log messages for canceled login events
  
      @Deprecated
      public AsyncPlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress) {
-@@ -282,6 +283,15 @@ public class AsyncPlayerPreLoginEvent extends Event {
+@@ -282,6 +283,16 @@ public class AsyncPlayerPreLoginEvent extends Event {
      }
      // Paper end
  
-+
++    // Cheetah start - Allow skipping log messages for canceled login events
 +    public boolean isSkipLog() {
 +        return skipLog;
 +    }
@@ -28,26 +28,28 @@ index bdb7d2345e7d3a48a2f0561832ce126a16781e89..281339e833d2829f1a3a05e774d0274c
 +    public void setSkipLog(boolean skipLog) {
 +        this.skipLog = skipLog;
 +    }
++    // Cheetah end
 +
      @NotNull
      @Override
      public HandlerList getHandlers() {
 diff --git a/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java b/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
-index eaa0548cf430bf5b58ff84e0a4403c451699db28..953d6fdfd232fc3c9176c4f19601134b0241edf4 100644
+index eaa0548cf430bf5b58ff84e0a4403c451699db28..d8e8d015a9046a1171b009befd1f6d4a56fb5e7d 100644
 --- a/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
 @@ -19,6 +19,7 @@ public class PlayerLoginEvent extends PlayerEvent {
      private final String hostname;
      private Result result = Result.ALLOWED;
      private net.kyori.adventure.text.Component message = net.kyori.adventure.text.Component.empty();
-+    private boolean skipLog;
++    private boolean skipLog; // Cheetah - Allow skipping log messages for canceled login events
  
      /**
       * This constructor defaults message to an empty string, and result to
-@@ -161,6 +162,14 @@ public class PlayerLoginEvent extends PlayerEvent {
+@@ -161,6 +162,16 @@ public class PlayerLoginEvent extends PlayerEvent {
          return hostname;
      }
  
++    // Cheetah start - Allow skipping log messages for canceled login events
 +    public boolean isSkipLog() {
 +        return skipLog;
 +    }
@@ -55,26 +57,28 @@ index eaa0548cf430bf5b58ff84e0a4403c451699db28..953d6fdfd232fc3c9176c4f19601134b
 +    public void setSkipLog(boolean skipLog) {
 +        this.skipLog = skipLog;
 +    }
++    // Cheetah end
 +
      /**
       * Allows the player to log in
       */
 diff --git a/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java b/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
-index 175ed12dd1698f4d153c9acdac8340c15a427ea5..b9983f610ab86d27bc72ee90cc6747ea891f5d19 100644
+index 175ed12dd1698f4d153c9acdac8340c15a427ea5..492b32f94d2077e5c7ba714873b315f49c9a0c12 100644
 --- a/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
 @@ -30,6 +30,7 @@ public class PlayerPreLoginEvent extends Event {
      private final String name;
      private final InetAddress ipAddress;
      private final UUID uniqueId;
-+    private boolean skipLog;
++    private boolean skipLog; // Cheetah - Allow skipping log messages for canceled login events
  
      @Deprecated
      public PlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress) {
-@@ -176,6 +177,14 @@ public class PlayerPreLoginEvent extends Event {
+@@ -176,6 +177,16 @@ public class PlayerPreLoginEvent extends Event {
          return uniqueId;
      }
  
++    // Cheetah start - Allow skipping log messages for canceled login events
 +    public boolean isSkipLog() {
 +        return skipLog;
 +    }
@@ -82,6 +86,7 @@ index 175ed12dd1698f4d153c9acdac8340c15a427ea5..b9983f610ab86d27bc72ee90cc6747ea
 +    public void setSkipLog(boolean skipLog) {
 +        this.skipLog = skipLog;
 +    }
++    // Cheetah end
 +
      @NotNull
      public static HandlerList getHandlerList() {

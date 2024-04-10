@@ -5,7 +5,7 @@ Subject: [PATCH] API for configurable hopper transfer rates
 
 
 diff --git a/src/main/java/org/bukkit/block/Hopper.java b/src/main/java/org/bukkit/block/Hopper.java
-index 7ade312f180b7e30871d3a3240c76325cc369c26..debaa52845bc82ddf4a60c77b032642a3fcd20b1 100644
+index 7ade312f180b7e30871d3a3240c76325cc369c26..663e1774ac98dabe2d80ef1693f74f8b1f16bf2b 100644
 --- a/src/main/java/org/bukkit/block/Hopper.java
 +++ b/src/main/java/org/bukkit/block/Hopper.java
 @@ -6,4 +6,29 @@ import org.bukkit.loot.Lootable;
@@ -15,7 +15,7 @@ index 7ade312f180b7e30871d3a3240c76325cc369c26..debaa52845bc82ddf4a60c77b032642a
 -public interface Hopper extends Container, LootableBlockInventory { } // Paper
 +public interface Hopper extends Container, LootableBlockInventory {
 +
-+    // Cheetah start
++    // Cheetah start - API for configurable hopper transfer rates
 +    /**
 +     * Returns the current transfer multiplier for this hopper
 +     * Default value: 1.0
