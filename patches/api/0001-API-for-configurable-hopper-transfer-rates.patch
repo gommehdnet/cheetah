@@ -5,13 +5,15 @@ Subject: [PATCH] API for configurable hopper transfer rates
 
 
 diff --git a/src/main/java/org/bukkit/block/Hopper.java b/src/main/java/org/bukkit/block/Hopper.java
-index 61ea33c1f2dbb546a66f945a01feae437b1381e0..91d63d743ddda142c6ad535b3a4251a3dbe79e13 100644
+index 7ade312f180b7e30871d3a3240c76325cc369c26..debaa52845bc82ddf4a60c77b032642a3fcd20b1 100644
 --- a/src/main/java/org/bukkit/block/Hopper.java
 +++ b/src/main/java/org/bukkit/block/Hopper.java
-@@ -21,5 +21,29 @@ public interface Hopper extends Container, LootableBlockInventory { // Paper
-      */
-     int getTransferCooldown();
-     // Paper end - Expanded Hopper API
+@@ -6,4 +6,29 @@ import org.bukkit.loot.Lootable;
+ /**
+  * Represents a captured state of a hopper.
+  */
+-public interface Hopper extends Container, LootableBlockInventory { } // Paper
++public interface Hopper extends Container, LootableBlockInventory {
 +
 +    // Cheetah start
 +    /**
@@ -36,5 +38,4 @@ index 61ea33c1f2dbb546a66f945a01feae437b1381e0..91d63d743ddda142c6ad535b3a4251a3
 +        this.setTransferMultiplier(0F);
 +    }
 +    // Cheetah end
- }
- 
++}
