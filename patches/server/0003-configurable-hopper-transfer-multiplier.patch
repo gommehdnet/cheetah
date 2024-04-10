@@ -20,12 +20,12 @@ index a05acf709735b40ca86f978508c63a86065fd405..9da6c1a71b86818c5a8ab231c58bce22
 +    // Cheetah end
  }
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index 757edf74751dc7183454656fda9cecc4eb601e4c..7faff429db9f71b2a7ceed4130aa502f0a4eb06f 100644
+index cdb739df2a285032d25d84f4464f202a7a3fa578..0988726a2fc7ad8305a13ee989e5cb02b365e60f 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 @@ -51,6 +51,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
      private NonNullList<ItemStack> items;
-     private int cooldownTime;
+     public int cooldownTime;
      private long tickedGameTime;
 +    private float hopperTransferMultiplier = 1.0F; // Cheetah - Configurable hopper transfer multiplier
  
@@ -37,14 +37,14 @@ index 757edf74751dc7183454656fda9cecc4eb601e4c..7faff429db9f71b2a7ceed4130aa502f
  
 +    // Cheetah start - Configurable hopper transfer multiplier
 +    public float getHopperTransferMultiplier() {
-+        return hopperTransferMultiplier;
++        return this.hopperTransferMultiplier;
 +    }
 +
-+    public void setHopperTransferMultiplier( float hopperTransferMultiplier ) {
++    public void setHopperTransferMultiplier(float hopperTransferMultiplier) {
 +        this.hopperTransferMultiplier = hopperTransferMultiplier;
 +    }
 +    // Cheetah end
-+
++    
      public HopperBlockEntity(BlockPos pos, BlockState state) {
          super(BlockEntityType.HOPPER, pos, state);
          this.items = NonNullList.withSize(5, ItemStack.EMPTY);
@@ -53,8 +53,8 @@ index 757edf74751dc7183454656fda9cecc4eb601e4c..7faff429db9f71b2a7ceed4130aa502f
  
          this.cooldownTime = nbt.getInt("TransferCooldown");
 +        // Cheetah start - Configurable hopper transfer multiplier
-+        if(nbt.contains("TransferMultiplier")) {
-+            this.hopperTransferMultiplier = nbt.getFloat( "TransferMultiplier");
++        if (nbt.contains("TransferMultiplier")) {
++            this.hopperTransferMultiplier = nbt.getFloat("TransferMultiplier");
 +        }
 +        // Cheetah end
      }
@@ -64,8 +64,8 @@ index 757edf74751dc7183454656fda9cecc4eb601e4c..7faff429db9f71b2a7ceed4130aa502f
          }
  
          nbt.putInt("TransferCooldown", this.cooldownTime);
-+        // Cheetah start
-+        if(this.hopperTransferMultiplier != 1.0F) {
++        // Cheetah start - Configurable hopper transfer multiplier
++        if (this.hopperTransferMultiplier != 1.0F) {
 +            nbt.putFloat("TransferMultiplier", this.hopperTransferMultiplier);
 +        }
 +        // Cheetah end
@@ -91,13 +91,13 @@ index 757edf74751dc7183454656fda9cecc4eb601e4c..7faff429db9f71b2a7ceed4130aa502f
          movedItem.setCount(movedItemCount);
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java b/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
-index d446f18df647484e2f05ab642b73e914b06fdfed..abde33bbe48b15210422520a65924fdff3662a6b 100644
+index af5f27fb5ebad1e05da2b7d1a0710a2ef9c6ebbe..ab45b82e9ee7581297b6f774edb0c3ad56c19fb5 100644
 --- a/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
 +++ b/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
-@@ -34,4 +34,19 @@ public class CraftHopper extends CraftLootable<HopperBlockEntity> implements Hop
-     public CraftHopper copy() {
-         return new CraftHopper(this);
+@@ -47,4 +47,19 @@ public class CraftHopper extends CraftLootable<HopperBlockEntity> implements Hop
+         return getSnapshot().cooldownTime;
      }
+     // Paper end - Expanded Hopper API
 +
 +    // Cheetah start - Configurable hopper transfer multiplier
 +    @Override
@@ -107,7 +107,7 @@ index d446f18df647484e2f05ab642b73e914b06fdfed..abde33bbe48b15210422520a65924fdf
 +
 +    @Override
 +    public void setTransferMultiplier(float transferMultiplier) {
-+        if(transferMultiplier < 0) {
++        if (transferMultiplier < 0) {
 +            throw new IllegalArgumentException("transferMultiplier cannot be negative for hopper at " + getLocation());
 +        }
 +        this.getTileEntity().setHopperTransferMultiplier(transferMultiplier);

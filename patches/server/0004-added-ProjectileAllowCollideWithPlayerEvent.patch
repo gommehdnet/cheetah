@@ -21,7 +21,7 @@ index 156809090f1f83ad68e7e2477a3cfddac5757a8e..831344a472dd07bfabba7246d81c9a79
                  }
              }
 diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-index 4c2e8129481384a143384d327e14320023735b1a..bcca0847bb034d74d2ab35a9c8f89ba5b7158696 100644
+index cb3e9672f375a1a660757a05362729ddb5ca7504..ba5bb8f5407a2fd3aa5d8775d4ee33509de05b97 100644
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 @@ -15,6 +15,7 @@ import java.util.Map;
@@ -32,7 +32,7 @@ index 4c2e8129481384a143384d327e14320023735b1a..bcca0847bb034d74d2ab35a9c8f89ba5
  import net.minecraft.core.BlockPos;
  import net.minecraft.core.Direction;
  import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
-@@ -1457,7 +1458,10 @@ public class CraftEventFactory {
+@@ -1455,7 +1456,10 @@ public class CraftEventFactory {
          com.destroystokyo.paper.event.entity.ProjectileCollideEvent event = new com.destroystokyo.paper.event.entity.ProjectileCollideEvent(projectile, collided);
  
          if (projectile.getShooter() instanceof Player && collided instanceof Player) {
@@ -44,7 +44,7 @@ index 4c2e8129481384a143384d327e14320023735b1a..bcca0847bb034d74d2ab35a9c8f89ba5
                  event.setCancelled(true);
                  return event;
              }
-@@ -1468,6 +1472,15 @@ public class CraftEventFactory {
+@@ -1466,6 +1470,15 @@ public class CraftEventFactory {
      }
      // Paper end
  
