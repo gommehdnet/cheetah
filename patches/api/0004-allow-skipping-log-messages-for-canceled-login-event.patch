@@ -5,7 +5,7 @@ Subject: [PATCH] allow skipping log messages for canceled login events
 
 
 diff --git a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
-index bdb7d2345e7d3a48a2f0561832ce126a16781e89..07ea92f5b658174429fe7f070dcce828f3b7d183 100644
+index bdb7d2345e7d3a48a2f0561832ce126a16781e89..aa68e919dc00be2bf29072cc1f15e9abc88bb1d8 100644
 --- a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
 @@ -28,6 +28,7 @@ public class AsyncPlayerPreLoginEvent extends Event {
@@ -22,7 +22,7 @@ index bdb7d2345e7d3a48a2f0561832ce126a16781e89..07ea92f5b658174429fe7f070dcce828
  
 +    // Cheetah start - Allow skipping log messages for canceled login events
 +    public boolean isSkipLog() {
-+        return skipLog;
++        return this.skipLog;
 +    }
 +
 +    public void setSkipLog(boolean skipLog) {
@@ -34,7 +34,7 @@ index bdb7d2345e7d3a48a2f0561832ce126a16781e89..07ea92f5b658174429fe7f070dcce828
      @Override
      public HandlerList getHandlers() {
 diff --git a/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java b/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
-index eaa0548cf430bf5b58ff84e0a4403c451699db28..d8e8d015a9046a1171b009befd1f6d4a56fb5e7d 100644
+index eaa0548cf430bf5b58ff84e0a4403c451699db28..2a07caef10e00123818ac288a1cbccb894fa781a 100644
 --- a/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
 @@ -19,6 +19,7 @@ public class PlayerLoginEvent extends PlayerEvent {
@@ -51,7 +51,7 @@ index eaa0548cf430bf5b58ff84e0a4403c451699db28..d8e8d015a9046a1171b009befd1f6d4a
  
 +    // Cheetah start - Allow skipping log messages for canceled login events
 +    public boolean isSkipLog() {
-+        return skipLog;
++        return this.skipLog;
 +    }
 +
 +    public void setSkipLog(boolean skipLog) {
@@ -63,7 +63,7 @@ index eaa0548cf430bf5b58ff84e0a4403c451699db28..d8e8d015a9046a1171b009befd1f6d4a
       * Allows the player to log in
       */
 diff --git a/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java b/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
-index 175ed12dd1698f4d153c9acdac8340c15a427ea5..492b32f94d2077e5c7ba714873b315f49c9a0c12 100644
+index 175ed12dd1698f4d153c9acdac8340c15a427ea5..36103261a69bf8c7da83c19e0ce462a572d7df98 100644
 --- a/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
 @@ -30,6 +30,7 @@ public class PlayerPreLoginEvent extends Event {
@@ -80,7 +80,7 @@ index 175ed12dd1698f4d153c9acdac8340c15a427ea5..492b32f94d2077e5c7ba714873b315f4
  
 +    // Cheetah start - Allow skipping log messages for canceled login events
 +    public boolean isSkipLog() {
-+        return skipLog;
++        return this.skipLog;
 +    }
 +
 +    public void setSkipLog(boolean skipLog) {

@@ -5,34 +5,38 @@ Subject: [PATCH] fixed version checks
 
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-index 9d687da5bdf398bb3f6c84cdf1249a7213d09f2e..537a53cd64e448a918370ff8774be4a989125386 100644
+index 9d687da5bdf398bb3f6c84cdf1249a7213d09f2e..4d1737c7f1f4ba9545284d4325c6a835e1a8b391 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-@@ -31,8 +31,8 @@ public class PaperVersionFetcher implements VersionFetcher {
+@@ -31,8 +31,10 @@ public class PaperVersionFetcher implements VersionFetcher {
      @Nonnull
      @Override
      public Component getVersionMessage(@Nonnull String serverVersion) {
 -        String[] parts = serverVersion.substring("git-Paper-".length()).split("[-\\s]");
 -        final Component updateMessage = getUpdateStatusMessage("PaperMC/Paper", GITHUB_BRANCH_NAME, parts[0]);
++        // Cheetah start - Fixed version checks
 +        String[] parts = serverVersion.substring("git-Cheetah-".length()).split("[-\\s]");
 +        final Component updateMessage = getUpdateStatusMessage("gommehdnet/cheetah", GITHUB_BRANCH_NAME, parts[0]);
++        // Cheetah end
          final Component history = getHistory();
  
          return history != null ? TextComponent.ofChildren(updateMessage, Component.newline(), history) : updateMessage;
-@@ -56,13 +56,13 @@ public class PaperVersionFetcher implements VersionFetcher {
+@@ -56,13 +58,15 @@ public class PaperVersionFetcher implements VersionFetcher {
  
      private static Component getUpdateStatusMessage(@Nonnull String repo, @Nonnull String branch, @Nonnull String versionInfo) {
          int distance;
 -        try {
++        // Cheetah start - fixed version checks
 +        /*try {
              int jenkinsBuild = Integer.parseInt(versionInfo);
              distance = fetchDistanceFromSiteApi(jenkinsBuild, getMinecraftVersion());
 -        } catch (NumberFormatException ignored) {
 +        } catch (NumberFormatException ignored) {*/
++        // Cheetah end
              versionInfo = versionInfo.replace("\"", "");
              distance = fetchDistanceFromGitHub(repo, branch, versionInfo);
 -        }
-+        //}
++        //} // Cheetah - fixed version checks
  
          switch (distance) {
              case -1:
