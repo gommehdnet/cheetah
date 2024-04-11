@@ -20,7 +20,7 @@ index a05acf709735b40ca86f978508c63a86065fd405..9da6c1a71b86818c5a8ab231c58bce22
 +    // Cheetah end
  }
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index cdb739df2a285032d25d84f4464f202a7a3fa578..03eab81d5929ba474f45f00d1e65b5b266b41e6e 100644
+index cdb739df2a285032d25d84f4464f202a7a3fa578..f41f4885b0cfc6d9e22392f3b4668dcd7130cb8f 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 @@ -51,6 +51,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
@@ -91,7 +91,7 @@ index cdb739df2a285032d25d84f4464f202a7a3fa578..03eab81d5929ba474f45f00d1e65b5b2
          movedItem.setCount(movedItemCount);
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java b/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
-index af5f27fb5ebad1e05da2b7d1a0710a2ef9c6ebbe..ab45b82e9ee7581297b6f774edb0c3ad56c19fb5 100644
+index af5f27fb5ebad1e05da2b7d1a0710a2ef9c6ebbe..49f9acfc4d361011f0a9e2abfd06e1e78ac25b70 100644
 --- a/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
 +++ b/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
 @@ -47,4 +47,19 @@ public class CraftHopper extends CraftLootable<HopperBlockEntity> implements Hop

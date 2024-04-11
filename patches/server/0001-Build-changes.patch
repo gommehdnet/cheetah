@@ -5,7 +5,7 @@ Subject: [PATCH] Build changes
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 241808d8619e17c0681f79acbbc98af5bf52dd89..4f6f102055a60eba5025b7254b07bd08133579c0 100644
+index bcfe59b6efb628ee1e7f9d60667360d4d885fb6a..073b0e79b69dacd4b3687affe163ca501b474a40 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -13,8 +13,12 @@ configurations.named(log4jPlugins.compileClasspathConfigurationName) {
@@ -32,7 +32,7 @@ index 241808d8619e17c0681f79acbbc98af5bf52dd89..4f6f102055a60eba5025b7254b07bd08
              "Implementation-Vendor" to date, // Paper
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
-@@ -155,7 +159,7 @@ fun TaskContainer.registerRunTask(
+@@ -150,7 +154,7 @@ fun TaskContainer.registerRunTask(
      name: String,
      block: JavaExec.() -> Unit
  ): TaskProvider<JavaExec> = register<JavaExec>(name) {
@@ -42,7 +42,7 @@ index 241808d8619e17c0681f79acbbc98af5bf52dd89..4f6f102055a60eba5025b7254b07bd08
      standardInput = System.`in`
      workingDir = rootProject.layout.projectDirectory
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 93b661e9cb7743aeff7da3972942cb73049a5e4c..1ff04feafe0309922ba6b4f15e0f5f6df476ff74 100644
+index c8772c773f9933ed1d1debfe707af4373c458152..e785a5d9c9b8a19877cf4430fab8d861b60b68a2 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1865,7 +1865,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
