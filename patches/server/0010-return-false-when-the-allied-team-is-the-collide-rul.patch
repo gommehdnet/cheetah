@@ -5,7 +5,7 @@ Subject: [PATCH] return false when the allied team is the collide rule team
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 45439b0cc4ea69e409fd41d4684403c0e0feab12..cafacfe0a0886890afb254481c2060a337464280 100644
+index 0b4ed99658b083a83a90db1b32edb358da9e9514..fc19a4b05cb0302bfbea2ee0193df754e87c614c 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -3355,7 +3355,17 @@ public abstract class Entity implements Nameable, EntityAccess, CommandSource, S
@@ -13,7 +13,7 @@ index 45439b0cc4ea69e409fd41d4684403c0e0feab12..cafacfe0a0886890afb254481c2060a3
  
      public boolean isAlliedTo(Team team) {
 -        return this.getTeam() != null ? this.getTeam().isAlliedTo(team) : false;
-+        // Cheetah start
++        // Cheetah start - Return false when the allied team is the collide rule team
 +        final Team ownTeam = this.getTeam();
 +        if (ownTeam != null) {
 +            if (!io.papermc.paper.configuration.GlobalConfiguration.get().collisions.enablePlayerCollisions &&

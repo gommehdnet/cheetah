@@ -5,20 +5,22 @@ Subject: [PATCH] Async-able StructuresLocateEvent
 
 
 diff --git a/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java b/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
-index be86894561ff808d911e123b09bda72c9ed09185..5cc563936e7f2370c248f09672b00b6f524b5aa2 100644
+index be86894561ff808d911e123b09bda72c9ed09185..8faec65a3b27c2c9376860add0e90e8742f7cffa 100644
 --- a/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
 +++ b/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
-@@ -53,6 +53,14 @@ public class StructuresLocateEvent extends WorldEvent implements Cancellable {
+@@ -53,6 +53,16 @@ public class StructuresLocateEvent extends WorldEvent implements Cancellable {
          this.findUnexplored = findUnexplored;
      }
  
-+    public StructuresLocateEvent(@NotNull World world, @NotNull Location origin, @NotNull List<ConfiguredStructure> configuredStructures, int radius, boolean findUnexplored, boolean async) {
++    // Cheetah start - added async parameter
++    public StructuresLocateEvent(@NotNull World world, @NotNull Location origin, @NotNull List<Structure> structures, int radius, boolean findUnexplored, boolean async) {
 +        super(world, async);
 +        this.origin = origin;
-+        this.configuredStructures = configuredStructures;
++        this.setStructures(structures);
 +        this.radius = radius;
 +        this.findUnexplored = findUnexplored;
 +    }
++    // Cheetah end
 +
      /**
       * Gets the {@link Location} from which the search is to be conducted.

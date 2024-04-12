@@ -5,7 +5,7 @@ Subject: [PATCH] configurable hopper transfer multiplier
 
 
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/Hopper.java b/src/main/java/net/minecraft/world/level/block/entity/Hopper.java
-index a05acf709735b40ca86f978508c63a86065fd405..292895bf87538ae1474225d3df355918a88e79d4 100644
+index a05acf709735b40ca86f978508c63a86065fd405..9da6c1a71b86818c5a8ab231c58bce22ddf72e15 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/Hopper.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/Hopper.java
 @@ -19,4 +19,10 @@ public interface Hopper extends Container {
@@ -13,7 +13,7 @@ index a05acf709735b40ca86f978508c63a86065fd405..292895bf87538ae1474225d3df355918
  
      double getLevelZ();
 +
-+    // Cheetah start
++    // Cheetah start - Configurable hopper transfer multiplier
 +    default float getHopperTransferMultiplier() {
 +        return 1.0F;
 +    }
@@ -27,7 +27,7 @@ index cdb739df2a285032d25d84f4464f202a7a3fa578..f41f4885b0cfc6d9e22392f3b4668dcd
      private NonNullList<ItemStack> items;
      public int cooldownTime;
      private long tickedGameTime;
-+    private float hopperTransferMultiplier = 1.0F; // Cheetah
++    private float hopperTransferMultiplier = 1.0F; // Cheetah - Configurable hopper transfer multiplier
  
      // CraftBukkit start - add fields and methods
      public List<HumanEntity> transaction = new java.util.ArrayList<HumanEntity>();
@@ -35,12 +35,12 @@ index cdb739df2a285032d25d84f4464f202a7a3fa578..f41f4885b0cfc6d9e22392f3b4668dcd
      }
      // CraftBukkit end
  
-+    // Cheetah start
++    // Cheetah start - Configurable hopper transfer multiplier
 +    public float getHopperTransferMultiplier() {
-+        return hopperTransferMultiplier;
++        return this.hopperTransferMultiplier;
 +    }
 +
-+    public void setHopperTransferMultiplier( float hopperTransferMultiplier ) {
++    public void setHopperTransferMultiplier(float hopperTransferMultiplier) {
 +        this.hopperTransferMultiplier = hopperTransferMultiplier;
 +    }
 +    // Cheetah end
@@ -52,9 +52,9 @@ index cdb739df2a285032d25d84f4464f202a7a3fa578..f41f4885b0cfc6d9e22392f3b4668dcd
          }
  
          this.cooldownTime = nbt.getInt("TransferCooldown");
-+        // Cheetah start
-+        if(nbt.contains("TransferMultiplier")) {
-+            this.hopperTransferMultiplier = nbt.getFloat( "TransferMultiplier");
++        // Cheetah start - Configurable hopper transfer multiplier
++        if (nbt.contains("TransferMultiplier")) {
++            this.hopperTransferMultiplier = nbt.getFloat("TransferMultiplier");
 +        }
 +        // Cheetah end
      }
@@ -64,8 +64,8 @@ index cdb739df2a285032d25d84f4464f202a7a3fa578..f41f4885b0cfc6d9e22392f3b4668dcd
          }
  
          nbt.putInt("TransferCooldown", this.cooldownTime);
-+        // Cheetah start
-+        if(this.hopperTransferMultiplier != 1.0F) {
++        // Cheetah start - Configurable hopper transfer multiplier
++        if (this.hopperTransferMultiplier != 1.0F) {
 +            nbt.putFloat("TransferMultiplier", this.hopperTransferMultiplier);
 +        }
 +        // Cheetah end
@@ -77,7 +77,7 @@ index cdb739df2a285032d25d84f4464f202a7a3fa578..f41f4885b0cfc6d9e22392f3b4668dcd
  
                  final int originalItemCount = origItemStack.getCount();
 -                final int movedItemCount = Math.min(level.spigotConfig.hopperAmount, originalItemCount);
-+                final int movedItemCount = Math.min((int) (level.spigotConfig.hopperAmount * hopper.hopperTransferMultiplier), originalItemCount); // Cheetah - customizable hopper multiplier
++                final int movedItemCount = Math.min((int) (level.spigotConfig.hopperAmount * hopper.hopperTransferMultiplier), originalItemCount); // Cheetah - Configurable hopper transfer multiplier
                  origItemStack.setCount(movedItemCount);
  
                  // We only need to fire the event once to give protection plugins a chance to cancel this event
@@ -86,7 +86,7 @@ index cdb739df2a285032d25d84f4464f202a7a3fa578..f41f4885b0cfc6d9e22392f3b4668dcd
          ItemStack movedItem = origItemStack;
          final int originalItemCount = origItemStack.getCount();
 -        final int movedItemCount = Math.min(level.spigotConfig.hopperAmount, originalItemCount);
-+        final int movedItemCount = Math.min((int) (level.spigotConfig.hopperAmount * hopper.getHopperTransferMultiplier()), originalItemCount); // Cheetah - customizable hopper transfer multiplier
++        final int movedItemCount = Math.min((int) (level.spigotConfig.hopperAmount * hopper.getHopperTransferMultiplier()), originalItemCount); // Cheetah - Configurable hopper transfer multiplier
          container.setChanged(); // original logic always marks source inv as changed even if no move happens.
          movedItem.setCount(movedItemCount);
  
@@ -99,7 +99,7 @@ index af5f27fb5ebad1e05da2b7d1a0710a2ef9c6ebbe..49f9acfc4d361011f0a9e2abfd06e1e7
      }
      // Paper end - Expanded Hopper API
 +
-+    // Cheetah start
++    // Cheetah start - Configurable hopper transfer multiplier
 +    @Override
 +    public float getTransferMultiplier() {
 +        return this.getTileEntity().getHopperTransferMultiplier();
@@ -107,7 +107,7 @@ index af5f27fb5ebad1e05da2b7d1a0710a2ef9c6ebbe..49f9acfc4d361011f0a9e2abfd06e1e7
 +
 +    @Override
 +    public void setTransferMultiplier(float transferMultiplier) {
-+        if(transferMultiplier < 0) {
++        if (transferMultiplier < 0) {
 +            throw new IllegalArgumentException("transferMultiplier cannot be negative for hopper at " + getLocation());
 +        }
 +        this.getTileEntity().setHopperTransferMultiplier(transferMultiplier);

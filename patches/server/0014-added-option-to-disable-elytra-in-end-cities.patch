@@ -5,19 +5,19 @@ Subject: [PATCH] added option to disable elytra in end cities
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 0cc2307636279915c1f8529e62174cc696e185ee..269881cd0916461a40f10d3607f98809f954a296 100644
+index 0cc2307636279915c1f8529e62174cc696e185ee..81ed6e3ea1b9a6fe7dc3fd34104c370b075deedd 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -336,6 +336,7 @@ public class GlobalConfiguration extends ConfigurationPart {
          public boolean useDimensionTypeForCustomSpawners = false;
          public boolean strictAdvancementDimensionCheck = false;
          public IntOr.Default compressionLevel = IntOr.Default.USE_DEFAULT;
-+        public boolean enableElytraInEndCities = true;
++        public boolean enableElytraInEndCities = true; // Cheetah - Added option to disable elytra in end cities
      }
  
      public BlockUpdates blockUpdates;
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
-index d859c1ce8d60920669d9d1afb3b71692375800a8..3682283cf32b9e7ec6adb4b9b1c30fed599eb08f 100644
+index d859c1ce8d60920669d9d1afb3b71692375800a8..b2b3b4eb6e29a376b14da1a79e0d73cc78f9f526 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
 @@ -299,7 +299,7 @@ public class EndCityPieces {
@@ -25,7 +25,7 @@ index d859c1ce8d60920669d9d1afb3b71692375800a8..3682283cf32b9e7ec6adb4b9b1c30fed
                          world.addFreshEntity(entityshulker);
                      }
 -                } else if (metadata.startsWith("Elytra")) {
-+                } else if (metadata.startsWith("Elytra") && io.papermc.paper.configuration.GlobalConfiguration.get().misc.enableElytraInEndCities) {
++                } else if (metadata.startsWith("Elytra") && io.papermc.paper.configuration.GlobalConfiguration.get().misc.enableElytraInEndCities) { // Cheetah - Added option to disable elytra in end cities
                      ItemFrame entityitemframe = new ItemFrame(world.getLevel(), pos, this.placeSettings.getRotation().rotate(Direction.SOUTH));
  
                      entityitemframe.setItem(new ItemStack(Items.ELYTRA), false);

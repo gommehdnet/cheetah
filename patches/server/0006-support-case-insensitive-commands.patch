@@ -8,14 +8,14 @@ Content-Transfer-Encoding: 8bit
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 87e5ee042ab2c052d25ab4c2521a68cf2e2d67b6..6067621d1287a649dab5b91849c24e3e80dec060 100644
+index 87e5ee042ab2c052d25ab4c2521a68cf2e2d67b6..66049d76ee156ffa34649dd50aaae67ecfd7c164 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2255,10 +2255,21 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
          return map;
      }
  
-+    // Cheetah start
++    // Cheetah start - Support case insensitive commands
 +    private static String commandToLower(String command) {
 +        if (command.isEmpty()) {
 +            return command;
@@ -30,12 +30,12 @@ index 87e5ee042ab2c052d25ab4c2521a68cf2e2d67b6..6067621d1287a649dab5b91849c24e3e
          com.mojang.brigadier.CommandDispatcher<CommandSourceStack> com_mojang_brigadier_commanddispatcher = this.server.getCommands().getDispatcher();
  
 -        return com_mojang_brigadier_commanddispatcher.parse(command, this.player.createCommandSourceStack());
-+        return com_mojang_brigadier_commanddispatcher.parse(commandToLower(command), this.player.createCommandSourceStack()); // Cheetah - added commandToLower()
++        return com_mojang_brigadier_commanddispatcher.parse(commandToLower(command), this.player.createCommandSourceStack()); // Cheetah - Support case insensitive commands
      }
  
      private Optional<LastSeenMessages> tryHandleChat(LastSeenMessages.Update acknowledgment) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
-index 61115db85b81e627d11a0de21691a2ca69aafe2c..042e2de5550de8a1cdd01ae32bf750f557e9c2e3 100644
+index 61115db85b81e627d11a0de21691a2ca69aafe2c..8eeb8b7bdc572a1b045338cde33913a46be1f8c5 100644
 --- a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
 +++ b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
 @@ -51,7 +51,7 @@ public final class VanillaCommandWrapper extends BukkitCommand {
@@ -43,7 +43,7 @@ index 61115db85b81e627d11a0de21691a2ca69aafe2c..042e2de5550de8a1cdd01ae32bf750f5
  
          CommandSourceStack icommandlistener = VanillaCommandWrapper.getListener(sender);
 -        ParseResults<CommandSourceStack> parsed = this.dispatcher.getDispatcher().parse(this.toDispatcher(args, this.getName()), icommandlistener);
-+        ParseResults<CommandSourceStack> parsed = this.dispatcher.getDispatcher().parse(this.toDispatcher(args, this.getName().toLowerCase()), icommandlistener); // Cheetah - added to lower case
++        ParseResults<CommandSourceStack> parsed = this.dispatcher.getDispatcher().parse(this.toDispatcher(args, this.getName().toLowerCase()), icommandlistener); // Cheetah - Support case insensitive commands
  
          List<String> results = new ArrayList<>();
          this.dispatcher.getDispatcher().getCompletionSuggestions(parsed).thenAccept((suggestions) -> {
