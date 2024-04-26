@@ -5,7 +5,7 @@ Subject: [PATCH] Added VillagerGiveGiftToHeroEvent
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/ai/behavior/GiveGiftToHero.java b/src/main/java/net/minecraft/world/entity/ai/behavior/GiveGiftToHero.java
-index 132d8563db66aab61843613b172179b0fed4fb97..c78e2a2c0dc627227179747f033d62d303d1b45b 100644
+index c429e077539088e73d44a5e103f0d5ca8b63b60e..f60bcd9a3fbe20472b9b018c65f0903a1fce25ec 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/behavior/GiveGiftToHero.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/behavior/GiveGiftToHero.java
 @@ -24,6 +24,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
@@ -16,13 +16,12 @@ index 132d8563db66aab61843613b172179b0fed4fb97..c78e2a2c0dc627227179747f033d62d3
  
  public class GiveGiftToHero extends Behavior<Villager> {
      private static final int THROW_GIFT_AT_DISTANCE = 5;
-@@ -104,10 +105,22 @@ public class GiveGiftToHero extends Behavior<Villager> {
+@@ -115,9 +116,22 @@ public class GiveGiftToHero extends Behavior<Villager> {
      }
  
      private void throwGift(Villager villager, LivingEntity recipient) {
--        for(ItemStack itemStack : this.getItemToThrow(villager)) {
+-        for (ItemStack itemStack : this.getItemToThrow(villager)) {
 -            BehaviorUtils.throwItem(villager, itemStack, recipient.position());
--        }
 +        // Cheetah start - Added VillagerGiveGiftToHeroEvent
 +        List<ItemStack> itemStacks = this.getItemToThrow(villager);
 +
@@ -30,14 +29,14 @@ index 132d8563db66aab61843613b172179b0fed4fb97..c78e2a2c0dc627227179747f033d62d3
 +
 +        VillagerGiveGiftToHeroEvent event = new VillagerGiveGiftToHeroEvent(villager.getBukkitEntity(), recipient.getBukkitLivingEntity(), convertedItemStacks);
 +        event.callEvent();
- 
++
 +        if (!event.isCancelled() && !event.getItemStacks().isEmpty()) {
 +            itemStacks = event.getItemStacks().stream().map(org.bukkit.craftbukkit.inventory.CraftItemStack::asNMSCopy).toList();
 +
 +            for (ItemStack itemStack : itemStacks) {
 +                BehaviorUtils.throwItem(villager, itemStack, recipient.position());
 +            }
-+        }
+         }
 +        // Cheetah end
      }
  
