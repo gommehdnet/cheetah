@@ -8,11 +8,11 @@ Content-Transfer-Encoding: 8bit
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 87e5ee042ab2c052d25ab4c2521a68cf2e2d67b6..66049d76ee156ffa34649dd50aaae67ecfd7c164 100644
+index 8e67853a7a93fa736c147e8b2df537746dc8e94f..dfdbbcc5d593f934e3992bbb5b7340f3a0ce5417 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2255,10 +2255,21 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
-         return map;
+@@ -2320,10 +2320,21 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+         return new SignedMessageChain.DecodeException(ServerGamePacketListenerImpl.INVALID_COMMAND_SIGNATURE);
      }
  
 +    // Cheetah start - Support case insensitive commands
@@ -33,9 +33,9 @@ index 87e5ee042ab2c052d25ab4c2521a68cf2e2d67b6..66049d76ee156ffa34649dd50aaae67e
 +        return com_mojang_brigadier_commanddispatcher.parse(commandToLower(command), this.player.createCommandSourceStack()); // Cheetah - Support case insensitive commands
      }
  
-     private Optional<LastSeenMessages> tryHandleChat(LastSeenMessages.Update acknowledgment) {
+     private void tryHandleChat(String s, Runnable runnable, boolean sync) { // CraftBukkit
 diff --git a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
-index 61115db85b81e627d11a0de21691a2ca69aafe2c..8eeb8b7bdc572a1b045338cde33913a46be1f8c5 100644
+index ba2a2ca0c36e61cb3cc00fafc7a5dd9f7050388f..7ab2ac11385ae90c4b32b253d91770f2489ba2b4 100644
 --- a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
 +++ b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
 @@ -51,7 +51,7 @@ public final class VanillaCommandWrapper extends BukkitCommand {

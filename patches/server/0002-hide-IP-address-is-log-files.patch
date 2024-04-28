@@ -5,10 +5,10 @@ Subject: [PATCH] hide IP address is log files
 
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 1e5f709115007ff19901c0a6c3cf884d9e4d3a6c..ad09fb3b528455acbea70f859ddca8d4f5d9d6a7 100644
+index a2142930b4d4b05987c90496fb9d733d99040aa0..be1218c1bf2a758d4f402093116e2cdceb32621f 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -487,7 +487,7 @@ public abstract class PlayerList {
+@@ -486,7 +486,7 @@ public abstract class PlayerList {
              scoreboard.addPlayerToTeam(player.getScoreboardName(), collideRuleTeam);
          }
          // Paper end - Configurable player collision

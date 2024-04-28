@@ -5,18 +5,18 @@ Subject: [PATCH] allow skipping log messages for canceled login events
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-index c5fa9f4d28f9a7f64a50a902ee5e631bfc00119c..25bdb959676caa4c849e94861bf0ef572001d075 100644
+index 765cf12c1558afd9686793b18388fc229c55d2d8..5b5b31f24a2e85a3814015c086b12927ffc68649 100644
 --- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-@@ -65,6 +65,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -85,6 +85,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
      private ServerPlayer player; // CraftBukkit
      public boolean iKnowThisMayNotBeTheBestIdeaButPleaseDisableUsernameValidation = false; // Paper - username validation overriding
      private int velocityLoginMessageId = -1; // Paper - Add Velocity IP Forwarding Support
 +    private boolean disconnectLogged = false; // Cheetah - Allow skipping log messages for canceled login events
  
-     public ServerLoginPacketListenerImpl(MinecraftServer server, Connection connection) {
+     public ServerLoginPacketListenerImpl(MinecraftServer server, Connection connection, boolean transferred) {
          this.state = ServerLoginPacketListenerImpl.State.HELLO;
-@@ -111,8 +112,15 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -138,8 +139,15 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
      }
  
      public void disconnect(Component reason) {
@@ -33,7 +33,7 @@ index c5fa9f4d28f9a7f64a50a902ee5e631bfc00119c..25bdb959676caa4c849e94861bf0ef57
              this.connection.send(new ClientboundLoginDisconnectPacket(reason));
              this.connection.disconnect(reason);
          } catch (Exception exception) {
-@@ -127,7 +135,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -154,7 +162,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
  
      @Override
      public void onDisconnect(Component reason) {
@@ -42,7 +42,7 @@ index c5fa9f4d28f9a7f64a50a902ee5e631bfc00119c..25bdb959676caa4c849e94861bf0ef57
      }
  
      public String getUserName() {
-@@ -324,12 +332,14 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -363,12 +371,14 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
          playerName = gameprofile.getName();
          uniqueId = gameprofile.getId();
          // Paper end - Add more fields to AsyncPlayerPreLoginEvent
@@ -57,7 +57,7 @@ index c5fa9f4d28f9a7f64a50a902ee5e631bfc00119c..25bdb959676caa4c849e94861bf0ef57
              Waitable<PlayerPreLoginEvent.Result> waitable = new Waitable<PlayerPreLoginEvent.Result>() {
                  @Override
                  protected PlayerPreLoginEvent.Result evaluate() {
-@@ -340,11 +350,14 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -379,11 +389,14 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
  
              ServerLoginPacketListenerImpl.this.server.processQueue.add(waitable);
              if (waitable.get() != PlayerPreLoginEvent.Result.ALLOWED) {
@@ -75,10 +75,10 @@ index c5fa9f4d28f9a7f64a50a902ee5e631bfc00119c..25bdb959676caa4c849e94861bf0ef57
          }
          return gameprofile; // Paper - Add more fields to AsyncPlayerPreLoginEvent
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index ad09fb3b528455acbea70f859ddca8d4f5d9d6a7..644560509218cdd9485a29a3f465cfa5affb0936 100644
+index be1218c1bf2a758d4f402093116e2cdceb32621f..0be5bae56d2031761f09f5ee412cc534537ce9b3 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -760,7 +760,7 @@ public abstract class PlayerList {
+@@ -759,7 +759,7 @@ public abstract class PlayerList {
  
          this.cserver.getPluginManager().callEvent(event);
          if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
