@@ -8,10 +8,10 @@ Content-Transfer-Encoding: 8bit
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 8e67853a7a93fa736c147e8b2df537746dc8e94f..dfdbbcc5d593f934e3992bbb5b7340f3a0ce5417 100644
+index 5e9202bc7fc649764568b55d66ba0d684118c00c..b7fdba7d80569a0ca4a2b81a0856520ec2c9dd89 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2320,10 +2320,21 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2322,10 +2322,21 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
          return new SignedMessageChain.DecodeException(ServerGamePacketListenerImpl.INVALID_COMMAND_SIGNATURE);
      }
  

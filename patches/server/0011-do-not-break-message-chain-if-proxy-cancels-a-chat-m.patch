@@ -5,7 +5,7 @@ Subject: [PATCH] do not break message chain if proxy cancels a chat message
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index dfdbbcc5d593f934e3992bbb5b7340f3a0ce5417..470f7ecb6a41d417fef22c11ab0ba591acc063f3 100644
+index b7fdba7d80569a0ca4a2b81a0856520ec2c9dd89..2ba61426dd705e9457c27aa8f5ba5945420cbb4b 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2133,12 +2133,23 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
@@ -47,7 +47,7 @@ index dfdbbcc5d593f934e3992bbb5b7340f3a0ce5417..470f7ecb6a41d417fef22c11ab0ba591
                  CompletableFuture<FilteredText> completablefuture = this.filterTextPacket(playerchatmessage.signedContent()).thenApplyAsync(Function.identity(), this.server.chatExecutor); // CraftBukkit - async chat
                  CompletableFuture<Component> componentFuture = this.server.getChatDecorator().decorate(this.player, null, playerchatmessage.decoratedContent()); // Paper - Adventure
  
-@@ -2203,9 +2221,24 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2205,9 +2223,24 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
  
      @Override
      public void handleSignedChatCommand(ServerboundChatCommandSignedPacket packet) {
@@ -72,7 +72,7 @@ index dfdbbcc5d593f934e3992bbb5b7340f3a0ce5417..470f7ecb6a41d417fef22c11ab0ba591
              this.tryHandleChat(packet.command(), () -> {
                  // CraftBukkit start - SPIGOT-7346: Prevent disconnected players from executing commands
                  if (this.player.hasDisconnected()) {
-@@ -2720,7 +2753,7 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2722,7 +2755,7 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
          // Also, mirror the logic for canSee in terms of "missing" players
          final ServerPlayer sender = this.server.getPlayerList().getPlayer(message.link().sender());
          if (sender == null || !this.getCraftPlayer().canSee(sender.getBukkitEntity())) {
