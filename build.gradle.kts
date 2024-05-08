@@ -50,7 +50,6 @@ subprojects {
     repositories {
         mavenCentral()
         maven(paperMavenPublicUrl)
-        maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") // TODO - Adventure snapshot
     }
 }
 
@@ -90,7 +89,6 @@ tasks.generateDevelopmentBundle {
                     "https://repo.maven.apache.org/maven2/",
                     paperMavenPublicUrl,
                     "https://repo.gomme.dev/repository/snapshots/", // This should be a repo hosting your API (in this example, 'com.example.paperfork:forktest-api')
-                    "https://s01.oss.sonatype.org/content/repositories/snapshots/", // TODO - Adventure snapshot
             )
     )
 }
