@@ -30,8 +30,6 @@ jobs:
         run: ./gradlew clean
       - name: Apply Patches
         run: ./gradlew applyPatches --info
-      - name: Build
-        run: ./gradlew build --info
       - name: Bundle
         run: ./gradlew createMojmapBundlerJar --info
       - name: Rename Artifact
