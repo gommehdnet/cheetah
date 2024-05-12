@@ -1,7 +1,7 @@
 plugins {
     java
     `maven-publish`
-    id("io.papermc.paperweight.patcher") version "1.6.3"
+    id("io.papermc.paperweight.patcher") version "1.7.1"
 }
 
 val paperMavenPublicUrl = "https://papermc.io/repo/repository/maven-public/"
@@ -83,7 +83,6 @@ paperweight {
 
 tasks.generateDevelopmentBundle {
     apiCoordinates = "net.gommehd.cheetah:cheetah-api"
-    mojangApiCoordinates = "io.papermc.paper:paper-mojangapi"
     libraryRepositories.set(
             listOf(
                     "https://repo.maven.apache.org/maven2/",

@@ -8,7 +8,7 @@ Content-Transfer-Encoding: 8bit
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 5e9202bc7fc649764568b55d66ba0d684118c00c..b7fdba7d80569a0ca4a2b81a0856520ec2c9dd89 100644
+index b9b3277c8ed94e0cd30b20b9c00a33eaad48e5ac..fcf93097fa3c1caf3ef7e0ce21a9768ff3bc90e9 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2322,10 +2322,21 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
@@ -35,15 +35,15 @@ index 5e9202bc7fc649764568b55d66ba0d684118c00c..b7fdba7d80569a0ca4a2b81a0856520e
  
      private void tryHandleChat(String s, Runnable runnable, boolean sync) { // CraftBukkit
 diff --git a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
-index ba2a2ca0c36e61cb3cc00fafc7a5dd9f7050388f..7ab2ac11385ae90c4b32b253d91770f2489ba2b4 100644
+index 5b70f53bc4b27a715b8b7aa13586082adbc4bd16..d23262b646f5614094f4d2c74926401b0b6789c6 100644
 --- a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
 +++ b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
-@@ -51,7 +51,7 @@ public final class VanillaCommandWrapper extends BukkitCommand {
+@@ -63,7 +63,7 @@ public class VanillaCommandWrapper extends BukkitCommand { // Paper
          Preconditions.checkArgument(alias != null, "Alias cannot be null");
  
          CommandSourceStack icommandlistener = VanillaCommandWrapper.getListener(sender);
--        ParseResults<CommandSourceStack> parsed = this.dispatcher.getDispatcher().parse(this.toDispatcher(args, this.getName()), icommandlistener);
-+        ParseResults<CommandSourceStack> parsed = this.dispatcher.getDispatcher().parse(this.toDispatcher(args, this.getName().toLowerCase()), icommandlistener); // Cheetah - Support case insensitive commands
+-        ParseResults<CommandSourceStack> parsed = this.commands().getDispatcher().parse(this.toDispatcher(args, this.getName()), icommandlistener); // Paper
++        ParseResults<CommandSourceStack> parsed = this.commands().getDispatcher().parse(this.toDispatcher(args, this.getName().toLowerCase()), icommandlistener); // Cheetah - Support case insensitive commands
  
          List<String> results = new ArrayList<>();
-         this.dispatcher.getDispatcher().getCompletionSuggestions(parsed).thenAccept((suggestions) -> {
+         this.commands().getDispatcher().getCompletionSuggestions(parsed).thenAccept((suggestions) -> { // Paper

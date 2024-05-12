@@ -5,7 +5,7 @@ Subject: [PATCH] do not break message chain if proxy cancels a chat message
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index b7fdba7d80569a0ca4a2b81a0856520ec2c9dd89..2ba61426dd705e9457c27aa8f5ba5945420cbb4b 100644
+index fcf93097fa3c1caf3ef7e0ce21a9768ff3bc90e9..12e4e16871d4c4b00d01fd11e67eeac3a7c8eef4 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2133,12 +2133,23 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
@@ -72,12 +72,3 @@ index b7fdba7d80569a0ca4a2b81a0856520ec2c9dd89..2ba61426dd705e9457c27aa8f5ba5945
              this.tryHandleChat(packet.command(), () -> {
                  // CraftBukkit start - SPIGOT-7346: Prevent disconnected players from executing commands
                  if (this.player.hasDisconnected()) {
-@@ -2722,7 +2755,7 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
-         // Also, mirror the logic for canSee in terms of "missing" players
-         final ServerPlayer sender = this.server.getPlayerList().getPlayer(message.link().sender());
-         if (sender == null || !this.getCraftPlayer().canSee(sender.getBukkitEntity())) {
--        // Paper end
-+            // Paper end
-             this.sendDisguisedChatMessage(message.decoratedContent(), params);
-             return;
-         }

@@ -5,10 +5,10 @@ Subject: [PATCH] ignore javadoc errors
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 36a8d0f462addea28dd52c24364641a296c662f1..ceaca436b32c86f64710936ba6ea377c11706926 100644
+index 5a5708001ca969e36ab4f45577297b531487ac92..074ed807b49d4a14f094f8bf6b4500b9ddcdefc2 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -104,6 +104,12 @@ tasks.compileTestJava {
+@@ -99,6 +99,12 @@ tasks.compileTestJava {
  }
  // Paper end
  
