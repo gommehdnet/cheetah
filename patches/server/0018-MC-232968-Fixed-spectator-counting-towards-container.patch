@@ -1,0 +1,33 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TehManu <tehmanu.developer@gmail.com>
+Date: Thu, 23 May 2024 21:47:42 +0200
+Subject: [PATCH] [MC-232968] Fixed spectator counting towards container view
+
+
+diff --git a/src/main/java/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java b/src/main/java/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java
+index 3e4b3eecc788c564f81b7929bfab7d2fdb6e307d..1ebef2a8e4f9f43e532aa3fbdea8279246c71090 100644
+--- a/src/main/java/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java
++++ b/src/main/java/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java
+@@ -38,6 +38,13 @@ public abstract class ContainerOpenersCounter {
+     // CraftBukkit end
+ 
+     protected abstract boolean isOwnContainer(Player player);
++	
++    // Cheetah start
++    // Fixes MC-232968
++    private boolean isValidContainerViewer(Player player) {
++        return !player.isSpectator() && isOwnContainer(player);
++    }
++    // Cheetah end
+ 
+     public void incrementOpeners(Player player, Level world, BlockPos pos, BlockState state) {
+         int oldPower = Math.max(0, Math.min(15, this.openCount)); // CraftBukkit - Get power before new viewer is added
+@@ -92,7 +99,7 @@ public abstract class ContainerOpenersCounter {
+         float f = 5.0F;
+         AABB axisalignedbb = new AABB((double) ((float) i - 5.0F), (double) ((float) j - 5.0F), (double) ((float) k - 5.0F), (double) ((float) (i + 1) + 5.0F), (double) ((float) (j + 1) + 5.0F), (double) ((float) (k + 1) + 5.0F));
+ 
+-        return world.getEntities(EntityTypeTest.forClass(Player.class), axisalignedbb, this::isOwnContainer).size();
++        return world.getEntities(EntityTypeTest.forClass(Player.class), axisalignedbb, this::isValidContainerViewer).size(); // Cheetah - Use own function for viewer validation
+     }
+ 
+     public void recheckOpeners(Level world, BlockPos pos, BlockState state) {
