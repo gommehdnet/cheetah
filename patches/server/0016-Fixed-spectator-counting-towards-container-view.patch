@@ -1,11 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: TehManu <tehmanu.developer@gmail.com>
 Date: Thu, 23 May 2024 23:04:36 +0200
-Subject: [PATCH] [MC-232968] Fixed spectator counting towards container view
+Subject: [PATCH] Fixed spectator counting towards container view
 
 
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java b/src/main/java/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java
-index 3e4b3eecc788c564f81b7929bfab7d2fdb6e307d..270d05031b7814a5a7759cb8b86bde9a5bf8cc13 100644
+index 7eccacb978f047a4774e58b11bc3f9ab3959b049..60bb26adb5764b15cff92fd22c1290f874fc987f 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java
 @@ -38,6 +38,12 @@ public abstract class ContainerOpenersCounter {
