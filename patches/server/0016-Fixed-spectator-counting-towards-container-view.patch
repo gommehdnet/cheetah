@@ -5,27 +5,27 @@ Subject: [PATCH] Fixed spectator counting towards container view
 
 
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java b/src/main/java/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java
-index 7eccacb978f047a4774e58b11bc3f9ab3959b049..60bb26adb5764b15cff92fd22c1290f874fc987f 100644
+index 86dce6796f92a5b0ae2b1bd837267c4e3f6754d0..8344f35ebc0dc4cb92e46dd2d54c54a928809346 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java
-@@ -38,6 +38,12 @@ public abstract class ContainerOpenersCounter {
-     // CraftBukkit end
+@@ -43,6 +43,12 @@ public abstract class ContainerOpenersCounter {
  
      protected abstract boolean isOwnContainer(Player player);
-+	
+ 
 +    // Cheetah start - [MC-232968] Fixed spectator counting towards container view
 +    private boolean isValidContainerViewer(Player player) {
 +        return !player.isSpectator() && isOwnContainer(player);
 +    }
 +    // Cheetah end
- 
++
      public void incrementOpeners(Player player, Level world, BlockPos pos, BlockState state) {
          int oldPower = Math.max(0, Math.min(15, this.openCount)); // CraftBukkit - Get power before new viewer is added
-@@ -92,7 +98,7 @@ public abstract class ContainerOpenersCounter {
-         float f = 5.0F;
-         AABB axisalignedbb = new AABB((double) ((float) i - 5.0F), (double) ((float) j - 5.0F), (double) ((float) k - 5.0F), (double) ((float) (i + 1) + 5.0F), (double) ((float) (j + 1) + 5.0F), (double) ((float) (k + 1) + 5.0F));
+         int i = this.openCount++;
+@@ -95,7 +101,7 @@ public abstract class ContainerOpenersCounter {
+         double d0 = this.maxInteractionRange + 4.0D;
+         AABB axisalignedbb = (new AABB(pos)).inflate(d0);
  
--        return world.getEntities(EntityTypeTest.forClass(Player.class), axisalignedbb, this::isOwnContainer).size();
+-        return world.getEntities(EntityTypeTest.forClass(Player.class), axisalignedbb, this::isOwnContainer);
 +        return world.getEntities(EntityTypeTest.forClass(Player.class), axisalignedbb, this::isValidContainerViewer).size(); // Cheetah - [MC-232968] Fixed spectator counting towards container view
      }
  
