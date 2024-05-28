@@ -26,7 +26,7 @@ index 86dce6796f92a5b0ae2b1bd837267c4e3f6754d0..8344f35ebc0dc4cb92e46dd2d54c54a9
          AABB axisalignedbb = (new AABB(pos)).inflate(d0);
  
 -        return world.getEntities(EntityTypeTest.forClass(Player.class), axisalignedbb, this::isOwnContainer);
-+        return world.getEntities(EntityTypeTest.forClass(Player.class), axisalignedbb, this::isValidContainerViewer).size(); // Cheetah - [MC-232968] Fixed spectator counting towards container view
++        return world.getEntities(EntityTypeTest.forClass(Player.class), axisalignedbb, this::isValidContainerViewer); // Cheetah - [MC-232968] Fixed spectator counting towards container view
      }
  
      public void recheckOpeners(Level world, BlockPos pos, BlockState state) {
