@@ -1,18 +1,23 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Jendrik Eggers <jendrikeggerskapp@web.de>
-Date: Sat, 9 Dec 2023 03:37:57 +0100
+Date: Sun, 28 Apr 2024 15:02:31 +0200
 Subject: [PATCH] ignore javadoc errors
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index fd39ed209b20c927054b8482c400beeeeab460a3..96e2a02c2c930037f756e6cb04e8e14f6c74cda0 100644
+index 3b5fe09937fef25b6a2c4e54fe584b13263489a6..453de0b891cc904544457bb428eab901e06eb317 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -142,6 +142,7 @@ tasks.jar {
+@@ -106,6 +106,12 @@ tasks.compileTestJava {
  }
+ // Paper end
  
- tasks.withType<Javadoc> {
++// Cheetah start - ignore javadoc errors
++tasks.withType<Javadoc> {
 +    (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet") // Cheetah - ignore javadoc errors
-     val options = options as StandardJavadocDocletOptions
-     options.overview = "src/main/javadoc/overview.html"
-     options.use()
++}
++// Cheetah end - ignore javadoc errors
++
+ publishing {
+     publications.create<MavenPublication>("maven") {
+     }

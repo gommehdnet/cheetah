@@ -22,23 +22,21 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: 'zulu'
+          java-version: '21'
       - name: Configure Git User Details
         run: git config --global user.email "actions@github.com" && git config --global user.name "Github Actions"
       - name: Clean
         run: ./gradlew clean
       - name: Apply Patches
         run: ./gradlew applyPatches --info
-      - name: Build
-        run: ./gradlew build --info
       - name: Bundle
-        run: ./gradlew createReobfBundlerJar --info
+        run: ./gradlew createMojmapBundlerJar --info
       - name: Rename Artifact
-        run: mv build/libs/cheetah-1.20.4-bundler-1.20.4-R0.1-SNAPSHOT-reobf.jar build/libs/cheetah-1.20.4.jar
+        run: mv build/libs/cheetah-1.20.6-bundler-1.20.6-R0.1-SNAPSHOT-mojmap.jar build/libs/cheetah-1.20.6.jar
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Cheetah-1.20.4
-          path: build/libs/cheetah-1.20.4.jar
+          name: Cheetah-1.20.6
+          path: build/libs/cheetah-1.20.6.jar
           if-no-files-found: error

@@ -5,13 +5,13 @@ Subject: [PATCH] configurable hopper transfer multiplier
 
 
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/Hopper.java b/src/main/java/net/minecraft/world/level/block/entity/Hopper.java
-index a05acf709735b40ca86f978508c63a86065fd405..9da6c1a71b86818c5a8ab231c58bce22ddf72e15 100644
+index 5f042e294db605827000123252b0df646968f897..5e358c12334208b206d7ea97b60b2db0bd624ce0 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/Hopper.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/Hopper.java
-@@ -19,4 +19,10 @@ public interface Hopper extends Container {
-     double getLevelY();
- 
+@@ -18,4 +18,10 @@ public interface Hopper extends Container {
      double getLevelZ();
+ 
+     boolean isGridAligned();
 +
 +    // Cheetah start - Configurable hopper transfer multiplier
 +    default float getHopperTransferMultiplier() {
@@ -20,13 +20,13 @@ index a05acf709735b40ca86f978508c63a86065fd405..9da6c1a71b86818c5a8ab231c58bce22
 +    // Cheetah end
  }
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index cdb739df2a285032d25d84f4464f202a7a3fa578..f41f4885b0cfc6d9e22392f3b4668dcd7130cb8f 100644
+index da30c7fd750aa7b912310368100a5261c189715f..9dc14ea48a0703c28cf9d9d222c6ba0f83991ba1 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 @@ -51,6 +51,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
-     private NonNullList<ItemStack> items;
      public int cooldownTime;
      private long tickedGameTime;
+     private Direction facing;
 +    private float hopperTransferMultiplier = 1.0F; // Cheetah - Configurable hopper transfer multiplier
  
      // CraftBukkit start - add fields and methods
@@ -48,7 +48,7 @@ index cdb739df2a285032d25d84f4464f202a7a3fa578..f41f4885b0cfc6d9e22392f3b4668dcd
      public HopperBlockEntity(BlockPos pos, BlockState state) {
          super(BlockEntityType.HOPPER, pos, state);
          this.items = NonNullList.withSize(5, ItemStack.EMPTY);
-@@ -97,6 +108,11 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -98,6 +109,11 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
          }
  
          this.cooldownTime = nbt.getInt("TransferCooldown");
@@ -60,7 +60,7 @@ index cdb739df2a285032d25d84f4464f202a7a3fa578..f41f4885b0cfc6d9e22392f3b4668dcd
      }
  
      @Override
-@@ -107,6 +123,11 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -108,6 +124,11 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
          }
  
          nbt.putInt("TransferCooldown", this.cooldownTime);
@@ -72,7 +72,7 @@ index cdb739df2a285032d25d84f4464f202a7a3fa578..f41f4885b0cfc6d9e22392f3b4668dcd
      }
  
      @Override
-@@ -249,7 +270,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -252,7 +273,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
                  ItemStack movedItem = origItemStack;
  
                  final int originalItemCount = origItemStack.getCount();
@@ -81,7 +81,7 @@ index cdb739df2a285032d25d84f4464f202a7a3fa578..f41f4885b0cfc6d9e22392f3b4668dcd
                  origItemStack.setCount(movedItemCount);
  
                  // We only need to fire the event once to give protection plugins a chance to cancel this event
-@@ -286,7 +307,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -289,7 +310,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
      private static boolean hopperPull(final Level level, final Hopper hopper, final Container container, ItemStack origItemStack, final int i) {
          ItemStack movedItem = origItemStack;
          final int originalItemCount = origItemStack.getCount();
@@ -91,10 +91,10 @@ index cdb739df2a285032d25d84f4464f202a7a3fa578..f41f4885b0cfc6d9e22392f3b4668dcd
          movedItem.setCount(movedItemCount);
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java b/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
-index af5f27fb5ebad1e05da2b7d1a0710a2ef9c6ebbe..49f9acfc4d361011f0a9e2abfd06e1e78ac25b70 100644
+index f3c4d3835a18475e2cd2f519ac3dd9d9b59c454d..23bd36c430112fa9286c539a2e864605a32a1a87 100644
 --- a/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
 +++ b/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
-@@ -47,4 +47,19 @@ public class CraftHopper extends CraftLootable<HopperBlockEntity> implements Hop
+@@ -53,4 +53,19 @@ public class CraftHopper extends CraftLootable<HopperBlockEntity> implements Hop
          return getSnapshot().cooldownTime;
      }
      // Paper end - Expanded Hopper API
