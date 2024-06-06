@@ -5,7 +5,7 @@ Subject: [PATCH] do not suppress protocol errors
 
 
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
-index 02833deaa2bb7e5abc655bc1bdbe15c4b3ac7119..a45f3a192ba7505d313c30514fbf48623f6f7f4b 100644
+index f40420a6841f03983b0837e177ea2ae7c3a37ca1..d0b6b432f0965797a67d8912487aa52836360d5d 100644
 --- a/src/main/java/net/minecraft/network/Connection.java
 +++ b/src/main/java/net/minecraft/network/Connection.java
 @@ -213,7 +213,7 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
@@ -14,6 +14,6 @@ index 02833deaa2bb7e5abc655bc1bdbe15c4b3ac7119..a45f3a192ba7505d313c30514fbf4862
                      if (flag) {
 -                        Connection.LOGGER.debug("Failed to sent packet", throwable);
 +                        Connection.LOGGER.warn("Failed to send to " + player.getName() + " packet", throwable); // Cheetah - change log level to warn
-                         if (this.getSending() == PacketFlow.CLIENTBOUND) {
+                         boolean doesDisconnectExist = this.packetListener.protocol() != ConnectionProtocol.STATUS && this.packetListener.protocol() != ConnectionProtocol.HANDSHAKING; // Paper
+                         if (this.getSending() == PacketFlow.CLIENTBOUND && doesDisconnectExist) { // Paper
                              Packet<?> packet = this.sendLoginDisconnect ? new ClientboundLoginDisconnectPacket(ichatmutablecomponent) : new ClientboundDisconnectPacket(ichatmutablecomponent);
- 
