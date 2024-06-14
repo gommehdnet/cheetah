@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jendrik Eggers <jendrikeggerskapp@web.de>
+Date: Fri, 14 Jun 2024 18:36:38 +0200
+Subject: [PATCH] disable kick for out of order chat
+
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 9800eafde573e5591fbf8fd8f68a21a393bbc751..0457d4a64dc114671ea4d4640842def2eb8204d6 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -2465,7 +2465,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+         do {
+             instant1 = (Instant) this.lastChatTimeStamp.get();
+             if (timestamp.isBefore(instant1)) {
+-                return false;
++                return true; // Cheetah - disable kick for out of order chat
+             }
+         } while (!this.lastChatTimeStamp.compareAndSet(instant1, timestamp));
+ 
