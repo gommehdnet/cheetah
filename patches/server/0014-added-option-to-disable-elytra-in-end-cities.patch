@@ -5,10 +5,10 @@ Subject: [PATCH] added option to disable elytra in end cities
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index b8a89bf8a7a0ef25f00ccc0e84ca64f4524fdc3e..59d58c8b912f221bcd66c52753cd116132b71053 100644
+index b8499c1cea97a1a88a53053bc7da132f2fd3928d..ff11560fe9683903cb275f37de311abc11a45770 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -334,6 +334,7 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -336,6 +336,7 @@ public class GlobalConfiguration extends ConfigurationPart {
          public boolean useDimensionTypeForCustomSpawners = false;
          public boolean strictAdvancementDimensionCheck = false;
          public IntOr.Default compressionLevel = IntOr.Default.USE_DEFAULT;
@@ -17,7 +17,7 @@ index b8a89bf8a7a0ef25f00ccc0e84ca64f4524fdc3e..59d58c8b912f221bcd66c52753cd1161
  
      public BlockUpdates blockUpdates;
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
-index d859c1ce8d60920669d9d1afb3b71692375800a8..b2b3b4eb6e29a376b14da1a79e0d73cc78f9f526 100644
+index 4f77ccd9b93576a7ac6dd29b8a9e7b0390e43513..a895ba7d753576b284f4361076cc0336df07c9d1 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
 @@ -299,7 +299,7 @@ public class EndCityPieces {

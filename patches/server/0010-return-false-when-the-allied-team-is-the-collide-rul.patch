@@ -5,10 +5,10 @@ Subject: [PATCH] return false when the allied team is the collide rule team
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 4ee843dfd826772c9157ca421d8fe1f36f814b51..7a94ae7dc70c4e112d890d3876a6ed583c660544 100644
+index 437956b18d5bffd93c46e0be34cf413e9c704e5a..f52d9bbef20565dff3855d07f71dba24b77c9762 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -3407,7 +3407,17 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -3270,7 +3270,17 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
      }
  
      public boolean isAlliedTo(Team team) {
