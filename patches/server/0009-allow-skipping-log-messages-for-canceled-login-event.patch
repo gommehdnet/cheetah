@@ -75,10 +75,10 @@ index b0f7a378f19b9837c060c891002cd5db756cdae1..025a3f18e521d65ddc924575c153e814
          }
          return gameprofile; // Paper - Add more fields to AsyncPlayerPreLoginEvent
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index f9c443500ecc47b11b6eab81f877e4a1acbfeb74..046810ab7978370c2bf102ff56eb0f40996eb8a3 100644
+index 1bda8de29da69d4c8447f4841e1ec555e6921513..c24583b780b92faf38b61c45b4c941bdf5caba38 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -752,7 +752,7 @@ public abstract class PlayerList {
+@@ -753,7 +753,7 @@ public abstract class PlayerList {
  
          this.cserver.getPluginManager().callEvent(event);
          if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
