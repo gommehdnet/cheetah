@@ -5,19 +5,19 @@ Subject: [PATCH] added option to disable elytra in end cities
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index b8a89bf8a7a0ef25f00ccc0e84ca64f4524fdc3e..59d58c8b912f221bcd66c52753cd116132b71053 100644
+index 214ea75502d4abf9ebbc99a3811e4d2f8465227e..465dae03643af07e8c87758aad95ecc9b0bb9fa0 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -334,6 +334,7 @@ public class GlobalConfiguration extends ConfigurationPart {
-         public boolean useDimensionTypeForCustomSpawners = false;
-         public boolean strictAdvancementDimensionCheck = false;
+@@ -346,6 +346,7 @@ public class GlobalConfiguration extends ConfigurationPart {
          public IntOr.Default compressionLevel = IntOr.Default.USE_DEFAULT;
+         @Comment("Defines the leniency distance added on the server to the interaction range of a player when validating interact packets.")
+         public DoubleOr.Default clientInteractionLeniencyDistance = DoubleOr.Default.USE_DEFAULT;
 +        public boolean enableElytraInEndCities = true; // Cheetah - Added option to disable elytra in end cities
      }
  
      public BlockUpdates blockUpdates;
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
-index d859c1ce8d60920669d9d1afb3b71692375800a8..b2b3b4eb6e29a376b14da1a79e0d73cc78f9f526 100644
+index 4f77ccd9b93576a7ac6dd29b8a9e7b0390e43513..a895ba7d753576b284f4361076cc0336df07c9d1 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
 @@ -299,7 +299,7 @@ public class EndCityPieces {
