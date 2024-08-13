@@ -33,10 +33,10 @@ jobs:
       - name: Bundle
         run: ./gradlew createMojmapBundlerJar --info
       - name: Rename Artifact
-        run: mv build/libs/cheetah-1.21-bundler-1.21-R0.1-SNAPSHOT-mojmap.jar build/libs/cheetah-1.21.jar
+        run: mv build/libs/cheetah-1.21.1-bundler-1.21.1-R0.1-SNAPSHOT-mojmap.jar build/libs/cheetah-1.21.1.jar
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Cheetah-1.21
-          path: build/libs/cheetah-1.21.jar
+          name: Cheetah-1.21.1
+          path: build/libs/cheetah-1.21.1.jar
           if-no-files-found: error
