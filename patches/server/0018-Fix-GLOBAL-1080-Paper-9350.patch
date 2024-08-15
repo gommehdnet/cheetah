@@ -1,0 +1,48 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Dominik <yt.dominik48n@gmail.com>
+Date: Sun, 11 Aug 2024 09:37:49 +0200
+Subject: [PATCH] Fix GLOBAL-1080 (Paper #9350)
+
+
+diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
+index 1e0a6e5a3c907ab55ee6f2780a7d43bd455f2b7b..9d3867a87831c092d6c1f748a941584521fbc423 100644
+--- a/src/main/java/net/minecraft/server/level/ChunkMap.java
++++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
+@@ -1246,6 +1246,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+                 double d1 = vec3d_dx * vec3d_dx + vec3d_dz * vec3d_dz; // Paper
+                 double d2 = d0 * d0;
+                 boolean flag = d1 <= d2 && this.entity.broadcastToPlayer(player) && ChunkMap.this.isChunkTracked(player, this.entity.chunkPosition().x, this.entity.chunkPosition().z);
++                flag |= player.getCamera() == this.entity; // Cheetah - Fix GLOBAL-1080
+                 // Paper start - Configurable entity tracking range by Y
+                 if (flag && level.paperConfig().entities.trackingRangeY.enabled) {
+                     double rangeY = level.paperConfig().entities.trackingRangeY.get(this.entity, -1);
+diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+index 5980b70e2d7273239245237189b2debcbccfbac3..419fc2b992745447e5109a84362546bafa53daa4 100644
+--- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
++++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+@@ -785,8 +785,23 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
+ 
+         if (entity != this) {
+             if (entity.isAlive()) {
+-                this.absMoveTo(entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot());
+-                this.serverLevel().getChunkSource().move(this);
++                // Cheetah start - Fix GLOBAL-1080
++                if (entity.level() != this.level()) {
++                    this.getBukkitEntity().teleport(entity.getBukkitEntity().getLocation(), TeleportCause.SPECTATE);
++
++                    ServerLevel serverLevel = (ServerLevel) entity.level();
++                    Optional.ofNullable(serverLevel.getChunkSource().chunkMap.entityMap.get(entity.getId())).ifPresent(trackedEntity -> trackedEntity.updatePlayer(this));
++
++                    this.connection.send(new ClientboundSetCameraPacket(entity));
++                } else {
++                    if (!entity.chunkPosition().equals(this.chunkPosition())) {
++                        this.connection.internalTeleport(entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot(), java.util.Collections.emptySet());
++                    }
++
++                    this.absMoveTo(entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot());
++                    this.serverLevel().getChunkSource().move(this);
++                }
++                // Cheetah end
+                 if (this.wantsToStopRiding()) {
+                     this.setCamera(this);
+                 }
