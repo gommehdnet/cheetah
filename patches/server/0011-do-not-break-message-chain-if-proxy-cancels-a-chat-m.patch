@@ -5,10 +5,10 @@ Subject: [PATCH] do not break message chain if proxy cancels a chat message
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 4ea2878f0e1e82b04b440a6a369d39c7d8a3fa80..1b6040982afec588bc6ab2ae8779cb8290946f3f 100644
+index 4bcccc5a90f4a0fc2d03e3ef35289ce3b4301ba1..76c312a51398eadd6b19848a2bddfc4724861c7c 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2145,12 +2145,23 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2149,12 +2149,23 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
      }
  
      @Override
@@ -33,7 +33,7 @@ index 4ea2878f0e1e82b04b440a6a369d39c7d8a3fa80..1b6040982afec588bc6ab2ae8779cb82
          // CraftBukkit end
          Optional<LastSeenMessages> optional = this.unpackAndApplyLastSeen(packet.lastSeenMessages());
  
-@@ -2165,6 +2176,13 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2169,6 +2180,13 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
                      return;
                  }
  
@@ -47,7 +47,7 @@ index 4ea2878f0e1e82b04b440a6a369d39c7d8a3fa80..1b6040982afec588bc6ab2ae8779cb82
                  CompletableFuture<FilteredText> completablefuture = this.filterTextPacket(playerchatmessage.signedContent()).thenApplyAsync(Function.identity(), this.server.chatExecutor); // CraftBukkit - async chat
                  CompletableFuture<Component> componentFuture = this.server.getChatDecorator().decorate(this.player, null, playerchatmessage.decoratedContent()); // Paper - Adventure
  
-@@ -2217,9 +2235,24 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+@@ -2221,9 +2239,24 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
  
      @Override
      public void handleSignedChatCommand(ServerboundChatCommandSignedPacket packet) {
