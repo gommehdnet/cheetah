@@ -1,0 +1,41 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jendrik Eggers <jendrikeggerskapp@web.de>
+Date: Thu, 29 Aug 2024 11:38:45 +0200
+Subject: [PATCH] temp remove javadoc links
+
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index b74501523dded89fcb2ba3c101c5cb53ee883414..85a421671877413190cfed4daf2a4364cadc8e4a 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -149,12 +149,12 @@ tasks.withType<Javadoc> {
+     options.isDocFilesSubDirs = true
+     options.links(
+         "https://guava.dev/releases/32.1.2-jre/api/docs/",
+-        "https://javadoc.io/doc/org.yaml/snakeyaml/2.2/",
+-        "https://javadoc.io/doc/org.jetbrains/annotations/$annotationsVersion/", // Paper - we don't want Java 5 annotations
++        // "https://javadoc.io/doc/org.yaml/snakeyaml/2.2/", // Cheetah - temp remove javadoc links
++        // "https://javadoc.io/doc/org.jetbrains/annotations/$annotationsVersion/", // Paper - we don't want Java 5 annotations // Cheetah - temp remove javadoc links
+         // "https://javadoc.io/doc/net.md-5/bungeecord-chat/$bungeeCordChatVersion/", // Paper - don't link to bungee chat
+         // Paper start - add missing javadoc links
+-        "https://javadoc.io/doc/org.joml/joml/1.10.5/index.html",
+-        "https://www.javadoc.io/doc/com.google.code.gson/gson/2.10.1",
++        // "https://javadoc.io/doc/org.joml/joml/1.10.5/index.html", // Cheetah - temp remove javadoc links
++        // "https://www.javadoc.io/doc/com.google.code.gson/gson/2.10.1", // Cheetah - temp remove javadoc links
+         // Paper end
+         // Paper start
+         "https://jd.advntr.dev/api/$adventureVersion/",
+@@ -164,10 +164,10 @@ tasks.withType<Javadoc> {
+         "https://jd.advntr.dev/text-serializer-legacy/$adventureVersion/",
+         "https://jd.advntr.dev/text-serializer-plain/$adventureVersion/",
+         "https://jd.advntr.dev/text-logger-slf4j/$adventureVersion/",
+-        "https://javadoc.io/doc/org.slf4j/slf4j-api/$slf4jVersion/",
+-        "https://javadoc.io/doc/org.apache.logging.log4j/log4j-api/$log4jVersion/",
++        // "https://javadoc.io/doc/org.slf4j/slf4j-api/$slf4jVersion/", // Cheetah - temp remove javadoc links
++        // "https://javadoc.io/doc/org.apache.logging.log4j/log4j-api/$log4jVersion/", // Cheetah - temp remove javadoc links
+         // Paper end
+-        "https://javadoc.io/doc/org.apache.maven.resolver/maven-resolver-api/1.7.3", // Paper
++        // "https://javadoc.io/doc/org.apache.maven.resolver/maven-resolver-api/1.7.3", // Paper // Cheetah - temp remove javadoc links
+     )
+     options.tags("apiNote:a:API Note:")
+ 
