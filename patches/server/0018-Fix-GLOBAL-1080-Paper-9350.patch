@@ -5,19 +5,20 @@ Subject: [PATCH] Fix GLOBAL-1080 (Paper #9350)
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 1e0a6e5a3c907ab55ee6f2780a7d43bd455f2b7b..9d3867a87831c092d6c1f748a941584521fbc423 100644
+index af8cb316ac169aa8d98a88765b85bb013b9ba961..e2c2c5b976e0711b6418085b76242811fd0daed3 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
-@@ -1246,6 +1246,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
-                 double d1 = vec3d_dx * vec3d_dx + vec3d_dz * vec3d_dz; // Paper
-                 double d2 = d0 * d0;
-                 boolean flag = d1 <= d2 && this.entity.broadcastToPlayer(player) && ChunkMap.this.isChunkTracked(player, this.entity.chunkPosition().x, this.entity.chunkPosition().z);
+@@ -1257,6 +1257,8 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+                 flag = flag && this.entity.broadcastToPlayer(player) && ChunkMap.this.isChunkTracked(player, this.entity.chunkPosition().x, this.entity.chunkPosition().z);
+                 // Paper end - Configurable entity tracking range by Y
+ 
 +                flag |= player.getCamera() == this.entity; // Cheetah - Fix GLOBAL-1080
-                 // Paper start - Configurable entity tracking range by Y
-                 if (flag && level.paperConfig().entities.trackingRangeY.enabled) {
-                     double rangeY = level.paperConfig().entities.trackingRangeY.get(this.entity, -1);
++
+                 // CraftBukkit start - respect vanish API
+                 if (flag && !player.getBukkitEntity().canSee(this.entity.getBukkitEntity())) { // Paper - only consider hits
+                     flag = false;
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 5980b70e2d7273239245237189b2debcbccfbac3..419fc2b992745447e5109a84362546bafa53daa4 100644
+index c396580a9cfd86ff261bed439bb4662ae88010b5..b59f9b2d97e7fe0291a70d02e5e67d26fb0044cb 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -785,8 +785,23 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
