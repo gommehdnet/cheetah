@@ -5,10 +5,10 @@ Subject: [PATCH] added ProjectileAllowCollideWithPlayerEvent
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/projectile/Projectile.java b/src/main/java/net/minecraft/world/entity/projectile/Projectile.java
-index de64de5d1328d3e0826c9990eb7c7eca5088cb9c..3b0cd13ac6837e58ab1eec800b4a1523c6b11a2e 100644
+index 10ade433c083851d9ea4797c6ec618db122229f9..492aea1dbac4c1839a8a49296ed9389c79c7f03a 100644
 --- a/src/main/java/net/minecraft/world/entity/projectile/Projectile.java
 +++ b/src/main/java/net/minecraft/world/entity/projectile/Projectile.java
-@@ -322,7 +322,10 @@ public abstract class Projectile extends Entity implements TraceableEntity {
+@@ -319,7 +319,10 @@ public abstract class Projectile extends Entity implements TraceableEntity {
              if (entity1 instanceof net.minecraft.server.level.ServerPlayer && entity instanceof net.minecraft.server.level.ServerPlayer) {
                  org.bukkit.entity.Player collided = (org.bukkit.entity.Player) entity.getBukkitEntity();
                  org.bukkit.entity.Player shooter = (org.bukkit.entity.Player) entity1.getBukkitEntity();
@@ -21,7 +21,7 @@ index de64de5d1328d3e0826c9990eb7c7eca5088cb9c..3b0cd13ac6837e58ab1eec800b4a1523
                  }
              }
 diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-index 77ef27f9254235180a8596c6c8c4af750dc759d1..5686b200c18fefca82e04c80d15186a00515bf85 100644
+index 4632eb883e9f5efde520ee543bcad25827c0da2c..4354d55627c7a622f4629c33d4dd9c5579538e19 100644
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 @@ -15,6 +15,7 @@ import java.util.Map;
