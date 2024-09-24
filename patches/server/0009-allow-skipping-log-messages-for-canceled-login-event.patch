@@ -5,10 +5,10 @@ Subject: [PATCH] allow skipping log messages for canceled login events
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-index b0f7a378f19b9837c060c891002cd5db756cdae1..025a3f18e521d65ddc924575c153e814f95e08b1 100644
+index 40638b439966619e9c70a18a32abd95b2178fe9f..46d613b6a679222267b16ca6341066df300831ee 100644
 --- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-@@ -87,6 +87,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -92,6 +92,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
      private ServerPlayer player; // CraftBukkit
      public boolean iKnowThisMayNotBeTheBestIdeaButPleaseDisableUsernameValidation = false; // Paper - username validation overriding
      private int velocityLoginMessageId = -1; // Paper - Add Velocity IP Forwarding Support
@@ -16,7 +16,7 @@ index b0f7a378f19b9837c060c891002cd5db756cdae1..025a3f18e521d65ddc924575c153e814
  
      public ServerLoginPacketListenerImpl(MinecraftServer server, Connection connection, boolean transferred) {
          this.state = ServerLoginPacketListenerImpl.State.HELLO;
-@@ -140,8 +141,15 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -145,8 +146,15 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
      }
  
      public void disconnect(Component reason) {
@@ -33,7 +33,7 @@ index b0f7a378f19b9837c060c891002cd5db756cdae1..025a3f18e521d65ddc924575c153e814
              this.connection.send(new ClientboundLoginDisconnectPacket(reason));
              this.connection.disconnect(reason);
          } catch (Exception exception) {
-@@ -156,7 +164,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -161,7 +169,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
  
      @Override
      public void onDisconnect(DisconnectionDetails info) {
@@ -42,7 +42,7 @@ index b0f7a378f19b9837c060c891002cd5db756cdae1..025a3f18e521d65ddc924575c153e814
      }
  
      public String getUserName() {
-@@ -371,12 +379,14 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -376,12 +384,14 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
          playerName = gameprofile.getName();
          uniqueId = gameprofile.getId();
          // Paper end - Add more fields to AsyncPlayerPreLoginEvent
@@ -57,7 +57,7 @@ index b0f7a378f19b9837c060c891002cd5db756cdae1..025a3f18e521d65ddc924575c153e814
              Waitable<PlayerPreLoginEvent.Result> waitable = new Waitable<PlayerPreLoginEvent.Result>() {
                  @Override
                  protected PlayerPreLoginEvent.Result evaluate() {
-@@ -387,11 +397,14 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+@@ -392,11 +402,14 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
  
              ServerLoginPacketListenerImpl.this.server.processQueue.add(waitable);
              if (waitable.get() != PlayerPreLoginEvent.Result.ALLOWED) {
@@ -75,7 +75,7 @@ index b0f7a378f19b9837c060c891002cd5db756cdae1..025a3f18e521d65ddc924575c153e814
          }
          return gameprofile; // Paper - Add more fields to AsyncPlayerPreLoginEvent
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 1bda8de29da69d4c8447f4841e1ec555e6921513..c24583b780b92faf38b61c45b4c941bdf5caba38 100644
+index d595113472426382f197efff3f9e18a2bbbc3f91..39c998d3ed782a9b65b4ea6f9ccbe6a46e78997a 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -753,7 +753,7 @@ public abstract class PlayerList {
