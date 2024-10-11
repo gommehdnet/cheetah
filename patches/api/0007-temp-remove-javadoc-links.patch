@@ -5,10 +5,10 @@ Subject: [PATCH] temp remove javadoc links
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index b74501523dded89fcb2ba3c101c5cb53ee883414..85a421671877413190cfed4daf2a4364cadc8e4a 100644
+index 0d21a3582a57075f11a3a66fe97c6946a0decbae..62bda01c760d283ca63902dca5f207b507c51a48 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -149,12 +149,12 @@ tasks.withType<Javadoc> {
+@@ -150,12 +150,12 @@ tasks.withType<Javadoc> {
      options.isDocFilesSubDirs = true
      options.links(
          "https://guava.dev/releases/32.1.2-jre/api/docs/",
@@ -22,10 +22,10 @@ index b74501523dded89fcb2ba3c101c5cb53ee883414..85a421671877413190cfed4daf2a4364
 -        "https://www.javadoc.io/doc/com.google.code.gson/gson/2.10.1",
 +        // "https://javadoc.io/doc/org.joml/joml/1.10.5/index.html", // Cheetah - temp remove javadoc links
 +        // "https://www.javadoc.io/doc/com.google.code.gson/gson/2.10.1", // Cheetah - temp remove javadoc links
+         "https://jspecify.dev/docs/api/",
          // Paper end
          // Paper start
-         "https://jd.advntr.dev/api/$adventureVersion/",
-@@ -164,10 +164,10 @@ tasks.withType<Javadoc> {
+@@ -166,10 +166,10 @@ tasks.withType<Javadoc> {
          "https://jd.advntr.dev/text-serializer-legacy/$adventureVersion/",
          "https://jd.advntr.dev/text-serializer-plain/$adventureVersion/",
          "https://jd.advntr.dev/text-logger-slf4j/$adventureVersion/",
