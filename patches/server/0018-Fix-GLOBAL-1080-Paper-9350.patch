@@ -18,7 +18,7 @@ index 5b3a886c624b36557cbfaccdc3fb05a46a4ba36a..6fca35d9d39194f77df2c9c09667e11f
                  if (flag && !player.getBukkitEntity().canSee(this.entity.getBukkitEntity())) { // Paper - only consider hits
                      flag = false;
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index cffbd3300967e5d80b5973b35a76235bb2aa1b73..28b87a47f1b447c3fb34b292516ce68ebea82650 100644
+index cffbd3300967e5d80b5973b35a76235bb2aa1b73..9dd0c7b15068733c746f091f71122606c8b3ff5f 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -1013,8 +1013,23 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
@@ -37,7 +37,7 @@ index cffbd3300967e5d80b5973b35a76235bb2aa1b73..28b87a47f1b447c3fb34b292516ce68e
 +                    this.connection.send(new ClientboundSetCameraPacket(entity));
 +                } else {
 +                    if (!entity.chunkPosition().equals(this.chunkPosition())) {
-+                        this.connection.internalTeleport(entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot(), java.util.Collections.emptySet());
++                        this.connection.internalTeleport(PositionMoveRotation.of(entity), java.util.Collections.emptySet());
 +                    }
 +
 +                    this.absMoveTo(entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot());
