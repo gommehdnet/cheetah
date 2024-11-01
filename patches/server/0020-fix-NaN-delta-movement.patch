@@ -5,10 +5,10 @@ Subject: [PATCH] fix NaN delta movement
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java b/src/main/java/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java
-index f79fc0ed58af2cf55e8642b6d7fc9e4f57d0ba20..cbe515fc0b2c092be5071cc0677f3dde7eb1b332 100644
+index a84dccc59f9dc5298b18f263dc779c30c9b7ddab..311813a2e78070eed895eeb793836fbdb5cdc76b 100644
 --- a/src/main/java/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java
 +++ b/src/main/java/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java
-@@ -83,6 +83,13 @@ public abstract class AbstractHurtingProjectile extends Projectile {
+@@ -97,6 +97,13 @@ public abstract class AbstractHurtingProjectile extends Projectile {
                  this.igniteForSeconds(1.0F);
              }
  
@@ -19,6 +19,6 @@ index f79fc0ed58af2cf55e8642b6d7fc9e4f57d0ba20..cbe515fc0b2c092be5071cc0677f3dde
 +            }
 +            // Cheetah end - fix NaN delta movement
 +
-             HitResult movingobjectposition = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity, this.getClipType());
- 
-             if (movingobjectposition.getType() != HitResult.Type.MISS) {
+             if (movingobjectposition.getType() != HitResult.Type.MISS && this.isAlive()) {
+                 this.preHitTargetOrDeflectSelf(movingobjectposition); // CraftBukkit - projectile hit event
+             }

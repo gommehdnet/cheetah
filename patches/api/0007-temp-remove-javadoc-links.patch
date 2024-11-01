@@ -5,10 +5,10 @@ Subject: [PATCH] temp remove javadoc links
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 0d21a3582a57075f11a3a66fe97c6946a0decbae..62bda01c760d283ca63902dca5f207b507c51a48 100644
+index 3c1d8498312fa071a16699109f3294373346743b..a5ee4b0a905b3c47ae18554b3561a06987117e18 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -150,12 +150,12 @@ tasks.withType<Javadoc> {
+@@ -154,12 +154,12 @@ tasks.withType<Javadoc> {
      options.isDocFilesSubDirs = true
      options.links(
          "https://guava.dev/releases/32.1.2-jre/api/docs/",
@@ -25,7 +25,7 @@ index 0d21a3582a57075f11a3a66fe97c6946a0decbae..62bda01c760d283ca63902dca5f207b5
          "https://jspecify.dev/docs/api/",
          // Paper end
          // Paper start
-@@ -166,10 +166,10 @@ tasks.withType<Javadoc> {
+@@ -170,10 +170,10 @@ tasks.withType<Javadoc> {
          "https://jd.advntr.dev/text-serializer-legacy/$adventureVersion/",
          "https://jd.advntr.dev/text-serializer-plain/$adventureVersion/",
          "https://jd.advntr.dev/text-logger-slf4j/$adventureVersion/",

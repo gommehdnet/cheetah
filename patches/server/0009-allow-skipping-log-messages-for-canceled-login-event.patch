@@ -5,7 +5,7 @@ Subject: [PATCH] allow skipping log messages for canceled login events
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-index 40638b439966619e9c70a18a32abd95b2178fe9f..46d613b6a679222267b16ca6341066df300831ee 100644
+index 033755682c61c889723c3669b5cff4de147f637e..35103b6c2e92f4ce15d3d0b3a475dabfba494781 100644
 --- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 @@ -92,6 +92,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
@@ -75,10 +75,10 @@ index 40638b439966619e9c70a18a32abd95b2178fe9f..46d613b6a679222267b16ca6341066df
          }
          return gameprofile; // Paper - Add more fields to AsyncPlayerPreLoginEvent
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index d595113472426382f197efff3f9e18a2bbbc3f91..39c998d3ed782a9b65b4ea6f9ccbe6a46e78997a 100644
+index dadda5c2d0ae33bd2f5a893aa3ea9c8efc36145e..ee8a74bce3e07166effacbbd29fc32cd5bbfae7d 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -753,7 +753,7 @@ public abstract class PlayerList {
+@@ -716,7 +716,7 @@ public abstract class PlayerList {
  
          this.cserver.getPluginManager().callEvent(event);
          if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {

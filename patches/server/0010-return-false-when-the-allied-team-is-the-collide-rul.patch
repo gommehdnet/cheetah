@@ -5,13 +5,13 @@ Subject: [PATCH] return false when the allied team is the collide rule team
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 4b54d0ea31062972e68ee8fafe3cfaf68f65a5cd..7b6f86d63a8ab934746e290a79a9212c71488df2 100644
+index 6574219da33a7b9a4906883e65b78d7806f6e67b..32224248735fe2aa4d497c095d2682178ef0267e 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -3432,7 +3432,17 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -3645,7 +3645,17 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
      }
  
-     public boolean isAlliedTo(Team team) {
+     public boolean isAlliedTo(@Nullable Team team) {
 -        return this.getTeam() != null ? this.getTeam().isAlliedTo(team) : false;
 +        // Cheetah start - Return false when the allied team is the collide rule team
 +        final Team ownTeam = this.getTeam();

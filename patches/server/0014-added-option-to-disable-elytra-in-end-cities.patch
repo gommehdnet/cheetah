@@ -5,10 +5,10 @@ Subject: [PATCH] added option to disable elytra in end cities
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index a9dd0e5216e95afd98fd2200d110e2cc0b1b0dca..33cfdc83d93afffb65338b760ab475e36115b363 100644
+index cbd0f2c6636b8ae332f20a3cb763b06855dfe795..1e8f3df52cbb5de03fa4634cd160f440d64e535b 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -354,6 +354,7 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -346,6 +346,7 @@ public class GlobalConfiguration extends ConfigurationPart {
          public IntOr.Default compressionLevel = IntOr.Default.USE_DEFAULT;
          @Comment("Defines the leniency distance added on the server to the interaction range of a player when validating interact packets.")
          public DoubleOr.Default clientInteractionLeniencyDistance = DoubleOr.Default.USE_DEFAULT;
@@ -17,10 +17,10 @@ index a9dd0e5216e95afd98fd2200d110e2cc0b1b0dca..33cfdc83d93afffb65338b760ab475e3
  
      public BlockUpdates blockUpdates;
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
-index 4f77ccd9b93576a7ac6dd29b8a9e7b0390e43513..a895ba7d753576b284f4361076cc0336df07c9d1 100644
+index 62c51feab91536cc4d3e8826ee64312697301b68..5f1a586cc1110c16f6902be29d7308bffbaf4bd1 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
-@@ -299,7 +299,7 @@ public class EndCityPieces {
+@@ -300,7 +300,7 @@ public class EndCityPieces {
                          entityshulker.setPos((double) pos.getX() + 0.5D, (double) pos.getY(), (double) pos.getZ() + 0.5D);
                          world.addFreshEntity(entityshulker);
                      }

@@ -5,15 +5,15 @@ Subject: [PATCH] hide IP address is log files
 
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index ef177f21d654d69c128f3f39ea58f2d8ee598628..f9c443500ecc47b11b6eab81f877e4a1acbfeb74 100644
+index 1fcd9cd9344b0d2c4752042b07142db7d727dce8..dadda5c2d0ae33bd2f5a893aa3ea9c8efc36145e 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -480,7 +480,7 @@ public abstract class PlayerList {
+@@ -419,7 +419,7 @@ public abstract class PlayerList {
              scoreboard.addPlayerToTeam(player.getScoreboardName(), collideRuleTeam);
          }
          // Paper end - Configurable player collision
 -        PlayerList.LOGGER.info("{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", player.getName().getString(), s1, player.getId(), worldserver1.serverLevelData.getLevelName(), player.getX(), player.getY(), player.getZ());
 +        PlayerList.LOGGER.info("{} logged in with entity id {} at ([{}]{}, {}, {})", player.getName().getString(), player.getId(), worldserver1.serverLevelData.getLevelName(), player.getX(), player.getY(), player.getZ()); // Cheetah - removed ip address
-     }
- 
-     public void updateEntireScoreboard(ServerScoreboard scoreboard, ServerPlayer player) {
+         // Paper start - Send empty chunk, so players aren't stuck in the world loading screen with our chunk system not sending chunks when dead
+         if (player.isDeadOrDying()) {
+             net.minecraft.core.Holder<net.minecraft.world.level.biome.Biome> plains = worldserver1.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.BIOME)

@@ -4,27 +4,61 @@ Date: Thu, 4 May 2023 12:08:19 +0200
 Subject: [PATCH] Added VillagerGiveGiftToHeroEvent
 
 
+diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+index 9c61225a728a2ca91a1c71dead75fc7cd93668b6..670408b6b87f496674c2f347497c587b065ca6b8 100644
+--- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
++++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+@@ -2012,6 +2012,20 @@ public abstract class LivingEntity extends Entity implements Attackable {
+         }
+     }
+ 
++    // Cheetah start - Added VillagerGiveGiftToHeroEvent
++    public List<ItemStack> getFromGiftLootTable(ServerLevel world, ResourceKey<LootTable> lootTableKey) {
++        return this.getFromLootTable(world, lootTableKey, (lootparams_a) -> {
++            return lootparams_a.withParameter(LootContextParams.ORIGIN, this.position()).withParameter(LootContextParams.THIS_ENTITY, this).create(LootContextParamSets.GIFT);
++        });
++    }
++
++    protected List<ItemStack> getFromLootTable(ServerLevel world, ResourceKey<LootTable> lootTableKey, Function<LootParams.Builder, LootParams> lootContextParametersFactory) {
++        LootTable loottable = world.getServer().reloadableRegistries().getLootTable(lootTableKey);
++        LootParams lootparams = (LootParams) lootContextParametersFactory.apply(new LootParams.Builder(world));
++        return loottable.getRandomItems(lootparams);
++    }
++    // Cheetah end - Added VillagerGiveGiftToHeroEvent
++
+     public void knockback(double strength, double x, double z) {
+         // CraftBukkit start - EntityKnockbackEvent
+         this.knockback(strength, x, z, null, io.papermc.paper.event.entity.EntityKnockbackEvent.Cause.UNKNOWN); // Paper - knockback events
 diff --git a/src/main/java/net/minecraft/world/entity/ai/behavior/GiveGiftToHero.java b/src/main/java/net/minecraft/world/entity/ai/behavior/GiveGiftToHero.java
-index c429e077539088e73d44a5e103f0d5ca8b63b60e..f60bcd9a3fbe20472b9b018c65f0903a1fce25ec 100644
+index b7b33f76e04d3edf7f42781a5810c81431261acf..71f29cbf3d2354424c81cd71d86677ec48ff8e92 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/behavior/GiveGiftToHero.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/behavior/GiveGiftToHero.java
-@@ -24,6 +24,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
+@@ -1,6 +1,7 @@
+ package net.minecraft.world.entity.ai.behavior;
+ 
+ import com.google.common.collect.ImmutableMap;
++import java.util.List;
+ import java.util.Map;
+ import java.util.Optional;
+ import net.minecraft.core.BlockPos;
+@@ -13,8 +14,10 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
+ import net.minecraft.world.entity.npc.Villager;
+ import net.minecraft.world.entity.npc.VillagerProfession;
+ import net.minecraft.world.entity.player.Player;
++import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.level.storage.loot.BuiltInLootTables;
  import net.minecraft.world.level.storage.loot.LootTable;
- import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
- import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-+import org.bukkit.event.entity.VillagerGiveGiftToHeroEvent; // Cheetah - Added VillagerGiveGiftToHeroEvent
++import org.bukkit.event.entity.VillagerGiveGiftToHeroEvent;
  
  public class GiveGiftToHero extends Behavior<Villager> {
      private static final int THROW_GIFT_AT_DISTANCE = 5;
-@@ -115,9 +116,22 @@ public class GiveGiftToHero extends Behavior<Villager> {
+@@ -106,7 +109,19 @@ public class GiveGiftToHero extends Behavior<Villager> {
      }
  
-     private void throwGift(Villager villager, LivingEntity recipient) {
--        for (ItemStack itemStack : this.getItemToThrow(villager)) {
--            BehaviorUtils.throwItem(villager, itemStack, recipient.position());
+     private void throwGift(ServerLevel world, Villager villager, LivingEntity recipient) {
+-        villager.dropFromGiftLootTable(world, getLootTableToThrow(villager), (worldx, stack) -> BehaviorUtils.throwItem(villager, stack, recipient.position()));
 +        // Cheetah start - Added VillagerGiveGiftToHeroEvent
-+        List<ItemStack> itemStacks = this.getItemToThrow(villager);
-+
++        List<ItemStack> itemStacks = villager.getFromGiftLootTable(world, getLootTableToThrow(villager));
 +        List<org.bukkit.inventory.ItemStack> convertedItemStacks = itemStacks.stream().map(org.bukkit.craftbukkit.inventory.CraftItemStack::asCraftMirror).collect(java.util.stream.Collectors.toList());
 +
 +        VillagerGiveGiftToHeroEvent event = new VillagerGiveGiftToHeroEvent(villager.getBukkitEntity(), recipient.getBukkitLivingEntity(), convertedItemStacks);
@@ -33,11 +67,9 @@ index c429e077539088e73d44a5e103f0d5ca8b63b60e..f60bcd9a3fbe20472b9b018c65f0903a
 +        if (!event.isCancelled() && !event.getItemStacks().isEmpty()) {
 +            itemStacks = event.getItemStacks().stream().map(org.bukkit.craftbukkit.inventory.CraftItemStack::asNMSCopy).toList();
 +
-+            for (ItemStack itemStack : itemStacks) {
-+                BehaviorUtils.throwItem(villager, itemStack, recipient.position());
-+            }
-         }
-+        // Cheetah end
++            itemStacks.forEach(stack -> BehaviorUtils.throwItem(villager, stack, recipient.position()));
++        }
++        // Cheetah end - Added VillagerGiveGiftToHeroEvent
      }
  
-     private List<ItemStack> getItemToThrow(Villager villager) {
+     private static ResourceKey<LootTable> getLootTableToThrow(Villager villager) {
