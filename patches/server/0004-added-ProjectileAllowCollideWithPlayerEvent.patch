@@ -21,37 +21,29 @@ index 6c2d4d6f3a36ab452dfd3c33f66e54f152906639..6daf09689b6b880f5e341e1c63821830
                  }
              }
 diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-index deba03eb37012c638e08e20cd1c98e9db190c790..4192f937db65c308e16f7591774f652c1a81cd47 100644
+index deba03eb37012c638e08e20cd1c98e9db190c790..d6348437f84e1802124a08463df6aa7b843b3263 100644
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-@@ -15,6 +15,7 @@ import java.util.Map;
- import java.util.stream.Collectors;
- import java.util.stream.Stream;
- import javax.annotation.Nullable;
-+import net.gommehd.cheetah.event.entity.ProjectileAllowCollideWithPlayerEvent; // Cheetah - Added ProjectileAllowCollideWithPlayerEvent
- import net.minecraft.core.BlockPos;
- import net.minecraft.core.Direction;
- import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
-@@ -1473,7 +1474,10 @@ public class CraftEventFactory {
+@@ -1473,7 +1473,10 @@ public class CraftEventFactory {
          com.destroystokyo.paper.event.entity.ProjectileCollideEvent event = new com.destroystokyo.paper.event.entity.ProjectileCollideEvent(projectile, collided);
  
          if (projectile.getShooter() instanceof Player && collided instanceof Player) {
 -            if (!((Player) projectile.getShooter()).canSee((Player) collided)) {
 +            // Cheetah start - Added ProjectileAllowCollideWithPlayerEvent
-+            ProjectileAllowCollideWithPlayerEvent allowCollideEvent = callProjectileAllowCollideWithPlayerEvent(entity, position.getEntity());
++            net.gommehd.cheetah.event.entity.ProjectileAllowCollideWithPlayerEvent allowCollideEvent = callProjectileAllowCollideWithPlayerEvent(entity, position.getEntity());
 +            if (!allowCollideEvent.isAllowCollide() && !((Player) projectile.getShooter()).canSee((Player) collided)) {
 +                // Cheetah end
                  event.setCancelled(true);
                  return event;
              }
-@@ -1484,6 +1488,15 @@ public class CraftEventFactory {
+@@ -1484,6 +1487,15 @@ public class CraftEventFactory {
      }
      // Paper end
  
 +    // Cheetah start - Added ProjectileAllowCollideWithPlayerEvent
-+    public static ProjectileAllowCollideWithPlayerEvent callProjectileAllowCollideWithPlayerEvent(Entity entity, Entity player) {
++    public static net.gommehd.cheetah.event.entity.ProjectileAllowCollideWithPlayerEvent callProjectileAllowCollideWithPlayerEvent(Entity entity, Entity player) {
 +        Projectile projectile = (Projectile) entity.getBukkitEntity();
-+        ProjectileAllowCollideWithPlayerEvent event = new ProjectileAllowCollideWithPlayerEvent(projectile, (Player) player.getBukkitEntity());
++        net.gommehd.cheetah.event.entity.ProjectileAllowCollideWithPlayerEvent event = new net.gommehd.cheetah.event.entity.ProjectileAllowCollideWithPlayerEvent(projectile, (Player) player.getBukkitEntity());
 +        event.callEvent();
 +        return event;
 +    }
