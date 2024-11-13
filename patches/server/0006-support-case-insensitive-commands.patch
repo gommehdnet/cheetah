@@ -8,7 +8,7 @@ Content-Transfer-Encoding: 8bit
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index d7ac001d53a083e9881f2320eb7fd5dcbd20416e..1e62ae228e77e6c1f7f1fa90a826fc6dd23c0a35 100644
+index b5d5dbc50a7b8c40739a15f164ffd08fdc534f9c..6978078736baf5f5895122dff9f82d3b25ef1c60 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2369,10 +2369,21 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
@@ -35,10 +35,10 @@ index d7ac001d53a083e9881f2320eb7fd5dcbd20416e..1e62ae228e77e6c1f7f1fa90a826fc6d
  
      private void tryHandleChat(String s, Runnable runnable, boolean sync) { // CraftBukkit
 diff --git a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
-index 945878e989f136ac516eb1c539c0626547c465fb..fa93581f158c9de8e5ba3e00796aa5d27e9a8f16 100644
+index 68001fbc7abf4c87740ebe8e7e492fa254be0da1..6fcac6c1157bc35756bdb1606979c61f8c2a5c4f 100644
 --- a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
 +++ b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
-@@ -63,7 +63,7 @@ public class VanillaCommandWrapper extends BukkitCommand { // Paper
+@@ -64,7 +64,7 @@ public class VanillaCommandWrapper extends BukkitCommand { // Paper
          Preconditions.checkArgument(alias != null, "Alias cannot be null");
  
          CommandSourceStack icommandlistener = VanillaCommandWrapper.getListener(sender);
