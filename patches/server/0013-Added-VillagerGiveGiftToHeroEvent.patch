@@ -5,10 +5,10 @@ Subject: [PATCH] Added VillagerGiveGiftToHeroEvent
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index f36a075dbee2b96d01899e02460b1d8443e91749..8c00e16e070d90928282f653d2a88c09584989ba 100644
+index 96b4fbe4a4655777ff10b32e3257e2fac2aba12a..f33e915137d7f5de49b9a686b060d11595cad425 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-@@ -2018,6 +2018,20 @@ public abstract class LivingEntity extends Entity implements Attackable {
+@@ -2029,6 +2029,20 @@ public abstract class LivingEntity extends Entity implements Attackable {
          }
      }
  

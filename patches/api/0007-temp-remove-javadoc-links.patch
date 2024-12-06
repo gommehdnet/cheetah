@@ -5,27 +5,27 @@ Subject: [PATCH] temp remove javadoc links
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 1701435967740b55563454eb2b1a61f10fedea05..b579f5f237dbb3f17a03ef3698c84b9450d08965 100644
+index 8daeb74ae931c1400971912bce5f4623f643c078..52b16fc3d87035232a21a4680d954732e2a5abbf 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -167,12 +167,12 @@ tasks.withType<Javadoc> {
+@@ -169,12 +169,12 @@ tasks.withType<Javadoc> {
      options.isDocFilesSubDirs = true
      options.links(
-         "https://guava.dev/releases/32.1.2-jre/api/docs/",
+         "https://guava.dev/releases/33.3.1-jre/api/docs/",
 -        "https://javadoc.io/doc/org.yaml/snakeyaml/2.2/",
 -        "https://javadoc.io/doc/org.jetbrains/annotations/$annotationsVersion/", // Paper - we don't want Java 5 annotations
 +        // "https://javadoc.io/doc/org.yaml/snakeyaml/2.2/", // Cheetah - temp remove javadoc links
 +        // "https://javadoc.io/doc/org.jetbrains/annotations/$annotationsVersion/", // Paper - we don't want Java 5 annotations // Cheetah - temp remove javadoc links
          // "https://javadoc.io/doc/net.md-5/bungeecord-chat/$bungeeCordChatVersion/", // Paper - don't link to bungee chat
          // Paper start - add missing javadoc links
--        "https://javadoc.io/doc/org.joml/joml/1.10.5/index.html",
--        "https://www.javadoc.io/doc/com.google.code.gson/gson/2.10.1",
-+        // "https://javadoc.io/doc/org.joml/joml/1.10.5/index.html", // Cheetah - temp remove javadoc links
-+        // "https://www.javadoc.io/doc/com.google.code.gson/gson/2.10.1", // Cheetah - temp remove javadoc links
+-        "https://javadoc.io/doc/org.joml/joml/1.10.8/index.html",
+-        "https://www.javadoc.io/doc/com.google.code.gson/gson/2.11.0",
++        // "https://javadoc.io/doc/org.joml/joml/1.10.8/index.html", // Cheetah - temp remove javadoc links
++        // "https://www.javadoc.io/doc/com.google.code.gson/gson/2.11.0", // Cheetah - temp remove javadoc links
          "https://jspecify.dev/docs/api/",
          // Paper end
          // Paper start
-@@ -183,10 +183,10 @@ tasks.withType<Javadoc> {
+@@ -185,10 +185,10 @@ tasks.withType<Javadoc> {
          "https://jd.advntr.dev/text-serializer-legacy/$adventureVersion/",
          "https://jd.advntr.dev/text-serializer-plain/$adventureVersion/",
          "https://jd.advntr.dev/text-logger-slf4j/$adventureVersion/",
