@@ -5,10 +5,10 @@ Subject: [PATCH] Async-able StructuresLocateEvent
 
 
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ChunkGenerator.java b/src/main/java/net/minecraft/world/level/chunk/ChunkGenerator.java
-index 488938c32a48437721a71d294c77468f00c035b9..2ca1dc25002a8717b4e1c597574eda29c7594273 100644
+index e0cb360ece042c4fc6aa0d10106923fe25288f5c..72c2272f393d2a4c8de524fdf53fd9c9f9cb945a 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ChunkGenerator.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ChunkGenerator.java
-@@ -131,7 +131,7 @@ public abstract class ChunkGenerator {
+@@ -132,7 +132,7 @@ public abstract class ChunkGenerator {
          final org.bukkit.Location origin = io.papermc.paper.util.MCUtil.toLocation(world, center);
          final List<org.bukkit.generator.structure.Structure> apiStructures = structures.stream().map(Holder::value).map(nms -> org.bukkit.craftbukkit.generator.structure.CraftStructure.minecraftToBukkit(nms)).toList();
          if (!apiStructures.isEmpty()) {

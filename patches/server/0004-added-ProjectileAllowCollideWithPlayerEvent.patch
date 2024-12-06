@@ -5,10 +5,10 @@ Subject: [PATCH] added ProjectileAllowCollideWithPlayerEvent
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/projectile/Projectile.java b/src/main/java/net/minecraft/world/entity/projectile/Projectile.java
-index 6c2d4d6f3a36ab452dfd3c33f66e54f152906639..6daf09689b6b880f5e341e1c6382183058569b06 100644
+index 9a7b56b653848974e1194eb4f6d40cb99a96ff57..c4b18f924f8d905a9ced0d0fd741b8f68276ddd2 100644
 --- a/src/main/java/net/minecraft/world/entity/projectile/Projectile.java
 +++ b/src/main/java/net/minecraft/world/entity/projectile/Projectile.java
-@@ -435,7 +435,10 @@ public abstract class Projectile extends Entity implements TraceableEntity {
+@@ -420,7 +420,10 @@ public abstract class Projectile extends Entity implements TraceableEntity {
              if (entity1 instanceof net.minecraft.server.level.ServerPlayer && entity instanceof net.minecraft.server.level.ServerPlayer) {
                  org.bukkit.entity.Player collided = (org.bukkit.entity.Player) entity.getBukkitEntity();
                  org.bukkit.entity.Player shooter = (org.bukkit.entity.Player) entity1.getBukkitEntity();
