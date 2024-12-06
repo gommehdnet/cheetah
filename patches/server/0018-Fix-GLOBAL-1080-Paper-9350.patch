@@ -5,10 +5,10 @@ Subject: [PATCH] Fix GLOBAL-1080 (Paper #9350)
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 5b3a886c624b36557cbfaccdc3fb05a46a4ba36a..6fca35d9d39194f77df2c9c09667e11f947a98ee 100644
+index cfeeddf2cb4ff50dbc29c6913e78ca1dee076790..960b28620ae4fc75e61be73eddcd4f1bc7d4e28d 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
-@@ -1294,6 +1294,8 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+@@ -1288,6 +1288,8 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
                  flag = flag && this.entity.broadcastToPlayer(player) && ChunkMap.this.isChunkTracked(player, this.entity.chunkPosition().x, this.entity.chunkPosition().z);
                  // Paper end - Configurable entity tracking range by Y
  
@@ -18,7 +18,7 @@ index 5b3a886c624b36557cbfaccdc3fb05a46a4ba36a..6fca35d9d39194f77df2c9c09667e11f
                  if (flag && !player.getBukkitEntity().canSee(this.entity.getBukkitEntity())) { // Paper - only consider hits
                      flag = false;
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index cffbd3300967e5d80b5973b35a76235bb2aa1b73..9dd0c7b15068733c746f091f71122606c8b3ff5f 100644
+index 5a8f396d47577f087abb415c972fd4f51e50faba..9553c4ca501ab3414c4d60bc8fcc4529adff8f46 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -1013,8 +1013,23 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple

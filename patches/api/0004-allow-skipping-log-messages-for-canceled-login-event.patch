@@ -5,7 +5,7 @@ Subject: [PATCH] allow skipping log messages for canceled login events
 
 
 diff --git a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
-index ae02788536d0c6736aba4ccf812844df4f9789f1..7d47b0a324536a70ee6e7ed1235a2499e69ae868 100644
+index ff5cca4a7e75274b4b278a48ae1544ff42a9836a..89dcb2e10e0f563c879b947e68c3d4b157032ae5 100644
 --- a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
 @@ -27,6 +27,7 @@ public class AsyncPlayerPreLoginEvent extends Event {
@@ -14,7 +14,7 @@ index ae02788536d0c6736aba4ccf812844df4f9789f1..7d47b0a324536a70ee6e7ed1235a2499
      private final boolean transferred;
 +    private boolean skipLog; // Cheetah - Allow skipping log messages for canceled login events
  
-     @Deprecated
+     @Deprecated(since = "1.7.5")
      public AsyncPlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress) {
 @@ -297,6 +298,16 @@ public class AsyncPlayerPreLoginEvent extends Event {
          return transferred;
@@ -63,7 +63,7 @@ index eaa0548cf430bf5b58ff84e0a4403c451699db28..2a07caef10e00123818ac288a1cbccb8
       * Allows the player to log in
       */
 diff --git a/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java b/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
-index 175ed12dd1698f4d153c9acdac8340c15a427ea5..36103261a69bf8c7da83c19e0ce462a572d7df98 100644
+index b323212f11f831a96d87f6c9d746a90d119a3efd..b101950f685587cf2940b13a8f0ba89859d1df28 100644
 --- a/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
 @@ -30,6 +30,7 @@ public class PlayerPreLoginEvent extends Event {
@@ -72,7 +72,7 @@ index 175ed12dd1698f4d153c9acdac8340c15a427ea5..36103261a69bf8c7da83c19e0ce462a5
      private final UUID uniqueId;
 +    private boolean skipLog; // Cheetah - Allow skipping log messages for canceled login events
  
-     @Deprecated
+     @Deprecated(since = "1.7.5")
      public PlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress) {
 @@ -176,6 +177,16 @@ public class PlayerPreLoginEvent extends Event {
          return uniqueId;

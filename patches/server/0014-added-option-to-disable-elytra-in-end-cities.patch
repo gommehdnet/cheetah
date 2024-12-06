@@ -5,10 +5,10 @@ Subject: [PATCH] added option to disable elytra in end cities
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index cbd0f2c6636b8ae332f20a3cb763b06855dfe795..1e8f3df52cbb5de03fa4634cd160f440d64e535b 100644
+index 17e23ca4dd2bbfba49ea00aa2b719a95feb931be..6419e1c66f607cab07e0a7292cec00714eeb402d 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -346,6 +346,7 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -344,6 +344,7 @@ public class GlobalConfiguration extends ConfigurationPart {
          public IntOr.Default compressionLevel = IntOr.Default.USE_DEFAULT;
          @Comment("Defines the leniency distance added on the server to the interaction range of a player when validating interact packets.")
          public DoubleOr.Default clientInteractionLeniencyDistance = DoubleOr.Default.USE_DEFAULT;
