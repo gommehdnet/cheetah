@@ -1,0 +1,56 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: lennoxlotl <admin@lennoxlotl.dev>
+Date: Sun, 8 Dec 2024 16:56:05 +0100
+Subject: [PATCH] fix: shield sounds not playing for other players
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+index f33e915137d7f5de49b9a686b060d11595cad425..346354719e29e3c7a17e9c7a872f104350d31fd8 100644
+--- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
++++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+@@ -1458,6 +1458,14 @@ public abstract class LivingEntity extends Entity implements Attackable {
+             float f1 = amount; final float originalAmount = f1; // Paper - revert to vanilla #hurt - OBFHELPER
+             boolean flag = amount > 0.0F && this.isDamageSourceBlocked(source); // Copied from below
+             float f2 = 0.0F;
++            // Cheetah start - Play shield sounds for all players
++            boolean shieldBroken;
++            if (source.getDirectEntity() instanceof LivingEntity livingEntity) {
++                shieldBroken = livingEntity.canDisableShield() && this.getItemBlockingWith() != null;
++            } else {
++                shieldBroken = false;
++            }
++            // Cheetah end
+ 
+             // CraftBukkit - Moved into handleEntityDamage(DamageSource, float) for get f and actuallyHurt(DamageSource, float, EntityDamageEvent) for handle damage
+             if (false && amount > 0.0F && this.isDamageSourceBlocked(source)) {
+@@ -1540,6 +1548,21 @@ public abstract class LivingEntity extends Entity implements Attackable {
+             if (flag1) {
+                 if (flag) {
+                     world.broadcastEntityEvent(this, (byte) 29);
++                    // Cheetah start - Play shield sounds for all players
++                    world.players().stream()
++                        .filter(entity -> entity != this)
++                        .forEach(entity ->
++                            entity.connection.sendPacket(
++                                new net.minecraft.network.protocol.game.ClientboundSoundPacket(
++                                    Holder.direct(shieldBroken ? SoundEvents.SHIELD_BREAK : SoundEvents.SHIELD_BLOCK),
++                                    getSoundSource(),
++                                    position().x,
++                                    position().y,
++                                    position().z,
++                                    shieldBroken ? 0.8F : 1.0F,
++                                    0.8F + world.random.nextFloat() * 0.4F,
++                                    world.random.nextLong())));
++                    // Cheetah end
+                 } else {
+                     world.broadcastDamageEvent(this, source);
+                 }
+@@ -1588,7 +1611,7 @@ public abstract class LivingEntity extends Entity implements Attackable {
+                     this.die(source);
+                     this.silentDeath = false; // Paper - cancellable death event - reset to default
+                 }
+-            } else if (flag1) {
++            } else if (flag1 && !flag) { // Cheetah - Play shield sounds for all players
+                 this.playHurtSound(source);
+             }
+ 
