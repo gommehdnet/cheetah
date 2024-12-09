@@ -5,10 +5,10 @@ Subject: [PATCH] fix NaN delta movement
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java b/src/main/java/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java
-index a84dccc59f9dc5298b18f263dc779c30c9b7ddab..311813a2e78070eed895eeb793836fbdb5cdc76b 100644
+index 19ff16e1ba406584f3cdd760d0269a50980b0a26..00f3c8b9db31f85da190ab4554dbfeb6b1e442dd 100644
 --- a/src/main/java/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java
 +++ b/src/main/java/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java
-@@ -97,6 +97,13 @@ public abstract class AbstractHurtingProjectile extends Projectile {
+@@ -93,6 +93,13 @@ public abstract class AbstractHurtingProjectile extends Projectile {
                  this.igniteForSeconds(1.0F);
              }
  

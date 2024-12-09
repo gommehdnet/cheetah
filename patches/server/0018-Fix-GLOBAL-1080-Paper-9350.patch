@@ -18,10 +18,10 @@ index cfeeddf2cb4ff50dbc29c6913e78ca1dee076790..960b28620ae4fc75e61be73eddcd4f1b
                  if (flag && !player.getBukkitEntity().canSee(this.entity.getBukkitEntity())) { // Paper - only consider hits
                      flag = false;
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 5a8f396d47577f087abb415c972fd4f51e50faba..9553c4ca501ab3414c4d60bc8fcc4529adff8f46 100644
+index fc7f7a34babd095a51b5321f600aef65a2a9d123..59bf64335563e0c995785df12196572ff075177e 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-@@ -1013,8 +1013,23 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
+@@ -1010,8 +1010,23 @@ public class ServerPlayer extends net.minecraft.world.entity.player.Player imple
  
          if (entity != this) {
              if (entity.isAlive()) {
