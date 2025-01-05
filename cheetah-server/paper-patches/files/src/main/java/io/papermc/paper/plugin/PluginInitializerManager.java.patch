@@ -1,0 +1,63 @@
+--- a/src/main/java/io/papermc/paper/plugin/PluginInitializerManager.java
++++ b/src/main/java/io/papermc/paper/plugin/PluginInitializerManager.java
+@@ -32,12 +_,12 @@
+     private final Path updateDirectory;
+     public final io.papermc.paper.pluginremap.@org.checkerframework.checker.nullness.qual.MonotonicNonNull PluginRemapper pluginRemapper; // Paper
+ 
+-    PluginInitializerManager(final Path pluginDirectory, final Path updateDirectory) {
++    PluginInitializerManager(final Path pluginDirectory, final Path updateDirectory, final Path remappedDirectory) { // Cheetah - configurable remapped directory
+         this.pluginDirectory = pluginDirectory;
+         this.updateDirectory = updateDirectory;
+         this.pluginRemapper = Boolean.getBoolean("paper.disablePluginRemapping")
+             ? null
+-            : PluginRemapper.create(pluginDirectory);
++            : PluginRemapper.create(pluginDirectory, remappedDirectory); // Cheetah - configurable remapped directory
+         LibraryLoader.REMAPPER = this.pluginRemapper == null ? Function.identity() : this.pluginRemapper::remapLibraries;
+     }
+ 
+@@ -46,12 +_,13 @@
+         final File configFileLocationBukkit = (File) minecraftOptionSet.valueOf("bukkit-settings");
+ 
+         final Path pluginDirectory = ((File) minecraftOptionSet.valueOf("plugins")).toPath();
++        final Path remappedDirectory = ((File) minecraftOptionSet.valueOf("remapped-directory")).toPath(); // Cheetah - configurable remapped directory
+ 
+         final YamlConfiguration configuration = PaperConfigurations.loadLegacyConfigFile(configFileLocationBukkit);
+ 
+         final String updateDirectoryName = configuration.getString("settings.update-folder", "update");
+         if (updateDirectoryName.isBlank()) {
+-            return new PluginInitializerManager(pluginDirectory, null);
++            return new PluginInitializerManager(pluginDirectory, null, remappedDirectory); // Cheetah - configurable remapped directory
+         }
+ 
+         final Path resolvedUpdateDirectory = pluginDirectory.resolve(updateDirectoryName);
+@@ -61,7 +_,7 @@
+                 LOGGER.error("Your configured update directory ({}) in bukkit.yml is pointing to a non-directory path. " +
+                     "Auto updating functionality will not work.", resolvedUpdateDirectory);
+             }
+-            return new PluginInitializerManager(pluginDirectory, null);
++            return new PluginInitializerManager(pluginDirectory, null, remappedDirectory); // Cheetah - configurable remapped directory
+         }
+ 
+         boolean isSameFile;
+@@ -70,7 +_,7 @@
+         } catch (final IOException e) {
+             LOGGER.error("Misconfigured update directory!");
+             LOGGER.error("Failed to compare update/plugin directory", e);
+-            return new PluginInitializerManager(pluginDirectory, null);
++            return new PluginInitializerManager(pluginDirectory, null, remappedDirectory); // Cheetah - configurable remapped directory
+         }
+ 
+         if (isSameFile) {
+@@ -78,10 +_,10 @@
+             LOGGER.error(("Your configured update directory (%s) in bukkit.yml is pointing to the same location as the plugin directory (%s). " +
+                 "Disabling auto updating functionality.").formatted(resolvedUpdateDirectory, pluginDirectory));
+ 
+-            return new PluginInitializerManager(pluginDirectory, null);
++            return new PluginInitializerManager(pluginDirectory, null, remappedDirectory); // Cheetah - configurable remapped directory
+         }
+ 
+-        return new PluginInitializerManager(pluginDirectory, resolvedUpdateDirectory);
++        return new PluginInitializerManager(pluginDirectory, resolvedUpdateDirectory, remappedDirectory); // Cheetah - configurable remapped directory
+     }
+ 
+     public static PluginInitializerManager init(final OptionSet optionSet) throws Exception {

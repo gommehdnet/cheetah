@@ -1,0 +1,39 @@
+--- a/src/main/java/io/papermc/paper/pluginremap/PluginRemapper.java
++++ b/src/main/java/io/papermc/paper/pluginremap/PluginRemapper.java
+@@ -42,7 +_,7 @@
+ @DefaultQualifier(NonNull.class)
+ public final class PluginRemapper {
+     public static final boolean DEBUG_LOGGING = Boolean.getBoolean("Paper.PluginRemapperDebug");
+-    private static final String PAPER_REMAPPED = ".paper-remapped";
++    public static final String PAPER_REMAPPED = ".paper-remapped"; // Cheetah - configurable remapped directory
+     private static final String UNKNOWN_ORIGIN = "unknown-origin";
+     private static final String LIBRARIES = "libraries";
+     private static final String EXTRA_PLUGINS = "extra-plugins";
+@@ -58,10 +_,10 @@
+     private final UnknownOriginRemappedPluginIndex libraries;
+     private @Nullable CompletableFuture<IMappingFile> reversedMappings;
+ 
+-    public PluginRemapper(final Path pluginsDir) {
++    public PluginRemapper(final Path pluginsDir, final Path remappedDir) { // Cheetah - configurable remapped directory
+         this.threadPool = createThreadPool();
+         final CompletableFuture<IMappingFile> mappings = CompletableFuture.supplyAsync(PluginRemapper::loadReobfMappings, this.threadPool);
+-        final Path remappedPlugins = pluginsDir.resolve(PAPER_REMAPPED);
++        final Path remappedPlugins = remappedDir.toString().equals(PAPER_REMAPPED) ? pluginsDir.resolve(PAPER_REMAPPED) : remappedDir; // Cheetah - configurable remapped directory
+         this.reversedMappings = this.reversedMappingsFuture(() -> mappings, remappedPlugins, this.threadPool);
+         this.reobf = new ReobfServer(remappedPlugins.resolve(REMAP_CLASSPATH), mappings, this.threadPool);
+         this.remappedPlugins = new RemappedPluginIndex(remappedPlugins, false);
+@@ -70,12 +_,12 @@
+         this.libraries = new UnknownOriginRemappedPluginIndex(this.remappedPlugins.dir().resolve(LIBRARIES));
+     }
+ 
+-    public static @Nullable PluginRemapper create(final Path pluginsDir) {
++    public static @Nullable PluginRemapper create(final Path pluginsDir, final Path remappedDir) { // Cheetah - configurable remapped directory
+         if (MappingEnvironment.reobf() || !MappingEnvironment.hasMappings()) {
+             return null;
+         }
+ 
+-        return new PluginRemapper(pluginsDir);
++        return new PluginRemapper(pluginsDir, remappedDir); // Cheetah - configurable remapped directory
+     }
+ 
+     public void shutdown() {
