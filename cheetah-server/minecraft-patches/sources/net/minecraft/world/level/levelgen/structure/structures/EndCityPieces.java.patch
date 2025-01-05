@@ -1,0 +1,11 @@
+--- a/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
++++ b/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
+@@ -402,7 +_,7 @@
+                         shulker.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+                         level.addFreshEntity(shulker);
+                     }
+-                } else if (name.startsWith("Elytra")) {
++                } else if (name.startsWith("Elytra") && io.papermc.paper.configuration.GlobalConfiguration.get().misc.enableElytraInEndCities) { // Cheetah - Added option to disable elytra in end cities
+                     ItemFrame itemFrame = new ItemFrame(level.getLevel(), pos, this.placeSettings.getRotation().rotate(Direction.SOUTH));
+                     itemFrame.setItem(new ItemStack(Items.ELYTRA), false);
+                     level.addFreshEntity(itemFrame);
