@@ -1,0 +1,24 @@
+--- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -2310,9 +_,20 @@
+         return new SignedMessageChain.DecodeException(INVALID_COMMAND_SIGNATURE);
+     }
+ 
++    // Cheetah start - Support case insensitive commands
++    private static String commandToLower(String command) {
++        if (command.isEmpty()) {
++            return command;
++        }
++        String[] split = command.split(" ");
++        split[0] = split[0].toLowerCase();
++        return String.join(" ", split);
++    }
++    // Cheetah end
++
+     private ParseResults<CommandSourceStack> parseCommand(String command) {
+         CommandDispatcher<CommandSourceStack> dispatcher = this.server.getCommands().getDispatcher();
+-        return dispatcher.parse(command, this.player.createCommandSourceStack());
++        return dispatcher.parse(commandToLower(command), this.player.createCommandSourceStack()); // Cheetah - Support case insensitive commands
+     }
+ 
+     private void tryHandleChat(String message, Runnable handler, boolean sync) { // CraftBukkit

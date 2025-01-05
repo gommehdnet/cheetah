@@ -1,0 +1,11 @@
+--- a/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
++++ b/src/main/java/org/bukkit/craftbukkit/command/VanillaCommandWrapper.java
+@@ -64,7 +_,7 @@
+         Preconditions.checkArgument(alias != null, "Alias cannot be null");
+ 
+         CommandSourceStack icommandlistener = VanillaCommandWrapper.getListener(sender);
+-        ParseResults<CommandSourceStack> parsed = this.commands().getDispatcher().parse(this.toDispatcher(args, this.getName()), icommandlistener); // Paper
++        ParseResults<CommandSourceStack> parsed = this.commands().getDispatcher().parse(this.toDispatcher(args, this.getName().toLowerCase()), icommandlistener); // Paper // Cheetah - Support case insensitive commands
+ 
+         List<String> results = new ArrayList<>();
+         this.commands().getDispatcher().getCompletionSuggestions(parsed).thenAccept((suggestions) -> { // Paper
