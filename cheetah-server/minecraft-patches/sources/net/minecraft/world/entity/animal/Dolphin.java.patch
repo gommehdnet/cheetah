@@ -1,0 +1,15 @@
+--- a/net/minecraft/world/entity/animal/Dolphin.java
++++ b/net/minecraft/world/entity/animal/Dolphin.java
+@@ -169,7 +_,11 @@
+     protected void registerGoals() {
+         this.goalSelector.addGoal(0, new BreathAirGoal(this));
+         this.goalSelector.addGoal(0, new TryFindWaterGoal(this));
+-        this.goalSelector.addGoal(1, new Dolphin.DolphinSwimToTreasureGoal(this));
++        // Cheetah start - Respect treasure map option for dolphins
++        if (level().paperConfig().environment.treasureMaps.enabled) {
++            this.goalSelector.addGoal(1, new Dolphin.DolphinSwimToTreasureGoal(this));
++        }
++        // Cheetah end
+         this.goalSelector.addGoal(2, new Dolphin.DolphinSwimWithPlayerGoal(this, 4.0));
+         this.goalSelector.addGoal(4, new RandomSwimmingGoal(this, 1.0, 10));
+         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
