@@ -1,0 +1,22 @@
+--- a/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
++++ b/src/main/java/org/bukkit/craftbukkit/block/CraftHopper.java
+@@ -53,4 +_,19 @@
+         return getSnapshot().cooldownTime;
+     }
+     // Paper end - Expanded Hopper API
++
++    // Cheetah start - Configurable hopper transfer multiplier
++    @Override
++    public float getTransferMultiplier() {
++        return this.getTileEntity().getHopperTransferMultiplier();
++    }
++
++    @Override
++    public void setTransferMultiplier(float transferMultiplier) {
++        if (transferMultiplier < 0) {
++            throw new IllegalArgumentException("transferMultiplier cannot be negative for hopper at " + getLocation());
++        }
++        this.getTileEntity().setHopperTransferMultiplier(transferMultiplier);
++    }
++    // Cheetah end
+ }
