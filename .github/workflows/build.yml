@@ -33,7 +33,7 @@ jobs:
       - name: Bundle
         run: ./gradlew createMojmapBundlerJar --info
       - name: Rename Artifact
-        run: mv build/libs/cheetah-1.21.4-bundler-1.21.4-R0.1-SNAPSHOT-mojmap.jar build/libs/cheetah-1.21.4.jar
+        run: mv cheetah-server/build/libs/cheetah-bundler-1.21.4-R0.1-SNAPSHOT-mojmap.jar build/libs/cheetah-1.21.4.jar
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
