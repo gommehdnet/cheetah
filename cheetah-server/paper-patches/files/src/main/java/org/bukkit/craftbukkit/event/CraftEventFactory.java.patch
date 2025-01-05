@@ -1,0 +1,30 @@
+--- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
++++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
+@@ -1479,7 +_,10 @@
+         com.destroystokyo.paper.event.entity.ProjectileCollideEvent event = new com.destroystokyo.paper.event.entity.ProjectileCollideEvent(projectile, collided);
+ 
+         if (projectile.getShooter() instanceof Player && collided instanceof Player) {
+-            if (!((Player) projectile.getShooter()).canSee((Player) collided)) {
++            // Cheetah start - Added ProjectileAllowCollideWithPlayerEvent
++            net.gommehd.cheetah.event.entity.ProjectileAllowCollideWithPlayerEvent allowCollideEvent = callProjectileAllowCollideWithPlayerEvent(entity, position.getEntity());
++            if (!allowCollideEvent.isAllowCollide() && !((Player) projectile.getShooter()).canSee((Player) collided)) {
++                // Cheetah end
+                 event.setCancelled(true);
+                 return event;
+             }
+@@ -1489,6 +_,15 @@
+         return event;
+     }
+     // Paper end
++
++    // Cheetah start - Added ProjectileAllowCollideWithPlayerEvent
++    public static net.gommehd.cheetah.event.entity.ProjectileAllowCollideWithPlayerEvent callProjectileAllowCollideWithPlayerEvent(Entity entity, Entity player) {
++        Projectile projectile = (Projectile) entity.getBukkitEntity();
++        net.gommehd.cheetah.event.entity.ProjectileAllowCollideWithPlayerEvent event = new net.gommehd.cheetah.event.entity.ProjectileAllowCollideWithPlayerEvent(projectile, (Player) player.getBukkitEntity());
++        event.callEvent();
++        return event;
++    }
++    // Cheetah end
+ 
+     public static ProjectileLaunchEvent callProjectileLaunchEvent(Entity entity) {
+         Projectile bukkitEntity = (Projectile) entity.getBukkitEntity();
