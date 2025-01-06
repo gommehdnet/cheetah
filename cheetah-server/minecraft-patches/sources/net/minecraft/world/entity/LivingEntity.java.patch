@@ -1,9 +1,57 @@
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -1914,6 +_,20 @@
+@@ -1380,6 +_,15 @@
+             float f = amount; final float originalAmount = amount; // Paper - revert to vanilla #hurt - OBFHELPER
+             boolean flag = amount > 0.0F && this.isDamageSourceBlocked(damageSource); // Copied from below;
+             float f1 = 0.0F;
++            // Cheetah start - Play shield sounds for all players
++            boolean shieldBroken;
++            if (damageSource.getDirectEntity() instanceof LivingEntity livingEntity) {
++                shieldBroken = livingEntity.canDisableShield() && this.getItemBlockingWith() != null;
++            } else {
++                shieldBroken = false;
++            }
++            // Cheetah end
++
+             // CraftBukkit - Moved into handleEntityDamage(DamageSource, float) for get f and actuallyHurt(DamageSource, float, EntityDamageEvent) for handle damage
+             if (false && amount > 0.0F && this.isDamageSourceBlocked(damageSource)) {
+                 this.hurtCurrentlyUsedShield(amount);
+@@ -1451,6 +_,21 @@
+             if (flag1) {
+                 if (flag) {
+                     level.broadcastEntityEvent(this, (byte)29);
++                    // Cheetah start - Play shield sounds for all players
++                    level.players().stream()
++                        .filter(entity -> entity != this)
++                        .forEach(entity ->
++                            entity.connection.sendPacket(
++                                new net.minecraft.network.protocol.game.ClientboundSoundPacket(
++                                    Holder.direct(shieldBroken ? SoundEvents.SHIELD_BREAK : SoundEvents.SHIELD_BLOCK),
++                                    getSoundSource(),
++                                    position().x,
++                                    position().y,
++                                    position().z,
++                                    shieldBroken ? 0.8F : 1.0F,
++                                    0.8F + level.random.nextFloat() * 0.4F,
++                                    level.random.nextLong())));
++                    // Cheetah end
+                 } else {
+                     level.broadcastDamageEvent(this, damageSource);
+                 }
+@@ -1495,7 +_,7 @@
+                     this.die(damageSource);
+                     this.silentDeath = false; // Paper - cancellable death event - reset to default
+                 }
+-            } else if (flag1) {
++            } else if (flag1 && !flag) {
+                 this.playHurtSound(damageSource);
+             }
+ 
+@@ -1913,6 +_,20 @@
+             return false;
          }
      }
- 
++
 +    // Cheetah start - Added VillagerGiveGiftToHeroEvent
 +    public List<ItemStack> getFromGiftLootTable(ServerLevel world, ResourceKey<LootTable> lootTableKey) {
 +        return this.getFromLootTable(world, lootTableKey, (lootparams_a) -> {
@@ -17,7 +65,6 @@
 +        return loottable.getRandomItems(lootparams);
 +    }
 +    // Cheetah end - Added VillagerGiveGiftToHeroEvent
-+
+ 
      public void knockback(double strength, double x, double z) {
          // CraftBukkit start - EntityKnockbackEvent
-         this.knockback(strength, x, z, null, io.papermc.paper.event.entity.EntityKnockbackEvent.Cause.UNKNOWN); // Paper - knockback events
