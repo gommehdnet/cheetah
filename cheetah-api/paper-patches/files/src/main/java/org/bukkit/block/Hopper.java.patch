@@ -1,0 +1,32 @@
+--- a/src/main/java/org/bukkit/block/Hopper.java
++++ b/src/main/java/org/bukkit/block/Hopper.java
+@@ -21,5 +_,28 @@
+      */
+     int getTransferCooldown();
+     // Paper end - Expanded Hopper API
++
++    // Cheetah start - API for configurable hopper transfer rates
++    /**
++     * Returns the current transfer multiplier for this hopper Default value: 1.0 If set to 2.0, twice as many items
++     * will be transferred per time unit
++     *
++     * @return transfer multiplier for this hopper
++     */
++    float getTransferMultiplier();
++
++    /**
++     * Sets the transfer multiplier for this hopper.
++     * The value is stored persistently.
++     * Default value: 1.0 If set to 2.0, twice as many items will be transferred per time unit
++     */
++    void setTransferMultiplier(float transferMultiplier);
++
++    /**
++     * Resets the transfer multiplier to the default value
++     */
++    default void resetTransferMultiplier() {
++        this.setTransferMultiplier(0F);
++    }
++    // Cheetah end
+ }
+-

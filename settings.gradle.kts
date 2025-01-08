@@ -1,10 +1,15 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven("https://papermc.io/repo/repository/maven-public/")
+        mavenLocal()
+        maven("https://repo.papermc.io/repository/maven-public/")
     }
 }
 
-rootProject.name = "cheetah-1.21.3"
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
+}
+
+rootProject.name = "cheetah-1.21.4"
 
 include("cheetah-api", "cheetah-server")

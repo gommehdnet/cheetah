@@ -1,0 +1,19 @@
+--- a/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
++++ b/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
+@@ -50,6 +_,16 @@
+         this.findUnexplored = findUnexplored;
+     }
+ 
++    // Cheetah start - added async parameter
++    public StructuresLocateEvent(final World world, final Location origin, final List<Structure> structures, final int radius, final boolean findUnexplored, final boolean async) {
++        super(world, async);
++        this.origin = origin;
++        this.setStructures(structures);
++        this.radius = radius;
++        this.findUnexplored = findUnexplored;
++    }
++    // Cheetah end
++
+     /**
+      * Gets the {@link Location} from which the search is to be conducted.
+      *

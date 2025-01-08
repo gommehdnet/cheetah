@@ -1,44 +1,68 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
-    java
-    `maven-publish`
-    id("io.papermc.paperweight.patcher") version "1.7.5"
+    java // TODO java launcher tasks
+    id("io.papermc.paperweight.patcher") version "2.0.0-beta.12"
 }
 
-val paperMavenPublicUrl = "https://papermc.io/repo/repository/maven-public/"
+paperweight {
+    upstreams.paper {
+        ref = providers.gradleProperty("paperRef")
 
-repositories {
-    mavenCentral()
-    maven(paperMavenPublicUrl) {
-        content { onlyForConfigurations(configurations.paperclip.name) }
-    }
-    maven {
-        name = "gommeRepo"
-        url = uri("https://repo.gomme.dev/repository/public/")
-        // credentials(PasswordCredentials::class)
-    }
-}
-
-dependencies {
-    remapper("net.fabricmc:tiny-remapper:0.10.3:fat")
-    decompiler("org.vineflower:vineflower:1.10.1")
-    paperclip("io.papermc:paperclip:3.0.3")
-}
-
-allprojects {
-    apply(plugin = "java")
-    apply(plugin = "maven-publish")
-
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
+        patchFile {
+            path = "paper-server/build.gradle.kts"
+            outputFile = file("cheetah-server/build.gradle.kts")
+            patchFile = file("cheetah-server/build.gradle.kts.patch")
+        }
+        patchFile {
+            path = "paper-api/build.gradle.kts"
+            outputFile = file("cheetah-api/build.gradle.kts")
+            patchFile = file("cheetah-api/build.gradle.kts.patch")
+        }
+        patchDir("paperApi") {
+            upstreamPath = "paper-api"
+            excludes = setOf("build.gradle.kts")
+            patchesDir = file("cheetah-api/paper-patches")
+            outputDir = file("paper-api")
+        }
+        patchDir("paperApiGenerator") {
+            upstreamPath = "paper-api-generator"
+            patchesDir = file("cheetah-api-generator/paper-patches")
+            outputDir = file("paper-api-generator")
         }
     }
 }
 
+val paperMavenPublicUrl = "https://repo.papermc.io/repository/maven-public/"
+
 subprojects {
+    apply(plugin = "java-library")
+    apply(plugin = "maven-publish")
+
+    extensions.configure<JavaPluginExtension> {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    repositories {
+        mavenCentral()
+        maven(paperMavenPublicUrl)
+    }
+
+    dependencies {
+        "testRuntimeOnly"("org.junit.platform:junit-platform-launcher")
+    }
+
+    tasks.withType<AbstractArchiveTask>().configureEach {
+        isPreserveFileTimestamps = false
+        isReproducibleFileOrder = true
+    }
     tasks.withType<JavaCompile> {
         options.encoding = Charsets.UTF_8.name()
         options.release = 21
+        options.isFork = true
     }
     tasks.withType<Javadoc> {
         options.encoding = Charsets.UTF_8.name()
@@ -46,75 +70,19 @@ subprojects {
     tasks.withType<ProcessResources> {
         filteringCharset = Charsets.UTF_8.name()
     }
-
-    repositories {
-        mavenCentral()
-        maven(paperMavenPublicUrl)
-    }
-}
-
-paperweight {
-    serverProject = project(":cheetah-server")
-
-    remapRepo = paperMavenPublicUrl
-    decompileRepo = paperMavenPublicUrl
-
-    usePaperUpstream(providers.gradleProperty("paperRef")) {
-        withPaperPatcher {
-            apiPatchDir = layout.projectDirectory.dir("patches/api")
-            apiOutputDir = layout.projectDirectory.dir("cheetah-api")
-
-            serverPatchDir = layout.projectDirectory.dir("patches/server")
-            serverOutputDir = layout.projectDirectory.dir("cheetah-server")
-        }
-
-        patchTasks.register("generatedApi") {
-            isBareDirectory = true
-            upstreamDirPath = "paper-api-generator/generated"
-            patchDir = layout.projectDirectory.dir("patches/generated-api")
-            outputDir = layout.projectDirectory.dir("paper-api-generator/generated")
+    tasks.withType<Test> {
+        testLogging {
+            showStackTraces = true
+            exceptionFormat = TestExceptionFormat.FULL
+            events(TestLogEvent.STANDARD_OUT)
         }
     }
-}
 
-//
-// Everything below here is optional if you don't care about publishing API or dev bundles to your repository
-//
-
-tasks.generateDevelopmentBundle {
-    apiCoordinates = "net.gommehd.cheetah:cheetah-api"
-    libraryRepositories.set(
-            listOf(
-                    "https://repo.maven.apache.org/maven2/",
-                    paperMavenPublicUrl,
-                    "https://repo.gomme.dev/repository/snapshots/", // This should be a repo hosting your API (in this example, 'com.example.paperfork:forktest-api')
-            )
-    )
-}
-
-allprojects {
-    // Publishing API:
-    // ./gradlew :cheetah-api:publish[ToMavenLocal]
-    publishing {
+    extensions.configure<PublishingExtension> {
         repositories {
-            maven {
+            maven("https://repo.gomme.dev/repository/snapshots/") {
                 name = "gommeRepo"
-                url = uri("https://repo.gomme.dev/repository/snapshots/")
-                // See Gradle docs for how to provide credentials to PasswordCredentials
-                // https://docs.gradle.org/current/samples/sample_publishing_credentials.html
                 credentials(PasswordCredentials::class)
-            }
-        }
-    }
-}
-
-publishing {
-    // Publishing dev bundle:
-    // ./gradlew publishDevBundlePublicationTo(MavenLocal|MyRepoSnapshotsRepository) -PpublishDevBundle
-    if (project.hasProperty("publishDevBundle")) {
-        publications.create<MavenPublication>("devBundle") {
-            artifact(tasks.generateDevelopmentBundle) {
-                artifactId = "dev-bundle"
             }
         }
     }

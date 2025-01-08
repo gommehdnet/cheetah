@@ -1,0 +1,25 @@
+--- a/net/minecraft/world/entity/ai/behavior/GiveGiftToHero.java
++++ b/net/minecraft/world/entity/ai/behavior/GiveGiftToHero.java
+@@ -106,9 +_,19 @@
+     }
+ 
+     private void throwGift(ServerLevel level, Villager villager, LivingEntity target) {
+-        villager.dropFromGiftLootTable(
+-            level, getLootTableToThrow(villager), (serverLevel, itemStack) -> BehaviorUtils.throwItem(villager, itemStack, target.position())
+-        );
++        // Cheetah start - Added VillagerGiveGiftToHeroEvent
++        java.util.List<net.minecraft.world.item.ItemStack> itemStacks = villager.getFromGiftLootTable(level, getLootTableToThrow(villager));
++        java.util.List<org.bukkit.inventory.ItemStack> convertedItemStacks = itemStacks.stream().map(org.bukkit.craftbukkit.inventory.CraftItemStack::asCraftMirror).collect(java.util.stream.Collectors.toList());
++
++        org.bukkit.event.entity.VillagerGiveGiftToHeroEvent event = new org.bukkit.event.entity.VillagerGiveGiftToHeroEvent(villager.getBukkitEntity(), target.getBukkitLivingEntity(), convertedItemStacks);
++        event.callEvent();
++
++        if (!event.isCancelled() && !event.getItemStacks().isEmpty()) {
++            itemStacks = event.getItemStacks().stream().map(org.bukkit.craftbukkit.inventory.CraftItemStack::asNMSCopy).toList();
++
++            itemStacks.forEach(stack -> BehaviorUtils.throwItem(villager, stack, target.position()));
++        }
++        // Cheetah end - Added VillagerGiveGiftToHeroEvent
+     }
+ 
+     private static ResourceKey<LootTable> getLootTableToThrow(Villager villager) {

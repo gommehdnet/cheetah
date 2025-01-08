@@ -1,0 +1,13 @@
+--- a/net/minecraft/world/level/block/entity/Hopper.java
++++ b/net/minecraft/world/level/block/entity/Hopper.java
+@@ -18,4 +_,10 @@
+     double getLevelZ();
+ 
+     boolean isGridAligned();
++
++    // Cheetah start - Configurable hopper transfer multiplier
++    default float getHopperTransferMultiplier() {
++        return 1.0F;
++    }
++    // Cheetah end
+ }

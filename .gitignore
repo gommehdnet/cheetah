@@ -1,53 +1,16 @@
-.gradle/
-build/
+# Ignore Gradle project-specific cache directory
+.gradle
 
-# Eclipse stuff
-.classpath
-.project
-.settings/
+# Ignore Gradle build output directory
+build
 
-# VSCode stuff
-.vscode/
+/run
 
-# netbeans
-nbproject/
-nbactions.xml
+/cheetah-server/build.gradle.kts
+/cheetah-server/src/minecraft
+/paper-server
+/cheetah-api/build.gradle.kts
+/paper-api
+/paper-api-generator
 
-# we use maven!
-build.xml
-
-# maven
-target/
-dependency-reduced-pom.xml
-
-# vim
-.*.sw[a-p]
-
-# various other potential build files
-build/
-bin/
-dist/
-manifest.mf
-
-# Mac filesystem dust
-.DS_Store/
-.DS_Store
-
-# intellij
-*.iml
-*.ipr
-*.iws
 .idea/
-out/
-
-# Linux temp files
-*~
-
-# other stuff
-run/
-
-cheetah-server
-cheetah-api
-paper-api-generator
-
-!gradle/wrapper/gradle-wrapper.jar

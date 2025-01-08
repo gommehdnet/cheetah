@@ -1,0 +1,23 @@
+--- a/net/minecraft/world/entity/LivingEntity.java
++++ b/net/minecraft/world/entity/LivingEntity.java
+@@ -1914,6 +_,20 @@
+         }
+     }
+ 
++    // Cheetah start - Added VillagerGiveGiftToHeroEvent
++    public List<ItemStack> getFromGiftLootTable(ServerLevel world, ResourceKey<LootTable> lootTableKey) {
++        return this.getFromLootTable(world, lootTableKey, (lootparams_a) -> {
++            return lootparams_a.withParameter(LootContextParams.ORIGIN, this.position()).withParameter(LootContextParams.THIS_ENTITY, this).create(LootContextParamSets.GIFT);
++        });
++    }
++
++    protected List<ItemStack> getFromLootTable(ServerLevel world, ResourceKey<LootTable> lootTableKey, Function<LootParams.Builder, LootParams> lootContextParametersFactory) {
++        LootTable loottable = world.getServer().reloadableRegistries().getLootTable(lootTableKey);
++        LootParams lootparams = lootContextParametersFactory.apply(new LootParams.Builder(world));
++        return loottable.getRandomItems(lootparams);
++    }
++    // Cheetah end - Added VillagerGiveGiftToHeroEvent
++
+     public void knockback(double strength, double x, double z) {
+         // CraftBukkit start - EntityKnockbackEvent
+         this.knockback(strength, x, z, null, io.papermc.paper.event.entity.EntityKnockbackEvent.Cause.UNKNOWN); // Paper - knockback events

@@ -1,0 +1,16 @@
+--- a/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java
++++ b/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java
+@@ -84,6 +_,13 @@
+                 this.igniteForSeconds(1.0F);
+             }
+ 
++            // Cheetah start - fix NaN delta movement
++            final Vec3 deltaMovement = this.getDeltaMovement();
++            if (Double.isNaN(deltaMovement.x) && Double.isNaN(deltaMovement.y) && Double.isNaN(deltaMovement.z)) {
++                this.setDeltaMovement(Vec3.ZERO);
++            }
++            // Cheetah end - fix NaN delta movement
++
+             if (hitResultOnMoveVector.getType() != HitResult.Type.MISS && this.isAlive()) {
+                 this.preHitTargetOrDeflectSelf(hitResultOnMoveVector); // CraftBukkit - projectile hit event
+             }

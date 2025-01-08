@@ -1,0 +1,27 @@
+--- a/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
++++ b/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
+@@ -19,6 +_,7 @@
+     private final String hostname;
+     private Result result = Result.ALLOWED;
+     private net.kyori.adventure.text.Component message = net.kyori.adventure.text.Component.empty();
++    private boolean skipLog; // Cheetah - Allow skipping log messages for canceled login events
+ 
+     /**
+      * This constructor defaults message to an empty string, and result to
+@@ -160,6 +_,16 @@
+     public String getHostname() {
+         return hostname;
+     }
++
++    // Cheetah start - Allow skipping log messages for canceled login events
++    public boolean isSkipLog() {
++        return this.skipLog;
++    }
++
++    public void setSkipLog(boolean skipLog) {
++        this.skipLog = skipLog;
++    }
++    // Cheetah end
+ 
+     /**
+      * Allows the player to log in
