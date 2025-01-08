@@ -52,7 +52,7 @@ subprojects {
     }
 
     dependencies {
-        // "testRuntimeOnly"("org.junit.platform:junit-platform-launcher")
+        "testRuntimeOnly"("org.junit.platform:junit-platform-launcher")
     }
 
     tasks.withType<AbstractArchiveTask>().configureEach {
@@ -80,12 +80,10 @@ subprojects {
 
     extensions.configure<PublishingExtension> {
         repositories {
-            /*
-            maven("https://repo.papermc.io/repository/maven-snapshots/") {
-                name = "paperSnapshots"
+            maven("https://repo.gomme.dev/repository/snapshots/") {
+                name = "gommeRepo"
                 credentials(PasswordCredentials::class)
             }
-             */
         }
     }
 }
