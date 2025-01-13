@@ -1,6 +1,6 @@
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -349,6 +_,7 @@
+@@ -348,6 +_,7 @@
          public IntOr.Default compressionLevel = IntOr.Default.USE_DEFAULT;
          @Comment("Defines the leniency distance added on the server to the interaction range of a player when validating interact packets.")
          public DoubleOr.Default clientInteractionLeniencyDistance = DoubleOr.Default.USE_DEFAULT;
