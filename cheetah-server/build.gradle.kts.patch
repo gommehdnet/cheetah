@@ -1,6 +1,6 @@
 --- a/paper-server/build.gradle.kts
 +++ b/paper-server/build.gradle.kts
-@@ -21,6 +_,21 @@
+@@ -21,6 +_,17 @@
      // macheOldPath = file("F:\\Projects\\PaperTooling\\mache\\versions\\1.21.4\\src\\main\\java")
      // gitFilePatches = true
  
@@ -14,10 +14,6 @@
 +    }
 +
 +    activeFork = cheetah
-+
-+    paper {
-+        paperServerDir = upstreamsDirectory().map { it.dir("paper/paper-server") }
-+    }
 +
      spigot {
          buildDataRef = "3edaf46ec1eed4115ce1b18d2846cded42577e42"
