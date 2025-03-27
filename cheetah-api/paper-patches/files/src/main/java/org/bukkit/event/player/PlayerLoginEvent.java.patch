@@ -1,6 +1,6 @@
 --- a/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
-@@ -19,6 +_,7 @@
+@@ -20,6 +_,7 @@
      private final String hostname;
      private Result result = Result.ALLOWED;
      private net.kyori.adventure.text.Component message = net.kyori.adventure.text.Component.empty();
@@ -8,7 +8,7 @@
  
      /**
       * This constructor defaults message to an empty string, and result to
-@@ -160,6 +_,16 @@
+@@ -164,6 +_,16 @@
      public String getHostname() {
          return hostname;
      }
