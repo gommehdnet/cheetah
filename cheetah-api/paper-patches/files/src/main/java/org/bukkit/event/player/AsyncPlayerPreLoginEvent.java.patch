@@ -1,14 +1,14 @@
 --- a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
-@@ -27,6 +_,7 @@
+@@ -28,6 +_,7 @@
      private final InetAddress rawAddress; // Paper
      private final String hostname; // Paper
      private final boolean transferred;
 +    private boolean skipLog; // Cheetah - Allow skipping log messages for canceled login events
  
-     @Deprecated(since = "1.7.5")
+     @Deprecated(since = "1.7.5", forRemoval = true)
      public AsyncPlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress) {
-@@ -302,6 +_,16 @@
+@@ -304,6 +_,16 @@
      public HandlerList getHandlers() {
          return handlers;
      }

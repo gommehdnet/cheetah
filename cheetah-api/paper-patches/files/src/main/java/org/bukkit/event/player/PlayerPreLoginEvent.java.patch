@@ -1,14 +1,14 @@
 --- a/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
-@@ -30,6 +_,7 @@
+@@ -31,6 +_,7 @@
      private final String name;
      private final InetAddress ipAddress;
      private final UUID uniqueId;
 +    private boolean skipLog; // Cheetah - Allow skipping log messages for canceled login events
  
-     @Deprecated(since = "1.7.5")
+     @Deprecated(since = "1.7.5", forRemoval = true)
      public PlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress) {
-@@ -175,6 +_,16 @@
+@@ -177,6 +_,16 @@
      public UUID getUniqueId() {
          return uniqueId;
      }
