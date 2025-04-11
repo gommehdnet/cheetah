@@ -1,0 +1,11 @@
+--- a/net/minecraft/server/level/ServerLevel.java
++++ b/net/minecraft/server/level/ServerLevel.java
+@@ -822,7 +_,7 @@
+                     }
+                 );
+             profilerFiller.pop();
+-            this.tickBlockEntities();
++            // this.tickBlockEntities(); // Cheetah - disable ticking block entities
+         }
+ 
+         profilerFiller.push("entityManagement");

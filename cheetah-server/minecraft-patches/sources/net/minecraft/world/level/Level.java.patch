@@ -1,0 +1,11 @@
+--- a/net/minecraft/world/level/Level.java
++++ b/net/minecraft/world/level/Level.java
+@@ -1454,7 +_,7 @@
+     }
+ 
+     public void addBlockEntityTicker(TickingBlockEntity ticker) {
+-        (this.tickingBlockEntities ? this.pendingBlockEntityTickers : this.blockEntityTickers).add(ticker);
++        // (this.tickingBlockEntities ? this.pendingBlockEntityTickers : this.blockEntityTickers).add(ticker); // Cheetah - disable ticking block entities
+     }
+ 
+     protected void tickBlockEntities() {
