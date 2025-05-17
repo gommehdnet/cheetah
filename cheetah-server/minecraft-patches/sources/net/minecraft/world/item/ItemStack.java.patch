@@ -1,0 +1,13 @@
+diff --git a/net/minecraft/world/item/ItemStack.java b/net/minecraft/world/item/ItemStack.java
+index 76f50437396f8f856381d0fbef52953ef7c263f6..ee467c3847b8e7a9bd00ccbf0aadf9d66cccd3b5 100644
+--- a/net/minecraft/world/item/ItemStack.java
++++ b/net/minecraft/world/item/ItemStack.java
+@@ -387,7 +387,7 @@ public final class ItemStack implements DataComponentHolder {
+             int oldCount = this.getCount();
+             ServerLevel serverLevel = (ServerLevel) context.getLevel();
+ 
+-            if (!(item instanceof BucketItem/* || item instanceof SolidBucketItem*/)) { // if not bucket // Paper - Fix cancelled powdered snow bucket placement
++            if (!(item instanceof BucketItem || item instanceof EndCrystalItem/* || item instanceof SolidBucketItem*/)) { // if not bucket // Paper - Fix cancelled powdered snow bucket placement // Cheetah - Fix capturing blocks on end crystal placement
+                 serverLevel.captureBlockStates = true;
+                 // special case bonemeal
+                 if (item == Items.BONE_MEAL) {
