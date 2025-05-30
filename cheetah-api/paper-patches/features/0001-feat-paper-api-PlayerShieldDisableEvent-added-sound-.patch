@@ -1,0 +1,99 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: deroq <deroq1337@gmail.com>
+Date: Fri, 30 May 2025 13:13:44 +0200
+Subject: [PATCH] feat(paper-api/PlayerShieldDisableEvent): added sound
+ cancelled flag
+
+
+diff --git a/src/main/java/io/papermc/paper/event/player/PlayerShieldDisableEvent.java b/src/main/java/io/papermc/paper/event/player/PlayerShieldDisableEvent.java
+index aa2fb7923b121cda547291d14cff60895361a4dd..80493e0b96439d25b877ad41aeb8c27a4108dc71 100644
+--- a/src/main/java/io/papermc/paper/event/player/PlayerShieldDisableEvent.java
++++ b/src/main/java/io/papermc/paper/event/player/PlayerShieldDisableEvent.java
+@@ -7,26 +7,28 @@ import org.bukkit.event.Cancellable;
+ import org.bukkit.event.HandlerList;
+ import org.bukkit.event.player.PlayerEvent;
+ import org.jetbrains.annotations.ApiStatus;
++import org.jetbrains.annotations.NotNull;
++import org.jetbrains.annotations.Nullable;
+ import org.jspecify.annotations.NullMarked;
++import java.util.Optional;
+ 
+ /**
+  * Called whenever a players shield is disabled due to an attack from another entity that was capable of disabling the
+  * shield. This, most commonly, may be another player attacking with an axe.
+  * <p>
+  * Notably, this even is distinct from a {@link PlayerItemCooldownEvent} and will fire prior to the item going on
+- * cooldown.
+- * It follows that, if this event is cancelled, no {@link PlayerItemCooldownEvent} is called as the shield is never
+- * disabled in the first place.
++ * cooldown. It follows that, if this event is cancelled, no {@link PlayerItemCooldownEvent} is called as the shield is
++ * never disabled in the first place.
+  */
+ @NullMarked
+ public class PlayerShieldDisableEvent extends PlayerEvent implements Cancellable {
+-
+     private static final HandlerList HANDLER_LIST = new HandlerList();
+ 
+     private final Entity damager;
+     private int cooldown;
+ 
+     private boolean cancelled;
++    private boolean soundCancelled; // Cheetah - Add sound cancelled flag to PlayerShieldDisableEvent
+ 
+     @ApiStatus.Internal
+     public PlayerShieldDisableEvent(final Player player, final Entity damager, final int cooldown) {
+@@ -47,8 +49,8 @@ public class PlayerShieldDisableEvent extends PlayerEvent implements Cancellable
+     /**
+      * Gets the cooldown the disabled shield will be disabled for in ticks.
+      * <p>
+-     * Notably, this value is not final as it might be changed by a {@link PlayerItemCooldownEvent} down the line,
+-     * as said event is called if this event is not cancelled.
++     * Notably, this value is not final as it might be changed by a {@link PlayerItemCooldownEvent} down the line, as
++     * said event is called if this event is not cancelled.
+      *
+      * @return cooldown in ticks
+      */
+@@ -59,8 +61,8 @@ public class PlayerShieldDisableEvent extends PlayerEvent implements Cancellable
+     /**
+      * Sets the cooldown of the shield in ticks.
+      * <p>
+-     * Notably, this value is not final as it might be changed by a {@link PlayerItemCooldownEvent} down the line,
+-     * as said event is called if this event is not cancelled.
++     * Notably, this value is not final as it might be changed by a {@link PlayerItemCooldownEvent} down the line, as
++     * said event is called if this event is not cancelled.
+      *
+      * @param cooldown cooldown in ticks, has to be a positive number
+      */
+@@ -79,6 +81,32 @@ public class PlayerShieldDisableEvent extends PlayerEvent implements Cancellable
+         this.cancelled = cancel;
+     }
+ 
++    // Cheetah start - Add sound cancelled flag to PlayerShieldDisableEvent
++
++    /**
++     * Checks whether the shield break sound is cancelled.
++     * <p>
++     * When this flag is set to {@code true}, the shield break sound will not be played when the shield is disabled due
++     * to an attack.
++     *
++     * @return {@code true} if the shield break sound is cancelled, {@code false} otherwise
++     */
++    public boolean isSoundCancelled() {
++        return soundCancelled;
++    }
++
++    /**
++     * Sets whether the shield break sound should be cancelled.
++     * <p>
++     * When set to {@code true}, the shield break sound will be suppressed during shield disable events.
++     *
++     * @param soundCancelled {@code true} to suppress the shield break sound, {@code false} to allow it
++     */
++    public void setSoundCancelled(boolean soundCancelled) {
++        this.soundCancelled = soundCancelled;
++    }
++    // Cheetah end - Add sound cancelled flag to PlayerShieldDisableEvent
++
+     @Override
+     public HandlerList getHandlers() {
+         return HANDLER_LIST;

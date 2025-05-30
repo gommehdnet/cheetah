@@ -1,0 +1,61 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: deroq <deroq1337@gmail.com>
+Date: Fri, 30 May 2025 13:16:32 +0200
+Subject: [PATCH] feat(cheetah-server/Player): suppress shield break sound if
+ it was cancelled in the PlayerShieldDisableEvent
+
+
+diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
+index 5a12a5cfcb5d5087938c5e9403c515a744249df0..107ea9693a9d2e64184622219a09450e380c318e 100644
+--- a/net/minecraft/world/entity/player/Player.java
++++ b/net/minecraft/world/entity/player/Player.java
+@@ -1013,7 +1013,18 @@ public abstract class Player extends LivingEntity {
+                     }
+ 
+                     this.useItem = ItemStack.EMPTY;
+-                    this.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
++
++                    // Cheetah start - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
++                    final io.papermc.paper.event.player.PlayerShieldDisableEvent shieldDisableEvent = new io.papermc.paper.event.player.PlayerShieldDisableEvent(
++                        (org.bukkit.entity.Player) getBukkitEntity(),
++                        null,
++                        100
++                    );
++
++                    if (!shieldDisableEvent.isSoundCancelled()) {
++                        this.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
++                    }
++                    // Cheetah end - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
+                 }
+             }
+         }
+@@ -1461,16 +1472,21 @@ public abstract class Player extends LivingEntity {
+     }
+     public void disableShield(ItemStack stack, @Nullable LivingEntity attacker) {
+         final org.bukkit.entity.Entity finalAttacker = attacker != null ? attacker.getBukkitEntity() : null;
+-        if (finalAttacker != null) {
+-            final io.papermc.paper.event.player.PlayerShieldDisableEvent shieldDisableEvent = new io.papermc.paper.event.player.PlayerShieldDisableEvent((org.bukkit.entity.Player) getBukkitEntity(), finalAttacker, 100);
+-            if (!shieldDisableEvent.callEvent()) return;
+-            this.getCooldowns().addCooldown(stack, shieldDisableEvent.getCooldown());
+-        } else {
+-            this.getCooldowns().addCooldown(stack, 100);
+-        }
++
++        // Cheetah start - Call PlayerShieldDisableEvent regardless of whether the damager is null or not
++        final io.papermc.paper.event.player.PlayerShieldDisableEvent shieldDisableEvent = new io.papermc.paper.event.player.PlayerShieldDisableEvent((org.bukkit.entity.Player) getBukkitEntity(), finalAttacker, 100);
++        if (!shieldDisableEvent.callEvent()) return;
++        this.getCooldowns().addCooldown(stack, shieldDisableEvent.getCooldown());
++        // Cheetah end - Call PlayerShieldDisableEvent regardless of whether the damager is null or not
++
+         // Paper end - Add PlayerShieldDisableEvent
+         this.stopUsingItem();
+-        this.level().broadcastEntityEvent(this, (byte)30);
++
++        // Cheetah start - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
++        if (!shieldDisableEvent.isSoundCancelled()) {
++            this.level().broadcastEntityEvent(this, (byte)30);
++        }
++        // Cheetah end - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
+     }
+ 
+     public void crit(Entity entityHit) {
