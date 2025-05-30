@@ -1,0 +1,117 @@
+--- a/src/main/java/io/papermc/paper/event/player/PlayerShieldDisableEvent.java
++++ b/src/main/java/io/papermc/paper/event/player/PlayerShieldDisableEvent.java
+@@ -7,48 +_,58 @@
+ import org.bukkit.event.HandlerList;
+ import org.bukkit.event.player.PlayerEvent;
+ import org.jetbrains.annotations.ApiStatus;
++import org.jetbrains.annotations.NotNull;
++import org.jetbrains.annotations.Nullable;
+ import org.jspecify.annotations.NullMarked;
++import java.util.Optional;
+ 
+ /**
+  * Called whenever a players shield is disabled due to an attack from another entity that was capable of disabling the
+  * shield. This, most commonly, may be another player attacking with an axe.
+  * <p>
+  * Notably, this even is distinct from a {@link PlayerItemCooldownEvent} and will fire prior to the item going on
+- * cooldown.
+- * It follows that, if this event is cancelled, no {@link PlayerItemCooldownEvent} is called as the shield is never
+- * disabled in the first place.
++ * cooldown. It follows that, if this event is cancelled, no {@link PlayerItemCooldownEvent} is called as the shield is
++ * never disabled in the first place.
+  */
+ @NullMarked
+ public class PlayerShieldDisableEvent extends PlayerEvent implements Cancellable {
+-
+     private static final HandlerList HANDLER_LIST = new HandlerList();
+ 
+-    private final Entity damager;
++    private final @Nullable Entity damager; // Cheetah - Allow nullable damager
+     private int cooldown;
+ 
+     private boolean cancelled;
++    private boolean soundCancelled; // Cheetah - Add sound cancelled flag to PlayerShieldDisableEvent
+ 
+     @ApiStatus.Internal
+-    public PlayerShieldDisableEvent(final Player player, final Entity damager, final int cooldown) {
++    public PlayerShieldDisableEvent(@NotNull final Player player, @Nullable final Entity damager, final int cooldown) {
+         super(player);
+         this.damager = damager;
+         this.cooldown = cooldown;
+     }
+ 
++    // Cheetah start - Allow nullable damager
++
+     /**
+-     * Provides the damager that disabled the shield.
++     * Returns the entity that caused the shield to be disabled, if available.
++     * <p>
++     * In previous versions, this method returned a non-null {@link Entity} reference when the shield was disabled. Now,
++     * it returns an {@link Optional}, which may be empty if no damager was recorded. This change improves null-safety
++     * and allows better control flow when checking the presence of a damager.
+      *
+-     * @return the entity instance that damaged the player in a way that caused the shield to be disabled.
++     * @return an {@link Optional} containing the entity that disabled the shield, or an empty {@code Optional} if none
++     * was recorded
+      */
+-    public Entity getDamager() {
+-        return this.damager;
++    public Optional<Entity> getDamager() {
++        return Optional.ofNullable(damager);
+     }
++    // Cheetah end - Allow nullable damager
+ 
+     /**
+      * Gets the cooldown the disabled shield will be disabled for in ticks.
+      * <p>
+-     * Notably, this value is not final as it might be changed by a {@link PlayerItemCooldownEvent} down the line,
+-     * as said event is called if this event is not cancelled.
++     * Notably, this value is not final as it might be changed by a {@link PlayerItemCooldownEvent} down the line, as
++     * said event is called if this event is not cancelled.
+      *
+      * @return cooldown in ticks
+      */
+@@ -59,8 +_,8 @@
+     /**
+      * Sets the cooldown of the shield in ticks.
+      * <p>
+-     * Notably, this value is not final as it might be changed by a {@link PlayerItemCooldownEvent} down the line,
+-     * as said event is called if this event is not cancelled.
++     * Notably, this value is not final as it might be changed by a {@link PlayerItemCooldownEvent} down the line, as
++     * said event is called if this event is not cancelled.
+      *
+      * @param cooldown cooldown in ticks, has to be a positive number
+      */
+@@ -78,6 +_,32 @@
+     public void setCancelled(final boolean cancel) {
+         this.cancelled = cancel;
+     }
++
++    // Cheetah start - Add sound cancelled flag to PlayerShieldDisableEvent
++
++    /**
++     * Checks whether the shield break sound is cancelled.
++     * <p>
++     * When this flag is set to {@code true}, the shield break sound will not be played when the shield is disabled due
++     * to an attack.
++     *
++     * @return {@code true} if the shield break sound is cancelled, {@code false} otherwise
++     */
++    public boolean isSoundCancelled() {
++        return soundCancelled;
++    }
++
++    /**
++     * Sets whether the shield break sound should be cancelled.
++     * <p>
++     * When set to {@code true}, the shield break sound will be suppressed during shield disable events.
++     *
++     * @param soundCancelled {@code true} to suppress the shield break sound, {@code false} to allow it
++     */
++    public void setSoundCancelled(boolean soundCancelled) {
++        this.soundCancelled = soundCancelled;
++    }
++    // Cheetah end - Add sound cancelled flag to PlayerShieldDisableEvent
+ 
+     @Override
+     public HandlerList getHandlers() {

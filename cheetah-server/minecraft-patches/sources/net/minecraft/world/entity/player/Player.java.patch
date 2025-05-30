@@ -18,3 +18,37 @@
      public static final int CLIENT_LOADED_TIMEOUT_TIME = 60;
      private long timeEntitySatOnShoulder;
      final Inventory inventory = new Inventory(this);
+@@ -1013,7 +_,18 @@
+                     }
+ 
+                     this.useItem = ItemStack.EMPTY;
+-                    this.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
++
++                    // Cheetah start - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
++                    final io.papermc.paper.event.player.PlayerShieldDisableEvent shieldDisableEvent = new io.papermc.paper.event.player.PlayerShieldDisableEvent(
++                        (org.bukkit.entity.Player) getBukkitEntity(),
++                        null,
++                        100
++                    );
++
++                    if (!shieldDisableEvent.isSoundCancelled()) {
++                        this.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
++                    }
++                    // Cheetah end - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
+                 }
+             }
+         }
+@@ -1470,7 +_,12 @@
+         }
+         // Paper end - Add PlayerShieldDisableEvent
+         this.stopUsingItem();
+-        this.level().broadcastEntityEvent(this, (byte)30);
++
++        // Cheetah start - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
++        if (!shieldDisableEvent.isSoundCancelled()) {
++            this.level().broadcastEntityEvent(this, (byte)30);
++        }
++        // Cheetah end - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
+     }
+ 
+     public void crit(Entity entityHit) {
