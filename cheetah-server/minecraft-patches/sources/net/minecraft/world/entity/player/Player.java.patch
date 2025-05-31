@@ -22,7 +22,7 @@
      }
      public void disableShield(ItemStack stack, @Nullable LivingEntity attacker) {
          final org.bukkit.entity.Entity finalAttacker = attacker != null ? attacker.getBukkitEntity() : null;
-+        boolean playShieldBreakSound = true; // Cheetah -
++        boolean playShieldBreakSound = true; // Cheetah - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
 +
          if (finalAttacker != null) {
              final io.papermc.paper.event.player.PlayerShieldDisableEvent shieldDisableEvent = new io.papermc.paper.event.player.PlayerShieldDisableEvent((org.bukkit.entity.Player) getBukkitEntity(), finalAttacker, 100);
