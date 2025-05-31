@@ -18,3 +18,29 @@
      public static final int CLIENT_LOADED_TIMEOUT_TIME = 60;
      private long timeEntitySatOnShoulder;
      final Inventory inventory = new Inventory(this);
+@@ -1461,16 +_,24 @@
+     }
+     public void disableShield(ItemStack stack, @Nullable LivingEntity attacker) {
+         final org.bukkit.entity.Entity finalAttacker = attacker != null ? attacker.getBukkitEntity() : null;
++        boolean playShieldBreakSound = true; // Cheetah -
++
+         if (finalAttacker != null) {
+             final io.papermc.paper.event.player.PlayerShieldDisableEvent shieldDisableEvent = new io.papermc.paper.event.player.PlayerShieldDisableEvent((org.bukkit.entity.Player) getBukkitEntity(), finalAttacker, 100);
+             if (!shieldDisableEvent.callEvent()) return;
+             this.getCooldowns().addCooldown(stack, shieldDisableEvent.getCooldown());
++            playShieldBreakSound = !shieldDisableEvent.isSoundCancelled(); // Cheetah - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
+         } else {
+             this.getCooldowns().addCooldown(stack, 100);
+         }
+         // Paper end - Add PlayerShieldDisableEvent
+         this.stopUsingItem();
+-        this.level().broadcastEntityEvent(this, (byte)30);
++
++        // Cheetah start - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
++        if (playShieldBreakSound) {
++            this.level().broadcastEntityEvent(this, (byte)30);
++        }
++        // Cheetah end - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
+     }
+ 
+     public void crit(Entity entityHit) {

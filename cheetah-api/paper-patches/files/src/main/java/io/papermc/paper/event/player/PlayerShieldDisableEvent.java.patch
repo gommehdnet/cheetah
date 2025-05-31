@@ -1,0 +1,42 @@
+--- a/src/main/java/io/papermc/paper/event/player/PlayerShieldDisableEvent.java
++++ b/src/main/java/io/papermc/paper/event/player/PlayerShieldDisableEvent.java
+@@ -27,6 +_,7 @@
+     private int cooldown;
+ 
+     private boolean cancelled;
++    private boolean soundCancelled;
+ 
+     @ApiStatus.Internal
+     public PlayerShieldDisableEvent(final Player player, final Entity damager, final int cooldown) {
+@@ -78,6 +_,31 @@
+     public void setCancelled(final boolean cancel) {
+         this.cancelled = cancel;
+     }
++
++    // Cheetah start - Add soundCancelled flag in PlayerShieldDisableEvent
++    /**
++     * Checks whether the shield break sound is cancelled.
++     * <p>
++     * When this flag is set to {@code true}, the shield break sound will not be played when the shield is disabled due
++     * to an attack.
++     *
++     * @return {@code true} if the shield break sound is cancelled, {@code false} otherwise
++     */
++    public boolean isSoundCancelled() {
++        return soundCancelled;
++    }
++
++    /**
++     * Sets whether the shield break sound should be cancelled.
++     * <p>
++     * When set to {@code true}, the shield break sound will be suppressed.
++     *
++     * @param soundCancelled {@code true} to suppress the shield break sound, {@code false} to allow it
++     */
++    public void setSoundCancelled(boolean soundCancelled) {
++        this.soundCancelled = soundCancelled;
++    }
++    // Cheetah end - Add soundCancelled flag in PlayerShieldDisableEvent
+ 
+     @Override
+     public HandlerList getHandlers() {
