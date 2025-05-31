@@ -29,9 +29,9 @@ Thus, changes to the NMS code will not be reflected to plugins using it.
 - First apply the patches using `./gradlew applyAllPatches`
 - Perform the changes to the code
 - If you are a missing file, you can import it from NMS. For this, add a new line to `build-data/dev-imports.txt`, e.g. `minecraft net.minecraft.world.level.entity.LevelEntityGetterAdapter` to import the LevelEntityGetterAdapter. Then apply the patches again (`./gradlew applyPatches`). Keep in mind that all uncommited changes to the code will get LOST by this!
-- Once all changes have been applied, switch to the subproject in your shell (`cd cheetah-server` or `cd cheetah-api`) and run `git add .`. Then, commit your changes using `git commit -m "NAME OF PATCH"`
-- Switch back to the project root and rebuild the patches: `./gradlew rebuildPatches`
-- Commit the changed patch files the `patches/` folder to the root git repository
+- Run `./gradlew fixupMinecraftSourcePatches`
+- Rebuild the patches with `./gradlew rebuildAllServerFilePatches`
+- Commit the changed patch files in the `minecraft-patches/` folder to the root git repository
 
 ## Update upstream
 - Make sure all changes are committed and patches have been rebuilt
