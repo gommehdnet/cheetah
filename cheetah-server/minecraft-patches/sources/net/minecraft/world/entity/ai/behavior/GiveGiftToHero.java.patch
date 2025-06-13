@@ -1,5 +1,14 @@
 --- a/net/minecraft/world/entity/ai/behavior/GiveGiftToHero.java
 +++ b/net/minecraft/world/entity/ai/behavior/GiveGiftToHero.java
+@@ -3,6 +_,8 @@
+ import com.google.common.collect.ImmutableMap;
+ import java.util.Map;
+ import java.util.Optional;
++
++import net.gommehd.cheetah.event.entity.VillagerGiveGiftToHeroEvent;
+ import net.minecraft.core.BlockPos;
+ import net.minecraft.resources.ResourceKey;
+ import net.minecraft.server.level.ServerLevel;
 @@ -106,9 +_,19 @@
      }
  
@@ -11,7 +20,7 @@
 +        java.util.List<net.minecraft.world.item.ItemStack> itemStacks = villager.getFromGiftLootTable(level, getLootTableToThrow(villager));
 +        java.util.List<org.bukkit.inventory.ItemStack> convertedItemStacks = itemStacks.stream().map(org.bukkit.craftbukkit.inventory.CraftItemStack::asCraftMirror).collect(java.util.stream.Collectors.toList());
 +
-+        org.bukkit.event.entity.VillagerGiveGiftToHeroEvent event = new org.bukkit.event.entity.VillagerGiveGiftToHeroEvent(villager.getBukkitEntity(), target.getBukkitLivingEntity(), convertedItemStacks);
++        VillagerGiveGiftToHeroEvent event = new VillagerGiveGiftToHeroEvent(villager.getBukkitEntity(), target.getBukkitLivingEntity(), convertedItemStacks);
 +        event.callEvent();
 +
 +        if (!event.isCancelled() && !event.getItemStacks().isEmpty()) {
