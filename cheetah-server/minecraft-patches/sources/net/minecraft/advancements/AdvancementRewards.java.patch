@@ -1,0 +1,122 @@
+--- a/net/minecraft/advancements/AdvancementRewards.java
++++ b/net/minecraft/advancements/AdvancementRewards.java
+@@ -3,8 +_,11 @@
+ import com.google.common.collect.ImmutableList;
+ import com.mojang.serialization.Codec;
+ import com.mojang.serialization.codecs.RecordCodecBuilder;
++import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Optional;
++import java.util.stream.Collectors;
++import net.gommehd.cheetah.event.entity.PlayerAdvancementRewardsGrantEvent;
+ import net.minecraft.commands.CacheableFunction;
+ import net.minecraft.commands.CommandSourceStack;
+ import net.minecraft.commands.functions.CommandFunction;
+@@ -22,6 +_,9 @@
+ import net.minecraft.world.level.storage.loot.LootTable;
+ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
++import org.bukkit.Bukkit;
++import org.bukkit.craftbukkit.inventory.CraftItemStack;
++import org.bukkit.craftbukkit.util.CraftNamespacedKey;
+ 
+ public record AdvancementRewards(int experience, List<ResourceKey<LootTable>> loot, List<ResourceKey<Recipe<?>>> recipes, Optional<CacheableFunction> function) {
+     public static final Codec<AdvancementRewards> CODEC = RecordCodecBuilder.create(
+@@ -36,44 +_,73 @@
+     public static final AdvancementRewards EMPTY = new AdvancementRewards(0, List.of(), List.of(), Optional.empty());
+ 
+     public void grant(ServerPlayer player) {
+-        player.giveExperiencePoints(this.experience);
++        // Cheetah start - Added PlayerAdvancementRewardsGrantEvent
+         LootParams lootParams = new LootParams.Builder(player.serverLevel())
+             .withParameter(LootContextParams.THIS_ENTITY, player)
+             .withParameter(LootContextParams.ORIGIN, player.position())
+             .create(LootContextParamSets.ADVANCEMENT_REWARD);
+         boolean flag = false;
+ 
++        List<ItemStack> rewards = new ArrayList<>();
++
+         for (ResourceKey<LootTable> resourceKey : this.loot) {
+-            for (ItemStack itemStack : player.server.reloadableRegistries().getLootTable(resourceKey).getRandomItems(lootParams)) {
+-                if (player.addItem(itemStack)) {
+-                    player.level()
+-                        .playSound(
+-                            null,
+-                            player.getX(),
+-                            player.getY(),
+-                            player.getZ(),
+-                            SoundEvents.ITEM_PICKUP,
+-                            SoundSource.PLAYERS,
+-                            0.2F,
+-                            ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F
+-                        );
+-                    flag = true;
+-                } else {
+-                    ItemEntity itemEntity = player.drop(itemStack, false);
+-                    if (itemEntity != null) {
+-                        itemEntity.setNoPickUpDelay();
+-                        itemEntity.setTarget(player.getUUID());
++            rewards.addAll(player.server.reloadableRegistries().getLootTable(resourceKey).getRandomItems(lootParams));
++        }
++
++        PlayerAdvancementRewardsGrantEvent event = new PlayerAdvancementRewardsGrantEvent(
++            player.getBukkitEntity(),
++            recipes.stream().map(recipe -> CraftNamespacedKey.fromMinecraft(recipe.location())).collect(Collectors.toList()),
++            rewards.stream().map(CraftItemStack::asCraftMirror).collect(Collectors.toList()),
++            this.experience
++        );
++
++        Bukkit.getPluginManager().callEvent(event);
++
++        if (!event.isCancelled()) {
++            rewards = event.getItems().stream().map(CraftItemStack::asNMSCopy).collect(Collectors.toList());
++
++            if (event.getExperience() != 0) {
++                player.giveExperiencePoints(event.getExperience());
++            }
++
++            if (!rewards.isEmpty()) {
++                for (ItemStack itemStack : rewards) {
++                    if (player.addItem(itemStack)) {
++                        player.level()
++                            .playSound(
++                                null,
++                                player.getX(),
++                                player.getY(),
++                                player.getZ(),
++                                SoundEvents.ITEM_PICKUP,
++                                SoundSource.PLAYERS,
++                                0.2F,
++                                ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F
++                            );
++                        flag = true;
++                    } else {
++                        ItemEntity itemEntity = player.drop(itemStack, false);
++                        if (itemEntity != null) {
++                            itemEntity.setNoPickUpDelay();
++                            itemEntity.setTarget(player.getUUID());
++                        }
+                     }
+                 }
+             }
++
++            if (!event.getRecipes().isEmpty()) {
++                player.awardRecipesByKey(
++                    event.getRecipes().stream()
++                    .map(key -> ResourceKey.create(Registries.RECIPE, CraftNamespacedKey.toMinecraft(key)))
++                    .toList()
++                );
++            }
+         }
++
++        // Cheetah - end
+ 
+         if (flag) {
+             player.containerMenu.broadcastChanges();
+-        }
+-
+-        if (!this.recipes.isEmpty()) {
+-            player.awardRecipesByKey(this.recipes);
+         }
+ 
+         MinecraftServer minecraftServer = player.server;
