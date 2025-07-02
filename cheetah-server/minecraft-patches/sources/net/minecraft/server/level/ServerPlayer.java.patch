@@ -1,18 +1,18 @@
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -7,6 +_,7 @@
- import com.mojang.serialization.Dynamic;
+@@ -13,6 +_,7 @@
+ import com.mojang.serialization.codecs.RecordCodecBuilder;
  import java.net.InetSocketAddress;
  import java.util.Collection;
 +import java.util.Collections;
  import java.util.HashSet;
  import java.util.List;
  import java.util.Optional;
-@@ -818,8 +_,23 @@
+@@ -770,8 +_,23 @@
          Entity camera = this.getCamera();
          if (camera != this) {
              if (camera.isAlive()) {
--                this.absMoveTo(camera.getX(), camera.getY(), camera.getZ(), camera.getYRot(), camera.getXRot());
+-                this.absSnapTo(camera.getX(), camera.getY(), camera.getZ(), camera.getYRot(), camera.getXRot());
 -                this.serverLevel().getChunkSource().move(this);
 +                // Cheetah start - Fix GLOBAL-1080
 +                if (camera.level() != this.level()) {
@@ -27,10 +27,10 @@
 +                        this.connection.internalTeleport(PositionMoveRotation.of(camera), Collections.emptySet());
 +                    }
 +
-+                    this.absMoveTo(camera.getX(), camera.getY(), camera.getZ(), camera.getYRot(), camera.getXRot());
++                    this.absSnapTo(camera.getX(), camera.getY(), camera.getZ(), camera.getYRot(), camera.getXRot());
 +                    this.serverLevel().getChunkSource().move(this);
 +                }
-+                // Cheetah end
++                // Cheetah end - Fix GLOBAL-1080
                  if (this.wantsToStopRiding()) {
                      this.setCamera(this);
                  }

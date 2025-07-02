@@ -1,6 +1,6 @@
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-@@ -1482,7 +_,10 @@
+@@ -1316,7 +_,10 @@
          com.destroystokyo.paper.event.entity.ProjectileCollideEvent event = new com.destroystokyo.paper.event.entity.ProjectileCollideEvent(projectile, collided);
  
          if (projectile.getShooter() instanceof Player && collided instanceof Player) {
@@ -12,7 +12,7 @@
                  event.setCancelled(true);
                  return event;
              }
-@@ -1492,6 +_,15 @@
+@@ -1326,6 +_,15 @@
          return event;
      }
      // Paper end

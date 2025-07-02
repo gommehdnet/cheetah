@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -396,7 +_,7 @@
+@@ -400,7 +_,7 @@
              scoreboard.addPlayerToTeam(player.getScoreboardName(), collideRuleTeam);
          }
          // Paper end - Configurable player collision
@@ -9,7 +9,7 @@
          // Paper start - Send empty chunk, so players aren't stuck in the world loading screen with our chunk system not sending chunks when dead
          if (player.isDeadOrDying()) {
              net.minecraft.core.Holder<net.minecraft.world.level.biome.Biome> plains = serverLevel.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.BIOME)
-@@ -671,7 +_,7 @@
+@@ -669,7 +_,7 @@
          }
          this.cserver.getPluginManager().callEvent(event);
          if (event.getResult() != org.bukkit.event.player.PlayerLoginEvent.Result.ALLOWED) {

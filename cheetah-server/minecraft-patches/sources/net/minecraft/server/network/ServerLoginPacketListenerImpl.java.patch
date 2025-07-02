@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-@@ -71,6 +_,7 @@
+@@ -70,6 +_,7 @@
      private net.minecraft.server.level.ServerPlayer player; // CraftBukkit
      public boolean iKnowThisMayNotBeTheBestIdeaButPleaseDisableUsernameValidation = false; // Paper - username validation overriding
      private int velocityLoginMessageId = -1; // Paper - Add Velocity IP Forwarding Support
@@ -8,7 +8,7 @@
  
      public ServerLoginPacketListenerImpl(MinecraftServer server, Connection connection, boolean transferred) {
          this.server = server;
-@@ -145,8 +_,15 @@
+@@ -144,8 +_,15 @@
      }
  
      public void disconnect(Component reason) {
@@ -25,7 +25,7 @@
              this.connection.send(new ClientboundLoginDisconnectPacket(reason));
              this.connection.disconnect(reason);
          } catch (Exception var3) {
-@@ -160,7 +_,7 @@
+@@ -159,7 +_,7 @@
  
      @Override
      public void onDisconnect(DisconnectionDetails details) {
@@ -34,7 +34,7 @@
      }
  
      public String getUserName() {
-@@ -361,12 +_,14 @@
+@@ -360,12 +_,14 @@
          playerName = gameprofile.getName();
          uniqueId = gameprofile.getId();
          // Paper end - Add more fields to AsyncPlayerPreLoginEvent
@@ -49,7 +49,7 @@
              Waitable<PlayerPreLoginEvent.Result> waitable = new Waitable<>() {
                  @Override
                  protected PlayerPreLoginEvent.Result evaluate() {
-@@ -377,11 +_,14 @@
+@@ -376,11 +_,14 @@
  
              ServerLoginPacketListenerImpl.this.server.processQueue.add(waitable);
              if (waitable.get() != PlayerPreLoginEvent.Result.ALLOWED) {

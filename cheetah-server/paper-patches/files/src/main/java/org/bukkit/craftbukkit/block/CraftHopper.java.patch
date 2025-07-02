@@ -8,7 +8,7 @@
 +    // Cheetah start - Configurable hopper transfer multiplier
 +    @Override
 +    public float getTransferMultiplier() {
-+        return this.getTileEntity().getHopperTransferMultiplier();
++        return this.getBlockEntity().getHopperTransferMultiplier();
 +    }
 +
 +    @Override
@@ -16,7 +16,7 @@
 +        if (transferMultiplier < 0) {
 +            throw new IllegalArgumentException("transferMultiplier cannot be negative for hopper at " + getLocation());
 +        }
-+        this.getTileEntity().setHopperTransferMultiplier(transferMultiplier);
++        this.getBlockEntity().setHopperTransferMultiplier(transferMultiplier);
 +    }
 +    // Cheetah end
  }
