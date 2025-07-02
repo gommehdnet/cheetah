@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/Display.java
 +++ b/net/minecraft/world/entity/Display.java
-@@ -50,19 +_,19 @@
+@@ -48,19 +_,19 @@
      public static final EntityDataAccessor<Integer> DATA_POS_ROT_INTERPOLATION_DURATION_ID = SynchedEntityData.defineId(
          Display.class, EntityDataSerializers.INT
      );
@@ -33,7 +33,7 @@
          DATA_TRANSLATION_ID.id(),
          DATA_SCALE_ID.id(),
          DATA_LEFT_ROTATION_ID.id(),
-@@ -461,7 +_,7 @@
+@@ -459,7 +_,7 @@
  
      public static class BlockDisplay extends Display {
          public static final String TAG_BLOCK_STATE = "block_state";
@@ -42,7 +42,7 @@
              Display.BlockDisplay.class, EntityDataSerializers.BLOCK_STATE
          );
          @Nullable
-@@ -556,12 +_,12 @@
+@@ -552,12 +_,12 @@
      }
  
      public static class ItemDisplay extends Display {
@@ -59,7 +59,7 @@
          private final SlotAccess slot = SlotAccess.of(this::getItemStack, this::setItemStack);
          @Nullable
          private Display.ItemDisplay.ItemRenderState itemRenderState;
-@@ -666,29 +_,29 @@
+@@ -662,29 +_,29 @@
  
      public static class TextDisplay extends Display {
          public static final String TAG_TEXT = "text";

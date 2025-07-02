@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java
 +++ b/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java
-@@ -68,6 +_,13 @@
+@@ -69,6 +_,13 @@
          Entity owner = this.getOwner();
          this.applyInertia();
          if (this.level().isClientSide || (owner == null || !owner.isRemoved()) && this.level().hasChunkAt(this.blockPosition())) {

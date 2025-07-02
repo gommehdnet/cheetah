@@ -1,6 +1,19 @@
 --- a/paper-server/build.gradle.kts
 +++ b/paper-server/build.gradle.kts
-@@ -24,6 +_,17 @@
+@@ -1,10 +_,8 @@
+ import io.papermc.fill.model.BuildChannel
+ import io.papermc.paperweight.attribute.DevBundleOutput
+-import io.papermc.paperweight.util.*
+-import io.papermc.paperweight.util.data.FileEntry
+-import paper.libs.com.google.gson.annotations.SerializedName
++import io.papermc.paperweight.util.Git
++import io.papermc.paperweight.util.path
+ import java.time.Instant
+-import kotlin.io.path.readText
+ 
+ plugins {
+     `java-library`
+@@ -26,6 +_,17 @@
      minecraftVersion = providers.gradleProperty("mcVersion")
      gitFilePatches = false
  
@@ -15,10 +28,10 @@
 +
 +    activeFork = cheetah
 +
-     //updatingMinecraft {
-     //    oldPaperCommit = "f4f275519f7c1fbe9db173b7144a4fe81440e365"
-     //}
-@@ -108,7 +_,20 @@
+     spigot {
+         enabled = true
+         buildDataRef = "281ac0de7a76d808753ede97d11b034bc801b63d"
+@@ -107,7 +_,20 @@
      }
  }
  
@@ -40,7 +53,7 @@
  configurations.named(log4jPlugins.compileClasspathConfigurationName) {
      extendsFrom(configurations.compileClasspath.get())
  }
-@@ -130,7 +_,7 @@
+@@ -129,7 +_,7 @@
  }
  
  dependencies {
@@ -49,7 +62,7 @@
      implementation("ca.spottedleaf:concurrentutil:0.0.3")
      implementation("org.jline:jline-terminal-ffm:3.27.1") // use ffm on java 22+
      implementation("org.jline:jline-terminal-jni:3.27.1") // fall back to jni on java 21
-@@ -206,14 +_,14 @@
+@@ -205,14 +_,14 @@
          val gitBranch = git.exec(providers, "rev-parse", "--abbrev-ref", "HEAD").get().trim()
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
@@ -69,12 +82,21 @@
              "Build-Number" to (build ?: ""),
              "Build-Time" to buildTime.toString(),
              "Git-Branch" to gitBranch,
-@@ -267,7 +_,7 @@
+@@ -271,7 +_,7 @@
      jvmArgumentProviders.add(provider)
  }
  
 -val generatedDir: java.nio.file.Path = layout.projectDirectory.dir("src/generated/java").asFile.toPath()
-+val generatedDir: java.nio.file.Path = layout.projectDirectory.dir("paper-server/src/generated/java").asFile.toPath()
++val generatedDir: java.nio.file.Path = rootProject.layout.projectDirectory.dir("paper-server/src/generated/java").asFile.toPath()
  idea {
      module {
          generatedSourceDirs.add(generatedDir.toFile())
+@@ -376,7 +_,7 @@
+ }
+ 
+ fill {
+-    project("paper")
++    project("cheetah")
+     versionFamily(paperweight.minecraftVersion.map { it.split(".", "-").takeWhile { part -> part.toIntOrNull() != null }.take(2).joinToString(".") })
+     version(paperweight.minecraftVersion)
+ 

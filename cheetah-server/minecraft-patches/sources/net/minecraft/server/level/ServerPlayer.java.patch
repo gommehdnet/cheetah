@@ -8,12 +8,12 @@
  import java.util.HashSet;
  import java.util.List;
  import java.util.Optional;
-@@ -770,8 +_,23 @@
+@@ -831,8 +_,23 @@
          Entity camera = this.getCamera();
          if (camera != this) {
              if (camera.isAlive()) {
 -                this.absSnapTo(camera.getX(), camera.getY(), camera.getZ(), camera.getYRot(), camera.getXRot());
--                this.serverLevel().getChunkSource().move(this);
+-                this.level().getChunkSource().move(this);
 +                // Cheetah start - Fix GLOBAL-1080
 +                if (camera.level() != this.level()) {
 +                    this.getBukkitEntity().teleport(camera.getBukkitEntity().getLocation(), org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.SPECTATE);
@@ -28,7 +28,7 @@
 +                    }
 +
 +                    this.absSnapTo(camera.getX(), camera.getY(), camera.getZ(), camera.getYRot(), camera.getXRot());
-+                    this.serverLevel().getChunkSource().move(this);
++                    this.level().getChunkSource().move(this);
 +                }
 +                // Cheetah end - Fix GLOBAL-1080
                  if (this.wantsToStopRiding()) {

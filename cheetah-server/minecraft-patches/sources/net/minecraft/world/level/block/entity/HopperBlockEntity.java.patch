@@ -28,20 +28,20 @@
 @@ -86,6 +_,7 @@
          }
  
-         this.cooldownTime = tag.getIntOr("TransferCooldown", -1);
-+        this.hopperTransferMultiplier = tag.getFloatOr("TransferMultiplier", 1.0F); // Cheetah - Configurable hopper transfer multiplier
+         this.cooldownTime = input.getIntOr("TransferCooldown", -1);
++        this.hopperTransferMultiplier = input.getFloatOr("TransferMultiplier", 1.0F); // Cheetah - Configurable hopper transfer multiplier
      }
  
      @Override
 @@ -96,6 +_,11 @@
          }
  
-         tag.putInt("TransferCooldown", this.cooldownTime);
+         output.putInt("TransferCooldown", this.cooldownTime);
 +        // Cheetah start - Configurable hopper transfer multiplier
 +        if (this.hopperTransferMultiplier != 1.0F) {
-+            tag.putFloat("TransferMultiplier", this.hopperTransferMultiplier);
++            output.putFloat("TransferMultiplier", this.hopperTransferMultiplier);
 +        }
-+        // Cheetah end
++        // Cheetah end - Configurable hopper transfer multiplier
      }
  
      @Override

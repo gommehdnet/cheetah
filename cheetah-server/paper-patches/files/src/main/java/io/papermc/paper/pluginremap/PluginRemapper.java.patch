@@ -22,7 +22,7 @@
          this.reversedMappings = this.reversedMappingsFuture(() -> mappings, remappedPlugins, this.threadPool);
          this.reobf = new ReobfServer(remappedPlugins.resolve(REMAP_CLASSPATH), mappings, this.threadPool);
          this.remappedPlugins = new RemappedPluginIndex(remappedPlugins, false);
-@@ -70,12 +_,12 @@
+@@ -70,13 +_,13 @@
          this.libraries = new UnknownOriginRemappedPluginIndex(this.remappedPlugins.dir().resolve(LIBRARIES));
      }
  
@@ -32,8 +32,9 @@
              return null;
          }
  
--        return new PluginRemapper(pluginsDir);
-+        return new PluginRemapper(pluginsDir, remappedDir); // Cheetah - configurable remapped directory
-     }
- 
-     public void shutdown() {
+         try {
+-            return new PluginRemapper(pluginsDir);
++            return new PluginRemapper(pluginsDir,remappedDir); // Cheetah - configurable remapped directory
+         } catch (final Exception e) {
+             throw new RuntimeException("Failed to create PluginRemapper, try deleting the '" + pluginsDir.resolve(PAPER_REMAPPED) + "' directory", e);
+         }

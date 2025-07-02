@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -172,15 +_,15 @@
+@@ -184,15 +_,15 @@
      protected static final int LIVING_ENTITY_FLAG_IS_USING = 1;
      protected static final int LIVING_ENTITY_FLAG_OFF_HAND = 2;
      public static final int LIVING_ENTITY_FLAG_SPIN_ATTACK = 4;
@@ -21,7 +21,7 @@
          LivingEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS
      );
      private static final int PARTICLE_FREQUENCY_WHEN_INVISIBLE = 15;
-@@ -1999,6 +_,20 @@
+@@ -2031,6 +_,20 @@
              return false;
          }
      }
