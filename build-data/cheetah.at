@@ -30,3 +30,8 @@ public net.minecraft.world.entity.Display$TextDisplay DATA_TEXT_ID
 public net.minecraft.world.entity.Display$TextDisplay DATA_TEXT_OPACITY_ID
 public net.minecraft.world.entity.Display$TextDisplay DATA_STYLE_FLAGS_ID
 public net.minecraft.world.entity.Display$TextDisplay TEXT_RENDER_STATE_IDS
+public net.minecraft.world.entity.LivingEntity DATA_LIVING_ENTITY_FLAGS
+public net.minecraft.world.entity.LivingEntity DATA_EFFECT_PARTICLES
+public net.minecraft.world.entity.LivingEntity DATA_EFFECT_AMBIENCE_ID
+public net.minecraft.world.entity.LivingEntity DATA_STINGER_COUNT_ID
+public net.minecraft.world.entity.LivingEntity SLEEPING_POS_ID
