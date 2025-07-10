@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2234,12 +_,23 @@
+@@ -2246,12 +_,23 @@
      }
  
      @Override
@@ -21,11 +21,11 @@
 +        } else {
 +            packet = originalPacket;
 +        }
-+        // Cheetah end
++        // Cheetah end  - Do not break message chain if proxy cancels a chat message
          // CraftBukkit end
          Optional<LastSeenMessages> optional = this.unpackAndApplyLastSeen(packet.lastSeenMessages());
          if (!optional.isEmpty()) {
-@@ -2252,6 +_,13 @@
+@@ -2264,6 +_,13 @@
                      return;
                  }
  
@@ -39,7 +39,7 @@
                  CompletableFuture<FilteredText> completableFuture = this.filterTextPacket(signedMessage.signedContent()).thenApplyAsync(java.util.function.Function.identity(), this.server.chatExecutor); // CraftBukkit - async chat
                  CompletableFuture<Component> componentFuture = this.server.getChatDecorator().decorate(this.player, null, signedMessage.decoratedContent()); // Paper - Adventure
  
-@@ -2304,8 +_,23 @@
+@@ -2316,8 +_,23 @@
  
      @Override
      public void handleSignedChatCommand(ServerboundChatCommandSignedPacket packet) {
@@ -51,7 +51,7 @@
 +        } else {
 +            packet1 = packet;
 +        }
-+        // Cheetah end
++        // Cheetah end - Do not break message chain if proxy cancels a chat message
          Optional<LastSeenMessages> optional = this.unpackAndApplyLastSeen(packet.lastSeenMessages());
          if (!optional.isEmpty()) {
 +            // Cheetah start - Do not break message chain if proxy cancels a chat message
@@ -59,11 +59,11 @@
 +                LOGGER.info("Skipping command of " + player.getScoreboardName() + ": '" + packet1.command() + " because it was cancelled by BungeeCord.");
 +                return;
 +            }
-+            // Cheetah end
++            // Cheetah end - Do not break message chain if proxy cancels a chat message
              this.tryHandleChat(packet.command(), () -> {
                  // CraftBukkit start - SPIGOT-7346: Prevent disconnected players from executing commands
                  if (this.player.hasDisconnected()) {
-@@ -2416,9 +_,20 @@
+@@ -2428,9 +_,20 @@
          return new SignedMessageChain.DecodeException(INVALID_COMMAND_SIGNATURE);
      }
  
@@ -76,7 +76,7 @@
 +        split[0] = split[0].toLowerCase();
 +        return String.join(" ", split);
 +    }
-+    // Cheetah end
++    // Cheetah end - Support case insensitive commands
 +
      private ParseResults<CommandSourceStack> parseCommand(String command) {
          CommandDispatcher<CommandSourceStack> dispatcher = this.server.getCommands().getDispatcher();

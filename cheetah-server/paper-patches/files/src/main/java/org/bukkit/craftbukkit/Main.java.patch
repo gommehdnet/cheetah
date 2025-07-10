@@ -6,7 +6,7 @@
                          .describedAs("Name");
 +
 +                // Cheetah start - configurable remapped directory
-+                acceptsAll(asList("remapped-directory"), "Remapped directory")
++                this.accepts("remapped-directory", "Remapped directory")
 +                    .withRequiredArg()
 +                    .ofType(File.class)
 +                    .defaultsTo(new File(io.papermc.paper.pluginremap.PluginRemapper.PAPER_REMAPPED))

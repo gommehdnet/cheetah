@@ -9,7 +9,7 @@
 +        if (level().paperConfig().environment.treasureMaps.enabled) {
 +            this.goalSelector.addGoal(1, new Dolphin.DolphinSwimToTreasureGoal(this));
 +        }
-+        // Cheetah end
++        // Cheetah end - Respect treasure map option for dolphins
          this.goalSelector.addGoal(2, new Dolphin.DolphinSwimWithPlayerGoal(this, 4.0));
          this.goalSelector.addGoal(4, new RandomSwimmingGoal(this, 1.0, 10));
          this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));

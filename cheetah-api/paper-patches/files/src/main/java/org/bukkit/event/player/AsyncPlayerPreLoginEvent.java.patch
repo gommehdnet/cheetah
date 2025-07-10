@@ -1,6 +1,6 @@
 --- a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
-@@ -30,6 +_,7 @@
+@@ -31,6 +_,7 @@
      private final InetAddress rawAddress;
      private final String hostname;
      private final boolean transferred;
@@ -8,7 +8,7 @@
      private Result result;
      private Component message;
      private PlayerProfile profile;
-@@ -311,6 +_,16 @@
+@@ -324,6 +_,16 @@
      public static HandlerList getHandlerList() {
          return HANDLER_LIST;
      }

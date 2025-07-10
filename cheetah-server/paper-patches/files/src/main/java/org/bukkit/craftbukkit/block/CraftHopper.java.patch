@@ -18,5 +18,5 @@
 +        }
 +        this.getBlockEntity().setHopperTransferMultiplier(transferMultiplier);
 +    }
-+    // Cheetah end
++    // Cheetah end - Configurable hopper transfer multiplier
  }

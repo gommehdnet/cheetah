@@ -8,7 +8,7 @@
 +                // Cheetah start - Added ProjectileAllowCollideWithPlayerEvent
 +                net.gommehd.cheetah.event.entity.ProjectileAllowCollideWithPlayerEvent allowCollideEvent = org.bukkit.craftbukkit.event.CraftEventFactory.callProjectileAllowCollideWithPlayerEvent(this, target);
 +                if (!allowCollideEvent.isAllowCollide() && !shooter.canSee(collided)) {
-+                    // Cheetah end
++                    // Cheetah end - Added ProjectileAllowCollideWithPlayerEvent
                      return false;
                  }
              }

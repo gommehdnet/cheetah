@@ -12,7 +12,7 @@
 +        this.radius = radius;
 +        this.findUnexplored = findUnexplored;
 +    }
-+    // Cheetah end
++    // Cheetah end - added async parameter
 +
      /**
       * Gets the {@link Location} from which the search is to be conducted.

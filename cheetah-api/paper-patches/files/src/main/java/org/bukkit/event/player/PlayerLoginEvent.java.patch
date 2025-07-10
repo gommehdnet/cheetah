@@ -1,6 +1,6 @@
 --- a/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
-@@ -24,6 +_,7 @@
+@@ -34,6 +_,7 @@
      private final InetAddress realAddress;
      private Result result = Result.ALLOWED;
      private Component message = Component.empty();
@@ -8,7 +8,7 @@
  
      @ApiStatus.Internal
      public PlayerLoginEvent(@NotNull final Player player, @NotNull final String hostname, @NotNull final InetAddress address, final @NotNull InetAddress realAddress) {
-@@ -63,6 +_,16 @@
+@@ -73,6 +_,16 @@
      public String getHostname() {
          return this.hostname;
      }

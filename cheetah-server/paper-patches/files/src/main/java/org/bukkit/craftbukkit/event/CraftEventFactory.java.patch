@@ -1,6 +1,6 @@
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-@@ -1317,7 +_,10 @@
+@@ -1327,7 +_,10 @@
          com.destroystokyo.paper.event.entity.ProjectileCollideEvent event = new com.destroystokyo.paper.event.entity.ProjectileCollideEvent(projectile, collided);
  
          if (projectile.getShooter() instanceof Player && collided instanceof Player) {
@@ -8,11 +8,11 @@
 +            // Cheetah start - Added ProjectileAllowCollideWithPlayerEvent
 +            net.gommehd.cheetah.event.entity.ProjectileAllowCollideWithPlayerEvent allowCollideEvent = callProjectileAllowCollideWithPlayerEvent(entity, position.getEntity());
 +            if (!allowCollideEvent.isAllowCollide() && !((Player) projectile.getShooter()).canSee((Player) collided)) {
-+                // Cheetah end
++                // Cheetah end - Added ProjectileAllowCollideWithPlayerEvent
                  event.setCancelled(true);
                  return event;
              }
-@@ -1327,6 +_,15 @@
+@@ -1337,6 +_,15 @@
          return event;
      }
      // Paper end
@@ -24,7 +24,7 @@
 +        event.callEvent();
 +        return event;
 +    }
-+    // Cheetah end
++    // Cheetah end - Added ProjectileAllowCollideWithPlayerEvent
  
      public static ProjectileLaunchEvent callProjectileLaunchEvent(Entity entity) {
          Projectile bukkitEntity = (Projectile) entity.getBukkitEntity();
