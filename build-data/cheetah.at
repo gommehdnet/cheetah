@@ -35,3 +35,11 @@ public net.minecraft.world.entity.LivingEntity DATA_EFFECT_PARTICLES
 public net.minecraft.world.entity.LivingEntity DATA_EFFECT_AMBIENCE_ID
 public net.minecraft.world.entity.LivingEntity DATA_STINGER_COUNT_ID
 public net.minecraft.world.entity.LivingEntity SLEEPING_POS_ID
+public net.minecraft.world.entity.Entity DATA_SHARED_FLAGS_ID
+public net.minecraft.world.entity.Entity DATA_AIR_SUPPLY_ID
+public net.minecraft.world.entity.Entity DATA_CUSTOM_NAME
+public net.minecraft.world.entity.Entity DATA_CUSTOM_NAME_VISIBLE
+public net.minecraft.world.entity.Entity DATA_SILENT
+public net.minecraft.world.entity.Entity DATA_NO_GRAVITY
+public net.minecraft.world.entity.Entity DATA_POSE
+public net.minecraft.world.entity.Entity DATA_TICKS_FROZEN
