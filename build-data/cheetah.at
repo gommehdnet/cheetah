@@ -43,3 +43,8 @@ public net.minecraft.world.entity.Entity DATA_SILENT
 public net.minecraft.world.entity.Entity DATA_NO_GRAVITY
 public net.minecraft.world.entity.Entity DATA_POSE
 public net.minecraft.world.entity.Entity DATA_TICKS_FROZEN
+public net.minecraft.world.entity.player.Player DATA_PLAYER_ABSORPTION_ID
+public net.minecraft.world.entity.player.Player DATA_SCORE_ID
+public net.minecraft.world.entity.player.Player DATA_PLAYER_MAIN_HAND
+public net.minecraft.world.entity.player.Player DATA_SHOULDER_LEFT
+public net.minecraft.world.entity.player.Player DATA_SHOULDER_RIGHT
