@@ -1,14 +1,17 @@
 --- a/net/minecraft/world/entity/projectile/Projectile.java
 +++ b/net/minecraft/world/entity/projectile/Projectile.java
-@@ -396,7 +_,10 @@
-             if (owner instanceof net.minecraft.server.level.ServerPlayer && target instanceof net.minecraft.server.level.ServerPlayer) {
-                 org.bukkit.entity.Player collided = (org.bukkit.entity.Player) target.getBukkitEntity();
+@@ -396,6 +_,14 @@
+             if (owner instanceof net.minecraft.server.level.ServerPlayer) {
+                 org.bukkit.entity.Entity collided = target.getBukkitEntity();
                  org.bukkit.entity.Player shooter = (org.bukkit.entity.Player) owner.getBukkitEntity();
--                if (!shooter.canSee(collided)) {
-+                // Cheetah start - Added ProjectileAllowCollideWithPlayerEvent
-+                net.gommehd.cheetah.event.entity.ProjectileAllowCollideWithPlayerEvent allowCollideEvent = org.bukkit.craftbukkit.event.CraftEventFactory.callProjectileAllowCollideWithPlayerEvent(this, target);
-+                if (!allowCollideEvent.isAllowCollide() && !shooter.canSee(collided)) {
-+                    // Cheetah end - Added ProjectileAllowCollideWithPlayerEvent
++                // Cheetah start - Add ProjectileAllowCollideWithPlayerEvent
++                if (target instanceof net.minecraft.server.level.ServerPlayer) {
++                    net.gommehd.cheetah.event.entity.ProjectileAllowCollideWithPlayerEvent allowCollideEvent = org.bukkit.craftbukkit.event.CraftEventFactory.callProjectileAllowCollideWithPlayerEvent(this, target);
++                    if (!allowCollideEvent.isAllowCollide() && !shooter.canSee(collided)) {
++                        return false;
++                    }
++                }
++                // Cheetah end - Add ProjectileAllowCollideWithPlayerEvent
+                 if (!shooter.canSee(collided)) {
                      return false;
                  }
-             }

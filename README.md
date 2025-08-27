@@ -1,4 +1,4 @@
-# GommeHD.net Cheetah 1.21.7
+# GommeHD.net Cheetah 1.21.8
 
 [![Patch and Build](https://github.com/gommehdnet/cheetah/actions/workflows/build.yml/badge.svg)](https://github.com/gommehdnet/cheetah/actions/workflows/build.yml)
 
@@ -10,7 +10,7 @@ This is a fork of Paper tailored for the use at GommeHD.net
 - On Windows, make sure that `git config core.longpaths true` is set for this project
 - Run `./gradlew applyAllPatches` to apply the patches
 - Run `./gradlew createMojmapBundlerJar` to create the final jar file
-- The final jar file can be found in `cheetah-server/build/libs`
+- The final jar file can be found in `cheetah-server/build/libs/cheetah-bundler-1.21.8-R0.1-SNAPSHOT-mojmap.jar`
 
 ## How to use the API with Maven?
 Currently, it is not possible to add a dependency containing NMS code, the API, and dependencies to the classpath. The current solution is to use the cheetah API combined with the normal Spigot NMS. 
@@ -21,26 +21,24 @@ Thus, changes to the NMS code will not be reflected to plugins using it.
 <dependency>
   <groupId>net.gommehd.cheetah</groupId>
   <artifactId>cheetah-api</artifactId>
-  <version>1.21.7-R0.1-SNAPSHOT</version>
+  <version>1.21.8-R0.1-SNAPSHOT</version>
 </dependency>
 ```
 
 ## How to apply changes
 - First apply the patches using `./gradlew applyAllPatches`
-- Perform the changes to the code
-- If you are a missing file, you can import it from NMS. For this, add a new line to `build-data/dev-imports.txt`, e.g. `minecraft net.minecraft.world.level.entity.LevelEntityGetterAdapter` to import the LevelEntityGetterAdapter. Then apply the patches again (`./gradlew applyPatches`). Keep in mind that all uncommited changes to the code will get LOST by this!
-- Once all changes have been applied, choose the appropriate tasks based on what you modified:
-- Run `./gradlew fixupPaperApiFilePatches` and `./gradlew rebuildPaperApiFilePatches` to create and apply a patch file for `cheetah-api/paper-patches/files`
-- Run `./gradlew fixupPaperServerFilePatches` and `./gradlew rebuildServerFilePatches` to create and apply a patch file for `cheetah-server/paper-patches/files`
-- Run `./gradlew fixupMinecraftSourcePatches` and `./gradlew rebuildMinecraftSourcePatches` to create and apply a patch file for `cheetah-server/minecraft-patches/sources`
+- Perform the changes to the code and choose the appropriate tasks based on what you modified:
+- Run `./gradlew fixupPaperApiFilePatches` and `./gradlew rebuildPaperApiFilePatches` for applying changes to paper-api files
+- Run `./gradlew fixupPaperServerFilePatches` and `./gradlew rebuildServerFilePatches` for applying changes to paper-server files
+- Run `./gradlew fixupMinecraftSourcePatches` and `./gradlew rebuildMinecraftSourcePatches` for applying changes to minecraft files
+- Run `./gradlew rebuildPaperSingleFilePatches` for applying changes to `cheetah-api/build.gradle.kts` and `cheetah-server/build.gradle.kts` files
 - Test your changes thoroughly and commit the generated patch files to the root repository
 
 ## Update upstream
 - Make sure all changes are committed and patches have been rebuilt
-- Identify the latest commit in https://github.com/PaperMC/Paper/commits/main/ and copy its hash. Update `paperRef` in `gradle.properties` accordingly.
+- Identify the latest commit in https://github.com/PaperMC/Paper/commits/main/ and copy its hash. Update `paperRef` in `gradle.properties` accordingly
 - Run `./gradlew applyAllPatches`
-- Fix potential conflicts during merges and update your code to the latest version
-- Run `./gradlew rebuildPaperSingleFilePatches`
+- If you run into potential conflicts, apply the rejected patches manually (See [How to apply changes](#how-to-apply-changes))
 - Validate that everything works and commit your changes
 
 ## Contributing

@@ -62,7 +62,7 @@
      implementation("ca.spottedleaf:concurrentutil:0.0.3")
      implementation("org.jline:jline-terminal-ffm:3.27.1") // use ffm on java 22+
      implementation("org.jline:jline-terminal-jni:3.27.1") // fall back to jni on java 21
-@@ -205,14 +_,14 @@
+@@ -200,14 +_,14 @@
          val gitBranch = git.exec(providers, "rev-parse", "--abbrev-ref", "HEAD").get().trim()
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
@@ -76,13 +76,13 @@
 -            "Specification-Vendor" to "Paper Team",
 -            "Brand-Id" to "papermc:paper",
 -            "Brand-Name" to "Paper",
-+            "Specification-Vendor" to "Cheetah Team", // Cheetah - Build changes
++            "Specification-Vendor" to "GommeHD Dev Team", // Cheetah - Build changes
 +            "Brand-Id" to "gommehdnet:cheetah", // Cheetah - Build changes
 +            "Brand-Name" to "Cheetah", // Cheetah - Build changes
              "Build-Number" to (build ?: ""),
              "Build-Time" to buildTime.toString(),
              "Git-Branch" to gitBranch,
-@@ -271,7 +_,7 @@
+@@ -266,7 +_,7 @@
      jvmArgumentProviders.add(provider)
  }
  
@@ -91,7 +91,7 @@
  idea {
      module {
          generatedSourceDirs.add(generatedDir.toFile())
-@@ -376,7 +_,7 @@
+@@ -371,7 +_,7 @@
  }
  
  fill {
