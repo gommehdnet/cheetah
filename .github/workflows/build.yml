@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BUILD_NUMBER: ${{ github.run_number }}
+      MINECRAFT_VERSION: 1.21.8
     steps:
       - name: Checkout Git Repository
         uses: actions/checkout@v4
@@ -35,10 +36,10 @@ jobs:
       - name: Bundle
         run: ./gradlew createMojmapBundlerJar --info
       - name: Rename Artifact
-        run: mv cheetah-server/build/libs/cheetah-bundler-1.21.7-R0.1-SNAPSHOT-mojmap.jar cheetah-server/build/libs/cheetah-1.21.7.jar
+        run: mv cheetah-server/build/libs/cheetah-bundler-$MINECRAFT_VERSION-R0.1-SNAPSHOT-mojmap.jar cheetah-server/build/libs/cheetah-$MINECRAFT_VERSION-$BUILD_NUMBER.jar
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Cheetah-1.21.7
-          path: cheetah-server/build/libs/cheetah-1.21.7.jar
+          name: cheetah-$MINECRAFT_VERSION-$BUILD_NUMBER
+          path: cheetah-server/build/libs/cheetah-$MINECRAFT_VERSION-$BUILD_NUMBER.jar
           if-no-files-found: error
