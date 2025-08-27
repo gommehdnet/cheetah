@@ -36,10 +36,10 @@ jobs:
       - name: Bundle
         run: ./gradlew createMojmapBundlerJar --info
       - name: Rename Artifact
-        run: mv cheetah-server/build/libs/cheetah-bundler-$MINECRAFT_VERSION-R0.1-SNAPSHOT-mojmap.jar cheetah-server/build/libs/cheetah-$MINECRAFT_VERSION-$BUILD_NUMBER.jar
+        run: mv cheetah-server/build/libs/cheetah-bundler-${{ env.MINECRAFT_VERSION }}-R0.1-SNAPSHOT-mojmap.jar cheetah-server/build/libs/cheetah-${{ env.MINECRAFT_VERSION }}-${{ env.BUILD_NUMBER }}.jar
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: cheetah-$MINECRAFT_VERSION-$BUILD_NUMBER
-          path: cheetah-server/build/libs/cheetah-$MINECRAFT_VERSION-$BUILD_NUMBER.jar
+          name: cheetah-${{ env.MINECRAFT_VERSION }}-${{ env.BUILD_NUMBER }}
+          path: cheetah-server/build/libs/cheetah-${{ env.MINECRAFT_VERSION }}-${{ env.BUILD_NUMBER }}.jar
           if-no-files-found: error
