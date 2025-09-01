@@ -1,0 +1,12 @@
+--- a/net/minecraft/server/network/ServerConfigurationPacketListenerImpl.java
++++ b/net/minecraft/server/network/ServerConfigurationPacketListenerImpl.java
+@@ -166,7 +_,8 @@
+                 return;
+             }
+ 
+-            Component component = org.bukkit.craftbukkit.event.CraftEventFactory.handleLoginResult(playerList.canPlayerLogin(this.connection.getRemoteAddress(), this.gameProfile), this.paperConnection, this.connection, this.gameProfile, this.server, false); // Paper - Login event logic
++            io.papermc.paper.connection.HorriblePlayerLoginEventHack.LoginResult loginResult = org.bukkit.craftbukkit.event.CraftEventFactory.handleLoginResult(playerList.canPlayerLogin(this.connection.getRemoteAddress(), this.gameProfile), this.paperConnection, this.connection, this.gameProfile, this.server, false); // Paper - Login event logic // Cheetah - Allow skipping log messages for canceled login events
++            Component component = loginResult.message();
+             if (component != null) {
+                 this.disconnect(component);
+                 return;

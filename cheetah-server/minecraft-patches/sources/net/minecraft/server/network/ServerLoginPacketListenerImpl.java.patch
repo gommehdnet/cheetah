@@ -36,6 +36,19 @@
      }
  
      public String getUserName() {
+@@ -204,9 +_,10 @@
+ 
+     private void verifyLoginAndFinishConnectionSetup(GameProfile profile) {
+         PlayerList playerList = this.server.getPlayerList();
+-        Component component = org.bukkit.craftbukkit.event.CraftEventFactory.handleLoginResult(playerList.canPlayerLogin(this.connection.getRemoteAddress(), profile), this.paperLoginConnection, this.connection, profile, this.server, true); // Paper
++        io.papermc.paper.connection.HorriblePlayerLoginEventHack.LoginResult loginResult = org.bukkit.craftbukkit.event.CraftEventFactory.handleLoginResult(playerList.canPlayerLogin(this.connection.getRemoteAddress(), profile), this.paperLoginConnection, this.connection, profile, this.server, true); // Paper // Cheetah - Allow skipping log messages for canceled login events
++        Component component = loginResult.message();
+         if (component != null) {
+-            this.disconnect(component);
++            this.disconnect(component, loginResult.isSkipLog());
+         } else {
+             if (this.server.getCompressionThreshold() >= 0 && !this.connection.isMemoryConnection()) {
+                 this.connection
 @@ -327,12 +_,14 @@
          playerName = gameprofile.getName();
          uniqueId = gameprofile.getId();
