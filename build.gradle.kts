@@ -45,27 +45,23 @@ subprojects {
         maven(paperMavenPublicUrl)
     }
 
-    dependencies {
-        "testRuntimeOnly"("org.junit.platform:junit-platform-launcher")
-    }
-
     tasks.withType<AbstractArchiveTask>().configureEach {
         isPreserveFileTimestamps = false
         isReproducibleFileOrder = true
     }
-    tasks.withType<JavaCompile>().configureEach {
+    tasks.withType<JavaCompile> {
         options.encoding = Charsets.UTF_8.name()
         options.release = 21
         options.isFork = true
         options.compilerArgs.addAll(listOf("-Xlint:-deprecation", "-Xlint:-removal"))
     }
-    tasks.withType<Javadoc>().configureEach {
+    tasks.withType<Javadoc> {
         options.encoding = Charsets.UTF_8.name()
     }
-    tasks.withType<ProcessResources>().configureEach {
+    tasks.withType<ProcessResources> {
         filteringCharset = Charsets.UTF_8.name()
     }
-    tasks.withType<Test>().configureEach {
+    tasks.withType<Test> {
         testLogging {
             showStackTraces = true
             exceptionFormat = TestExceptionFormat.FULL
