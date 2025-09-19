@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BUILD_NUMBER: ${{ github.run_number }}
-      MINECRAFT_VERSION: 1.21.8
+      MINECRAFT_VERSION: 1.21.9-pre2
     steps:
       - name: Checkout Git Repository
         uses: actions/checkout@v4
