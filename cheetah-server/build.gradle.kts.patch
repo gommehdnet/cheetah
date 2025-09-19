@@ -13,7 +13,7 @@
  
  plugins {
      `java-library`
-@@ -26,15 +_,26 @@
+@@ -26,6 +_,17 @@
      minecraftVersion = providers.gradleProperty("mcVersion")
      gitFilePatches = false
  
@@ -31,19 +31,7 @@
      spigot {
          enabled = false
          buildDataRef = "436eac9815c211be1a2a6ca0702615f995e81c44"
-         packageVersion = "v1_21_R5" // also needs to be updated in MappingEnvironment
-     }
- 
--    updatingMinecraft {
--        oldPaperCommit = "29c8822d90899c89d2689338e81a98f690bcba12" // 1.21.8 main
--    }
-+    // updatingMinecraft {
-+    //     oldPaperCommit = "29c8822d90899c89d2689338e81a98f690bcba12" // 1.21.8 main
-+    // }
- 
-     reobfPackagesToFix.addAll(
-         "co.aikar.timings",
-@@ -111,7 +_,20 @@
+@@ -107,7 +_,20 @@
      }
  }
  
@@ -65,7 +53,7 @@
  configurations.named(log4jPlugins.compileClasspathConfigurationName) {
      extendsFrom(configurations.compileClasspath.get())
  }
-@@ -133,7 +_,7 @@
+@@ -129,7 +_,7 @@
  }
  
  dependencies {
@@ -74,7 +62,7 @@
      implementation("ca.spottedleaf:concurrentutil:0.0.4")
      implementation("org.jline:jline-terminal-ffm:3.27.1") // use ffm on java 22+
      implementation("org.jline:jline-terminal-jni:3.27.1") // fall back to jni on java 21
-@@ -205,14 +_,14 @@
+@@ -201,14 +_,14 @@
          val gitBranch = git.exec(providers, "rev-parse", "--abbrev-ref", "HEAD").get().trim()
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
@@ -94,7 +82,7 @@
              "Build-Number" to (build ?: ""),
              "Build-Time" to buildTime.toString(),
              "Git-Branch" to gitBranch,
-@@ -271,7 +_,7 @@
+@@ -267,7 +_,7 @@
      jvmArgumentProviders.add(provider)
  }
  
