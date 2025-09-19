@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/projectile/Projectile.java
 +++ b/net/minecraft/world/entity/projectile/Projectile.java
-@@ -396,6 +_,14 @@
+@@ -390,6 +_,14 @@
              if (owner instanceof net.minecraft.server.level.ServerPlayer) {
                  org.bukkit.entity.Entity collided = target.getBukkitEntity();
                  org.bukkit.entity.Player shooter = (org.bukkit.entity.Player) owner.getBukkitEntity();

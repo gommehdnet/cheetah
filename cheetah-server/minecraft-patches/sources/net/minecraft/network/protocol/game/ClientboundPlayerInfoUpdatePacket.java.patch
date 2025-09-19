@@ -1,6 +1,6 @@
 --- a/net/minecraft/network/protocol/game/ClientboundPlayerInfoUpdatePacket.java
 +++ b/net/minecraft/network/protocol/game/ClientboundPlayerInfoUpdatePacket.java
-@@ -50,6 +_,13 @@
+@@ -51,6 +_,13 @@
      }
      // Paper end - Add Listing API for Player
  

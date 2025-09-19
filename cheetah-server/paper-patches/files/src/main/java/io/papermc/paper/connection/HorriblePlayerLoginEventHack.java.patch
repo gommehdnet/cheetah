@@ -1,7 +1,7 @@
 --- a/src/main/java/io/papermc/paper/connection/HorriblePlayerLoginEventHack.java
 +++ b/src/main/java/io/papermc/paper/connection/HorriblePlayerLoginEventHack.java
-@@ -42,9 +_,9 @@
-                 ============================================================""", StackWalkerUtil.getFirstPluginCaller().getName());
+@@ -45,9 +_,9 @@
+         return true;
      }
  
 -    public static @Nullable Component execute(final Connection connection, MinecraftServer server, GameProfile profile, PlayerList.LoginResult result) {
@@ -12,7 +12,7 @@
          }
  
          if (!nagged) {
-@@ -96,6 +_,12 @@
+@@ -100,6 +_,12 @@
              connection.legacySavedLoginEventResultOverride = Optional.ofNullable(finalResult);
          }
  

@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2246,12 +_,23 @@
+@@ -2253,12 +_,23 @@
      }
  
      @Override
@@ -25,7 +25,7 @@
          // CraftBukkit end
          Optional<LastSeenMessages> optional = this.unpackAndApplyLastSeen(packet.lastSeenMessages());
          if (!optional.isEmpty()) {
-@@ -2264,6 +_,13 @@
+@@ -2271,6 +_,13 @@
                      return;
                  }
  
@@ -39,7 +39,7 @@
                  CompletableFuture<FilteredText> completableFuture = this.filterTextPacket(signedMessage.signedContent()).thenApplyAsync(java.util.function.Function.identity(), this.server.chatExecutor); // CraftBukkit - async chat
                  CompletableFuture<Component> componentFuture = this.server.getChatDecorator().decorate(this.player, null, signedMessage.decoratedContent()); // Paper - Adventure
  
-@@ -2316,8 +_,23 @@
+@@ -2323,8 +_,23 @@
  
      @Override
      public void handleSignedChatCommand(ServerboundChatCommandSignedPacket packet) {
@@ -60,10 +60,10 @@
 +                return;
 +            }
 +            // Cheetah end - Do not break message chain if proxy cancels a chat message
-             this.tryHandleChat(packet.command(), () -> {
+             this.tryHandleChat(packet.command(), true, () -> {
                  // CraftBukkit start - SPIGOT-7346: Prevent disconnected players from executing commands
                  if (this.player.hasDisconnected()) {
-@@ -2428,9 +_,20 @@
+@@ -2435,9 +_,20 @@
          return new SignedMessageChain.DecodeException(INVALID_COMMAND_SIGNATURE);
      }
  
@@ -84,4 +84,4 @@
 +        return dispatcher.parse(commandToLower(command), this.player.createCommandSourceStack()); // Cheetah - Support case insensitive commands
      }
  
-     private void tryHandleChat(String message, Runnable handler, boolean sync) { // CraftBukkit
+     private void tryHandleChat(String message, boolean bypassHiddenChat, Runnable handler, boolean sync) { // CraftBukkit

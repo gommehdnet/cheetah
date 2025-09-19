@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-@@ -37,6 +_,7 @@
+@@ -38,6 +_,7 @@
      public int cooldownTime = -1;
      private long tickedGameTime;
      private Direction facing;
@@ -8,7 +8,7 @@
  
      // CraftBukkit start - add fields and methods
      public List<org.bukkit.entity.HumanEntity> transaction = new java.util.ArrayList<>();
-@@ -72,6 +_,16 @@
+@@ -73,6 +_,16 @@
      }
      // CraftBukkit end
  
@@ -25,7 +25,7 @@
      public HopperBlockEntity(BlockPos pos, BlockState blockState) {
          super(BlockEntityType.HOPPER, pos, blockState);
          this.facing = blockState.getValue(HopperBlock.FACING);
-@@ -86,6 +_,7 @@
+@@ -87,6 +_,7 @@
          }
  
          this.cooldownTime = input.getIntOr("TransferCooldown", -1);
@@ -33,7 +33,7 @@
      }
  
      @Override
-@@ -96,6 +_,11 @@
+@@ -97,6 +_,11 @@
          }
  
          output.putInt("TransferCooldown", this.cooldownTime);
@@ -45,7 +45,7 @@
      }
  
      @Override
-@@ -232,7 +_,7 @@
+@@ -233,7 +_,7 @@
                  ItemStack movedItem = origItemStack;
  
                  final int originalItemCount = origItemStack.getCount();
@@ -54,7 +54,7 @@
                  origItemStack.setCount(movedItemCount);
  
                  // We only need to fire the event once to give protection plugins a chance to cancel this event
-@@ -269,7 +_,7 @@
+@@ -270,7 +_,7 @@
      private static boolean hopperPull(final Level level, final Hopper hopper, final Container container, ItemStack origItemStack, final int i) {
          ItemStack movedItem = origItemStack;
          final int originalItemCount = origItemStack.getCount();

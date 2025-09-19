@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -13,6 +_,7 @@
+@@ -14,6 +_,7 @@
  import com.mojang.serialization.codecs.RecordCodecBuilder;
  import java.net.InetSocketAddress;
  import java.util.Collection;
@@ -8,7 +8,7 @@
  import java.util.HashSet;
  import java.util.List;
  import java.util.Optional;
-@@ -769,8 +_,23 @@
+@@ -746,8 +_,23 @@
          Entity camera = this.getCamera();
          if (camera != this) {
              if (camera.isAlive()) {

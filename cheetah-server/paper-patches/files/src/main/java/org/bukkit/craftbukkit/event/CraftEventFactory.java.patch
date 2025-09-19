@@ -1,6 +1,6 @@
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-@@ -1327,7 +_,10 @@
+@@ -1315,7 +_,10 @@
          com.destroystokyo.paper.event.entity.ProjectileCollideEvent event = new com.destroystokyo.paper.event.entity.ProjectileCollideEvent(projectile, collided);
  
          if (projectile.getShooter() instanceof Player && collided instanceof Player) {
@@ -12,7 +12,7 @@
                  event.setCancelled(true);
                  return event;
              }
-@@ -1338,6 +_,15 @@
+@@ -1326,6 +_,15 @@
      }
      // Paper end
  
@@ -28,7 +28,7 @@
      public static ProjectileLaunchEvent callProjectileLaunchEvent(Entity entity) {
          Projectile bukkitEntity = (Projectile) entity.getBukkitEntity();
          ProjectileLaunchEvent event = new ProjectileLaunchEvent(bukkitEntity);
-@@ -2097,25 +_,26 @@
+@@ -2091,25 +_,26 @@
      }
  
      @SuppressWarnings("OptionalAssignedToNull")
