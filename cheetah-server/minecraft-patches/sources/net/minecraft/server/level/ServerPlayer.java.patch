@@ -1,13 +1,5 @@
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -14,6 +_,7 @@
- import com.mojang.serialization.codecs.RecordCodecBuilder;
- import java.net.InetSocketAddress;
- import java.util.Collection;
-+import java.util.Collections;
- import java.util.HashSet;
- import java.util.List;
- import java.util.Optional;
 @@ -746,8 +_,23 @@
          Entity camera = this.getCamera();
          if (camera != this) {
@@ -24,7 +16,7 @@
 +                    this.connection.send(new ClientboundSetCameraPacket(camera));
 +                } else {
 +                    if (!camera.chunkPosition().equals(this.chunkPosition())) {
-+                        this.connection.internalTeleport(PositionMoveRotation.of(camera), Collections.emptySet());
++                        this.connection.internalTeleport(PositionMoveRotation.of(camera), java.util.Collections.emptySet());
 +                    }
 +
 +                    this.absSnapTo(camera.getX(), camera.getY(), camera.getZ(), camera.getYRot(), camera.getXRot());
