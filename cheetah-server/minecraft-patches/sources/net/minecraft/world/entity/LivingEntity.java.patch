@@ -1,9 +1,26 @@
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
+@@ -1187,10 +_,12 @@
+                 flag = true;
+                 effectInstance.onEffectAdded(this);
+                 // CraftBukkit start
+-            } else if (override) { // Paper - Don't fire sync event during generation
++            } else { // Paper - Don't fire sync event during generation // Cheetah start - Always update effects to restore vanilla behavior
+                 mobEffectInstance.update(effectInstance);
+-                this.onEffectUpdated(mobEffectInstance, true, entity);
+-                flag = true;
++                if (override) {
++                    this.onEffectUpdated(mobEffectInstance, true, entity);
++                    flag = true;
++                } // Cheetah end - Always update effects to restore vanilla behavior
+             }
+ 
+             effectInstance.onEffectStarted(this);
 @@ -2063,6 +_,20 @@
+             return false;
          }
      }
- 
++
 +    // Cheetah start - Added VillagerGiveGiftToHeroEvent
 +    public List<ItemStack> getFromGiftLootTable(ServerLevel world, ResourceKey<LootTable> lootTableKey) {
 +        return this.getFromLootTable(world, lootTableKey, (lootparams_a) -> {
@@ -17,7 +34,6 @@
 +        return loottable.getRandomItems(lootparams);
 +    }
 +    // Cheetah end - Added VillagerGiveGiftToHeroEvent
-+
+ 
      public void knockback(double strength, double x, double z) {
          // CraftBukkit start - EntityKnockbackEvent
-         this.knockback(strength, x, z, null, io.papermc.paper.event.entity.EntityKnockbackEvent.Cause.UNKNOWN); // Paper - knockback events
