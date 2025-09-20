@@ -1,0 +1,12 @@
+name: Cheetah-Test-Plugin
+version: ${version}
+main: net.gommehd.cheetah.testplugin.TestPlugin
+description: Cheetah Test Plugin
+authors: GommeHD Dev Team
+api-version: ${apiVersion}
+load: STARTUP
+bootstrapper: net.gommehd.cheetah.TestPluginBootstrap
+loader: net.gommehd.cheetah.TestPluginLoader
+defaultPerm: false
+permissions:
+dependencies:

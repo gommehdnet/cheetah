@@ -12,4 +12,6 @@ plugins {
 
 rootProject.name = "cheetah"
 
-include("cheetah-api", "cheetah-server")
+include("cheetah-api")
+include("cheetah-server")
+include("test-plugin")
