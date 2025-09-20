@@ -5,8 +5,8 @@ description: Cheetah Test Plugin
 authors: GommeHD Dev Team
 api-version: ${apiVersion}
 load: STARTUP
-bootstrapper: net.gommehd.cheetah.TestPluginBootstrap
-loader: net.gommehd.cheetah.TestPluginLoader
+bootstrapper: net.gommehd.cheetah.testplugin.TestPluginBootstrap
+loader: net.gommehd.cheetah.testplugin.TestPluginLoader
 defaultPerm: false
 permissions:
 dependencies:
