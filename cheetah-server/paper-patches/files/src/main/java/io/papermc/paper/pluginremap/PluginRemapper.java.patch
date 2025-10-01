@@ -34,7 +34,7 @@
  
          try {
 -            return new PluginRemapper(pluginsDir);
-+            return new PluginRemapper(pluginsDir,remappedDir); // Cheetah - configurable remapped directory
++            return new PluginRemapper(pluginsDir, remappedDir); // Cheetah - configurable remapped directory
          } catch (final Exception e) {
              throw new RuntimeException("Failed to create PluginRemapper, try deleting the '" + pluginsDir.resolve(PAPER_REMAPPED) + "' directory", e);
          }
