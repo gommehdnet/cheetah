@@ -10,8 +10,8 @@
                  // Paper start
 @@ -95,9 +_,16 @@
                  if (!shieldDisableEvent.callEvent()) return;
+                 player.getCooldowns().addCooldown(stack, shieldDisableEvent.getCooldown());
                  // Paper end
-                 player.getCooldowns().addCooldown(stack, i);
 +                playShieldBreakSound = !shieldDisableEvent.isCancelled(); // Cheetah - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
              }
  
