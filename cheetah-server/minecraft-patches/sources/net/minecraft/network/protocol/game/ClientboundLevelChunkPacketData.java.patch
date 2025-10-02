@@ -15,3 +15,29 @@
          public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundLevelChunkPacketData.BlockEntityInfo> STREAM_CODEC = StreamCodec.ofMember(
              ClientboundLevelChunkPacketData.BlockEntityInfo::write, ClientboundLevelChunkPacketData.BlockEntityInfo::new
          );
+@@ -186,6 +_,25 @@
+             ByteBufCodecs.registry(Registries.BLOCK_ENTITY_TYPE).encode(buffer, this.type);
+             buffer.writeNbt(this.tag);
+         }
++
++        // Cheetah start - add getter
++        public int getPackedXZ() {
++            return packedXZ;
++        }
++
++        public int getY() {
++            return y;
++        }
++
++        public BlockEntityType<?> getType() {
++            return type;
++        }
++
++        @Nullable
++        public CompoundTag getTag() {
++            return tag;
++        }
++        // Cheetah end - add getter
+ 
+         static ClientboundLevelChunkPacketData.BlockEntityInfo create(BlockEntity blockEntity) {
+             CompoundTag updateTag = blockEntity.getUpdateTag(blockEntity.getLevel().registryAccess());
