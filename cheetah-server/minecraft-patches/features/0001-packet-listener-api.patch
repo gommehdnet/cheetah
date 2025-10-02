@@ -6,10 +6,10 @@ Subject: [PATCH] packet listener api
 
 diff --git a/net/gommehd/cheetah/network/packet/PacketListener.java b/net/gommehd/cheetah/network/packet/PacketListener.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..9dcbfdf02146432f8692a162393acaf1c106004f
+index 0000000000000000000000000000000000000000..19535a51fa2cf7f27164094097dab2c2d000af9a
 --- /dev/null
 +++ b/net/gommehd/cheetah/network/packet/PacketListener.java
-@@ -0,0 +1,107 @@
+@@ -0,0 +1,127 @@
 +package net.gommehd.cheetah.network.packet;
 +
 +import net.minecraft.network.protocol.Packet;
@@ -25,31 +25,30 @@ index 0000000000000000000000000000000000000000..9dcbfdf02146432f8692a162393acaf1
 +public interface PacketListener {
 +
 +    /**
-+     * Called when a packet is sent to a client.
-+     * <p>
-+     * This method is invoked before the packet is sent out through the network.
-+     * Listeners can inspect, modify, or cancel the packet at this stage.
++     * Called when a packet is being sent. This method allows the inspection
++     * or modification of the packet and determines the desired action to be
++     * performed (e.g., pass, cancel, modify).
 +     *
-+     * @param connection the connection to which the packet is being sent, never null
-+     * @param packet the packet being sent, never null
-+     * @return {@link PacketResult} indicating how to handle the packet
++     * @param connection the connection through which the packet is being sent, never null
++     * @param packet the packet that is being sent, never null
++     * @return a {@link PacketProcessingResult} indicating the result of the packet processing,
++     *         such as whether the packet should be passed, canceled, or modified
 +     */
-+    default PacketResult onPacketSend(Connection connection, Packet<?> packet) {
-+        return PacketResult.CONTINUE;
++    default PacketProcessingResult onPacketSend(Connection connection, Packet<?> packet) {
++        return PacketProcessingResult.pass();
 +    }
 +
 +    /**
-+     * Called when a packet is received from a client.
-+     * <p>
-+     * This method is invoked before the packet is processed by the server. Listeners
-+     * can inspect, modify, or cancel the packet at this stage.
++     * Called when a packet is received. This method allows inspection, modification,
++     * or determination of the action to take with the received packet.
 +     *
-+     * @param connection the connection from which the packet was received, never null
++     * @param connection the connection through which the packet was received, never null
 +     * @param packet the packet that was received, never null
-+     * @return {@link PacketResult} indicating how to handle the received packet
++     * @return a {@link PacketProcessingResult} indicating the result of the packet processing,
++     *         such as whether the packet should be passed, canceled, or modified
 +     */
-+    default PacketResult onPacketReceive(Connection connection, Packet<?> packet) {
-+        return PacketResult.CONTINUE;
++    default PacketProcessingResult onPacketReceive(Connection connection, Packet<?> packet) {
++        return PacketProcessingResult.pass();
 +    }
 +
 +    /**
@@ -65,36 +64,57 @@ index 0000000000000000000000000000000000000000..9dcbfdf02146432f8692a162393acaf1
 +    }
 +
 +    /**
-+     * Handles errors that occur during packet processing.
-+     * <p>
-+     * This method is invoked when an exception is thrown while handling a packet.
-+     * Implementations can use this method to perform error handling, logging,
-+     * or cleanup operations as necessary.
++     * Invoked when a packet error occurs. This method provides an opportunity to handle
++     * issues that arise during packet processing, such as exceptions encountered while
++     * sending or receiving packets.
 +     *
 +     * @param connection the connection associated with the packet, never null
-+     * @param packet the packet during which the error occurred may be null if unavailable
-+     * @param exception the exception thrown during packet processing, never null
++     * @param packet the packet involved in the error, can be null if unavailable
++     * @param exception the exception that was thrown during packet processing, never null
 +     */
 +    default void onPacketError(Connection connection, Packet<?> packet, Exception exception) {
 +        // Default implementation does nothing
 +    }
 +
 +    /**
-+     * Enum representing the result of processing a network packet.
++     * Represents the result of processing a network packet within a {@link PacketListener}.
 +     * <p>
-+     * This enum is used to indicate the outcome of packet handling by listeners,
-+     * such as whether processing should continue, be canceled, or proceed with
-+     * a modified packet. It provides a mechanism to control the flow of packet
-+     * processing in the packet handling pipeline.
++     * This record encapsulates the outcome of packet processing and optionally provides
++     * a modified version of the packet.
++     * It is used to determine whether to pass the packet
++     * onward unmodified, cancel its processing entirely, or proceed with a modified version.
++     */
++    record PacketProcessingResult(PacketResult result, Packet<?> modifiedPacket) {
++        public static PacketProcessingResult pass() {
++            return new PacketProcessingResult(PacketResult.PASS, null);
++        }
++
++        public static PacketProcessingResult cancel() {
++            return new PacketProcessingResult(PacketResult.CANCEL, null);
++        }
++
++        public static PacketProcessingResult modify(Packet<?> newPacket) {
++            return new PacketProcessingResult(PacketResult.MODIFIED, newPacket);
++        }
++    }
++
++    /**
++     * Represents the outcome of a packet processing operation within the context of a {@code PacketListener}.
++     * <p>
++     * This enum defines the possible results that can be returned after handling a packet, indicating
++     * whether the packet should be passed through unaltered, canceled, or forwarded in a modified state.
++     * These outcomes are used to control the flow and behavior of packet processing in the packet handling
++     * pipeline.
 +     */
 +    enum PacketResult {
 +        /**
-+         * Indicates that packet processing should continue without interruption or modification.
++         * Indicates that the packet should pass through without any modifications or interruptions.
 +         * <p>
-+         * This result is used to signify that the packet should proceed to the next handler
-+         * in the pipeline without any changes or cancellations.
++         * This result signifies that the currently handled packet is to proceed to the next stage
++         * of processing without any changes and without being canceled. It allows the packet to
++         * continue through the pipeline as it is.
 +         */
-+        CONTINUE,
++        PASS,
 +
 +        /**
 +         * Indicates that packet processing should be canceled.
@@ -119,10 +139,10 @@ index 0000000000000000000000000000000000000000..9dcbfdf02146432f8692a162393acaf1
 +}
 diff --git a/net/gommehd/cheetah/network/packet/PacketListenerBuilder.java b/net/gommehd/cheetah/network/packet/PacketListenerBuilder.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..70c422a0af2aa70e4d62798a84079ba6ea80401d
+index 0000000000000000000000000000000000000000..5e4b135f0c2aee2a93da339c7ea2768d6abe3d09
 --- /dev/null
 +++ b/net/gommehd/cheetah/network/packet/PacketListenerBuilder.java
-@@ -0,0 +1,483 @@
+@@ -0,0 +1,470 @@
 +package net.gommehd.cheetah.network.packet;
 +
 +import net.minecraft.network.protocol.Packet;
@@ -246,18 +266,18 @@ index 0000000000000000000000000000000000000000..70c422a0af2aa70e4d62798a84079ba6
 +     * packet monitoring or processing.
 +     */
 +    public static class GlobalBuilder extends BaseBuilder<GlobalBuilder> {
-+        private BiFunction<Connection, Packet<?>, PacketListener.PacketResult> sendHandler;
-+        private BiFunction<Connection, Packet<?>, PacketListener.PacketResult> receiveHandler;
++        private BiFunction<Connection, Packet<?>, PacketListener.PacketProcessingResult> sendHandler;
++        private BiFunction<Connection, Packet<?>, PacketListener.PacketProcessingResult> receiveHandler;
 +
 +        /**
 +         * Sets a handler for all outgoing packets.
 +         * The specified handler will be invoked whenever a packet is sent.
 +         *
 +         * @param handler the send handler, which processes the connection, the packet,
-+         *                and produces a {@link PacketListener.PacketResult}
++         *                and produces a {@link PacketListener.PacketProcessingResult}
 +         * @return this builder for method chaining
 +         */
-+        public GlobalBuilder onSend(BiFunction<Connection, Packet<?>, PacketListener.PacketResult> handler) {
++        public GlobalBuilder onSend(BiFunction<Connection, Packet<?>, PacketListener.PacketProcessingResult> handler) {
 +            this.sendHandler = Objects.requireNonNull(handler, "handler cannot be null");
 +            return this;
 +        }
@@ -267,10 +287,10 @@ index 0000000000000000000000000000000000000000..70c422a0af2aa70e4d62798a84079ba6
 +         * The specified handler will be invoked whenever a packet is received.
 +         *
 +         * @param handler the receive handler, which processes the connection, the packet,
-+         *                and produces a {@link PacketListener.PacketResult}
++         *                and produces a {@link PacketListener.PacketProcessingResult}
 +         * @return this builder for method chaining
 +         */
-+        public GlobalBuilder onReceive(BiFunction<Connection, Packet<?>, PacketListener.PacketResult> handler) {
++        public GlobalBuilder onReceive(BiFunction<Connection, Packet<?>, PacketListener.PacketProcessingResult> handler) {
 +            this.receiveHandler = Objects.requireNonNull(handler, "handler cannot be null");
 +            return this;
 +        }
@@ -345,8 +365,8 @@ index 0000000000000000000000000000000000000000..70c422a0af2aa70e4d62798a84079ba6
 +    public static class PacketTypeHandlerBuilder<T extends Packet<?>> {
 +        private final SpecificBuilder parent;
 +        private final Class<T> packetType;
-+        private BiFunction<Connection, T, PacketListener.PacketResult> sendHandler;
-+        private BiFunction<Connection, T, PacketListener.PacketResult> receiveHandler;
++        private BiFunction<Connection, T, PacketListener.PacketProcessingResult> sendHandler;
++        private BiFunction<Connection, T, PacketListener.PacketProcessingResult> receiveHandler;
 +
 +        private PacketTypeHandlerBuilder(SpecificBuilder parent, Class<T> packetType) {
 +            this.parent = parent;
@@ -357,10 +377,10 @@ index 0000000000000000000000000000000000000000..70c422a0af2aa70e4d62798a84079ba6
 +         * Sets the send handler for this packet type.
 +         *
 +         * @param handler the send handler, a {@link BiFunction} that processes a {@link Connection}
-+         *                and the packet of type T, and returns a {@link PacketListener.PacketResult}
++         *                and the packet of type T, and returns a {@link PacketListener.PacketProcessingResult}
 +         * @return this packet type handler builder
 +         */
-+        public PacketTypeHandlerBuilder<T> onSend(BiFunction<Connection, T, PacketListener.PacketResult> handler) {
++        public PacketTypeHandlerBuilder<T> onSend(BiFunction<Connection, T, PacketListener.PacketProcessingResult> handler) {
 +            this.sendHandler = Objects.requireNonNull(handler, "handler cannot be null");
 +            return this;
 +        }
@@ -370,10 +390,10 @@ index 0000000000000000000000000000000000000000..70c422a0af2aa70e4d62798a84079ba6
 +         * The provided handler processes a packet of type T and returns a {@link PacketListener.PacketResult}.
 +         *
 +         * @param handler the send handler, a {@link Function} that accepts a packet of type T
-+         *                and returns a {@link PacketListener.PacketResult}
++         *                and returns a {@link PacketListener.PacketProcessingResult}
 +         * @return this packet type handler builder
 +         */
-+        public PacketTypeHandlerBuilder<T> onSend(Function<T, PacketListener.PacketResult> handler) {
++        public PacketTypeHandlerBuilder<T> onSend(Function<T, PacketListener.PacketProcessingResult> handler) {
 +            Objects.requireNonNull(handler, "handler cannot be null");
 +            return onSend((conn, packet) -> handler.apply(packet));
 +        }
@@ -382,23 +402,23 @@ index 0000000000000000000000000000000000000000..70c422a0af2aa70e4d62798a84079ba6
 +         * Sets the receive handler for this packet type.
 +         *
 +         * @param handler the receive handler, a {@link BiFunction} that processes a {@link Connection}
-+         *                and the packet of type T, and returns a {@link PacketListener.PacketResult}
++         *                and the packet of type T, and returns a {@link PacketListener.PacketProcessingResult}
 +         * @return this packet type handler builder
 +         */
-+        public PacketTypeHandlerBuilder<T> onReceive(BiFunction<Connection, T, PacketListener.PacketResult> handler) {
++        public PacketTypeHandlerBuilder<T> onReceive(BiFunction<Connection, T, PacketListener.PacketProcessingResult> handler) {
 +            this.receiveHandler = Objects.requireNonNull(handler, "handler cannot be null");
 +            return this;
 +        }
 +
 +        /**
 +         * Sets the receive handler for this packet type using a single-parameter {@link Function}.
-+         * The provided handler processes a packet of type T and returns a {@link PacketListener.PacketResult}.
++         * The provided handler processes a packet of type T and returns a {@link PacketListener.PacketProcessingResult}.
 +         *
 +         * @param handler the receive handler, a {@link Function} that accepts a packet of type T
 +         *                and returns a {@link PacketListener.PacketResult}
 +         * @return this packet type handler builder
 +         */
-+        public PacketTypeHandlerBuilder<T> onReceive(Function<T, PacketListener.PacketResult> handler) {
++        public PacketTypeHandlerBuilder<T> onReceive(Function<T, PacketListener.PacketProcessingResult> handler) {
 +            Objects.requireNonNull(handler, "handler cannot be null");
 +            return onReceive((conn, packet) -> handler.apply(packet));
 +        }
@@ -457,7 +477,7 @@ index 0000000000000000000000000000000000000000..70c422a0af2aa70e4d62798a84079ba6
 +     * <p>
 +     * The handlers are represented as {@code BiFunction} objects which take a
 +     * {@link Connection} and a packet of a generic type as input and return a
-+     * {@link PacketListener.PacketResult}.
++     * {@link PacketListener.PacketProcessingResult}.
 +     * <p>
 +     * This is designed for use within packet listener systems to allow flexible handling
 +     * of different packet types and their respective send and receive behaviors.
@@ -465,46 +485,33 @@ index 0000000000000000000000000000000000000000..70c422a0af2aa70e4d62798a84079ba6
 +     * @param sendHandler    a {@code BiFunction} that processes the sending of packets
 +     * @param receiveHandler a {@code BiFunction} that processes the receiving of packets
 +     */
-+    private record PacketTypeHandler(BiFunction<Connection, ?, PacketListener.PacketResult> sendHandler,
-+                                     BiFunction<Connection, ?, PacketListener.PacketResult> receiveHandler) {}
++    private record PacketTypeHandler(BiFunction<Connection, ?, PacketListener.PacketProcessingResult> sendHandler,
++                                     BiFunction<Connection, ?, PacketListener.PacketProcessingResult> receiveHandler) {}
 +
 +    /**
-+     * Represents a global packet listener that intercepts and handles both
-+     * incoming and outgoing packets with specified handlers.
++     * Represents a global packet listener that intercepts all packets, regardless of their type.
 +     * <p>
-+     * This listener operates at a global level, meaning it processes all packets
-+     * regardless of their types. Custom behavior for packet handling can be
-+     * defined through the provided handlers.
++     * This class implements the {@link PacketListener} interface and provides customizable
++     * handlers for packet sending, receiving, and error handling. Each handler is defined as
++     * a {@link BiFunction}, enabling flexible processing of packets at different stages of
++     * their lifecycle. The priority of the listener determines the order in which it is invoked
++     * relative to other listeners.
 +     * <p>
-+     * The listener implements the {@link PacketListener} interface, allowing
-+     * it to hook into the packet send and receive events, as well as handle
-+     * errors during packet processing.
++     * The class makes use of:
++     * - A handler for processing packets before they are sent.
++     * - A handler for processing packets after they are received.
++     * - A handler for managing errors that occur during packet processing.
 +     * <p>
-+     * Components:
-+     * - Priority: Determines the execution order among multiple listeners.
-+     *   Higher priority listeners are triggered first.
-+     * - Send Handler: A function that processes outbound packets.
-+     * - Receive Handler: A function that processes incoming packets.
-+     * - Error Handler: A function that processes exceptions thrown during
-+     *   packet handling and prevents propagation of unhandled errors.
-+     * <p>
-+     * This class ensures that no recursive error handling occurs by catching
-+     * and ignoring exceptions within error handler invocations.
-+     * <p>
-+     * Functionality:
-+     * - Processes packet sending logic via {@code sendHandler}.
-+     * - Processes packet receiving logic via {@code receiveHandler}.
-+     * - Handles packet-related errors through the {@code errorHandler}.
-+     * <p>
-+     * This listener provides default behavior to continue packet processing
-+     * if no handlers are defined or in case of exceptions within the handlers.
++     * If a handler is not defined for a specific operation, the packet is passed through by
++     * default.
++     * Error handling provides a safeguard to prevent cascading failures.
 +     */
-+    private record GlobalPacketListener(int priority, BiFunction<Connection, Packet<?>, PacketResult> sendHandler,
-+                                        BiFunction<Connection, Packet<?>, PacketResult> receiveHandler,
++    private record GlobalPacketListener(int priority, BiFunction<Connection, Packet<?>, PacketProcessingResult> sendHandler,
++                                        BiFunction<Connection, Packet<?>, PacketProcessingResult> receiveHandler,
 +                                        BiFunction<Connection, Exception, Void> errorHandler) implements PacketListener {
 +
 +        @Override
-+        public PacketResult onPacketSend(Connection connection, Packet<?> packet) {
++        public PacketProcessingResult onPacketSend(Connection connection, Packet<?> packet) {
 +            if (sendHandler != null) {
 +                try {
 +                    return sendHandler.apply(connection, packet);
@@ -512,11 +519,11 @@ index 0000000000000000000000000000000000000000..70c422a0af2aa70e4d62798a84079ba6
 +                    handleError(connection, e);
 +                }
 +            }
-+            return PacketResult.CONTINUE;
++            return PacketProcessingResult.pass();
 +        }
 +
 +        @Override
-+        public PacketResult onPacketReceive(Connection connection, Packet<?> packet) {
++        public PacketProcessingResult onPacketReceive(Connection connection, Packet<?> packet) {
 +            if (receiveHandler != null) {
 +                try {
 +                    return receiveHandler.apply(connection, packet);
@@ -524,7 +531,7 @@ index 0000000000000000000000000000000000000000..70c422a0af2aa70e4d62798a84079ba6
 +                    handleError(connection, e);
 +                }
 +            }
-+            return PacketResult.CONTINUE;
++            return PacketProcessingResult.pass();
 +        }
 +
 +        @Override
@@ -559,35 +566,35 @@ index 0000000000000000000000000000000000000000..70c422a0af2aa70e4d62798a84079ba6
 +                                          BiFunction<Connection, Exception, Void> errorHandler) implements PacketListener {
 +
 +        @Override
-+        public PacketResult onPacketSend(Connection connection, Packet<?> packet) {
++        public PacketProcessingResult onPacketSend(Connection connection, Packet<?> packet) {
 +            PacketTypeHandler handler = handlers.get(packet.getClass());
 +            if (handler != null && handler.sendHandler() != null) {
 +                try {
 +                    @SuppressWarnings("unchecked")
-+                    BiFunction<Connection, Packet<?>, PacketResult> castedHandler =
-+                        (BiFunction<Connection, Packet<?>, PacketResult>) handler.sendHandler();
++                    BiFunction<Connection, Packet<?>, PacketProcessingResult> castedHandler =
++                        (BiFunction<Connection, Packet<?>, PacketProcessingResult>) handler.sendHandler();
 +                    return castedHandler.apply(connection, packet);
 +                } catch (Exception e) {
 +                    handleError(connection, e);
 +                }
 +            }
-+            return PacketResult.CONTINUE;
++            return PacketProcessingResult.pass();
 +        }
 +
 +        @Override
-+        public PacketResult onPacketReceive(Connection connection, Packet<?> packet) {
++        public PacketProcessingResult onPacketReceive(Connection connection, Packet<?> packet) {
 +            PacketTypeHandler handler = handlers.get(packet.getClass());
 +            if (handler != null && handler.receiveHandler() != null) {
 +                try {
 +                    @SuppressWarnings("unchecked")
-+                    BiFunction<Connection, Packet<?>, PacketResult> castedHandler =
-+                        (BiFunction<Connection, Packet<?>, PacketResult>) handler.receiveHandler();
++                    BiFunction<Connection, Packet<?>, PacketProcessingResult> castedHandler =
++                        (BiFunction<Connection, Packet<?>, PacketProcessingResult>) handler.receiveHandler();
 +                    return castedHandler.apply(connection, packet);
 +                } catch (Exception e) {
 +                    handleError(connection, e);
 +                }
 +            }
-+            return PacketResult.CONTINUE;
++            return PacketProcessingResult.pass();
 +        }
 +
 +        @Override
@@ -1011,12 +1018,14 @@ index 0000000000000000000000000000000000000000..c9ce4ad852d6fa9e57c7d681f0e4ac9d
 +    ) {}
 +}
 diff --git a/net/minecraft/network/Connection.java b/net/minecraft/network/Connection.java
-index 53d54aa67affc629424dbbc0f9678292734c559e..35ed85de0cf1edfbacf9b9e407ab1885f2af7c78 100644
+index 53d54aa67affc629424dbbc0f9678292734c559e..a92e2c61639c287ec079fed8e49c26198934eb9b 100644
 --- a/net/minecraft/network/Connection.java
 +++ b/net/minecraft/network/Connection.java
-@@ -309,9 +309,50 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -308,10 +308,54 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+         }
      }
  
++    @SuppressWarnings("unchecked")
      private static <T extends PacketListener> void genericsFtw(Packet<T> packet, PacketListener listener) {
 +        // Cheetah start - packet listener api
 +        net.gommehd.cheetah.network.packet.PacketListenerRegistry registry =
@@ -1030,10 +1039,12 @@ index 53d54aa67affc629424dbbc0f9678292734c559e..35ed85de0cf1edfbacf9b9e407ab1885
 +        // Call packet receive listeners
 +        for (net.gommehd.cheetah.network.packet.PacketListener packetListener : packetListeners) {
 +            try {
-+                net.gommehd.cheetah.network.packet.PacketListener.PacketResult result =
-+                    packetListener.onPacketReceive(connection, packet);
++                net.gommehd.cheetah.network.packet.PacketListener.PacketProcessingResult result =
++                    packetListener.onPacketSend(connection, packet);
 +
-+                if (result == net.gommehd.cheetah.network.packet.PacketListener.PacketResult.CANCEL) {
++                if (result.result() == net.gommehd.cheetah.network.packet.PacketListener.PacketResult.MODIFIED) {
++                    packet = (net.minecraft.network.protocol.Packet<T>) result.modifiedPacket();
++                } else if (result.result() == net.gommehd.cheetah.network.packet.PacketListener.PacketResult.CANCEL) {
 +                    return; // Skip packet processing
 +                }
 +            } catch (Exception e) {
@@ -1065,7 +1076,7 @@ index 53d54aa67affc629424dbbc0f9678292734c559e..35ed85de0cf1edfbacf9b9e407ab1885
      private void validateListener(ProtocolInfo<?> protocolInfo, PacketListener packetListener) {
          Objects.requireNonNull(packetListener, "packetListener");
          PacketFlow packetFlow = packetListener.flow();
-@@ -485,6 +526,46 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -485,6 +529,49 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
              packet.onPacketDispatchFinish(player, null);
              return;
          }
@@ -1079,10 +1090,12 @@ index 53d54aa67affc629424dbbc0f9678292734c559e..35ed85de0cf1edfbacf9b9e407ab1885
 +        boolean cancelled = false;
 +        for (net.gommehd.cheetah.network.packet.PacketListener packetListener : packetListeners) {
 +            try {
-+                net.gommehd.cheetah.network.packet.PacketListener.PacketResult result =
++                net.gommehd.cheetah.network.packet.PacketListener.PacketProcessingResult result =
 +                    packetListener.onPacketSend(this, packet);
 +
-+                if (result == net.gommehd.cheetah.network.packet.PacketListener.PacketResult.CANCEL) {
++                if (result.result() == net.gommehd.cheetah.network.packet.PacketListener.PacketResult.MODIFIED) {
++                    packet = result.modifiedPacket();
++                } else if (result.result() == net.gommehd.cheetah.network.packet.PacketListener.PacketResult.CANCEL) {
 +                    cancelled = true;
 +                    break;
 +                }
@@ -1107,12 +1120,18 @@ index 53d54aa67affc629424dbbc0f9678292734c559e..35ed85de0cf1edfbacf9b9e407ab1885
 +            }
 +            return;
 +        }
++        final Packet<?> finalPacket = packet;
 +        // Cheetah end - packet listener api
 +
          try {
          final ChannelFuture channelFuture;
          // Paper end - Optimize network
-@@ -503,6 +584,18 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -499,10 +586,22 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+ 
+         // Paper start - Optimize network
+         if (packet.hasFinishListener()) {
+-            channelFuture.addListener((ChannelFutureListener) future -> packet.onPacketDispatchFinish(player, future));
++            channelFuture.addListener((ChannelFutureListener) future -> finalPacket.onPacketDispatchFinish(player, future)); // Cheetah - packet listener api
          }
          } catch (final Exception e) {
              LOGGER.error("NetworkException: {}", player, e);
