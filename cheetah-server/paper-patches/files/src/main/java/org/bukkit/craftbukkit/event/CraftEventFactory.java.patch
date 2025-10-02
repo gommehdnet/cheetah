@@ -1,6 +1,6 @@
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-@@ -1315,7 +_,10 @@
+@@ -1317,7 +_,10 @@
          com.destroystokyo.paper.event.entity.ProjectileCollideEvent event = new com.destroystokyo.paper.event.entity.ProjectileCollideEvent(projectile, collided);
  
          if (projectile.getShooter() instanceof Player && collided instanceof Player) {
@@ -12,7 +12,7 @@
                  event.setCancelled(true);
                  return event;
              }
-@@ -1326,6 +_,15 @@
+@@ -1328,6 +_,15 @@
      }
      // Paper end
  
@@ -28,7 +28,7 @@
      public static ProjectileLaunchEvent callProjectileLaunchEvent(Entity entity) {
          Projectile bukkitEntity = (Projectile) entity.getBukkitEntity();
          ProjectileLaunchEvent event = new ProjectileLaunchEvent(bukkitEntity);
-@@ -2091,25 +_,26 @@
+@@ -2093,26 +_,27 @@
      }
  
      @SuppressWarnings("OptionalAssignedToNull")
@@ -59,4 +59,5 @@
 -        return disconnectReason;
 +        return loginResult; // Cheetah - Allow skipping log messages for canceled login events
      }
- }
+ 
+     public static boolean callTransporterValidateTarget(final PathfinderMob mob, final Level level, final BlockPos transportItemTarget) {
