@@ -37,6 +37,9 @@ ij_java_class_names_in_javadoc = 1
 [cheetah-server/src/minecraft/java/**/*.java]
 ij_java_use_fq_class_names = true
 
+[cheetah-server/src/minecraft/java/net/gommehd/**/*.java]
+ij_java_use_fq_class_names = false
+
 [cheetah-server/src/minecraft/resources/data/**/*.json]
 indent_size = 2
 
