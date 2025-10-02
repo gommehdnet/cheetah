@@ -1,6 +1,7 @@
 # This file is auto generated, any changes may be overridden!
 # See CONTRIBUTING.md on how to add access transformers.
 public net.minecraft.data.registries.TradeRebalanceRegistries BUILDER
+public net.minecraft.world.entity.Avatar DATA_PLAYER_MAIN_HAND
 public net.minecraft.world.entity.Display DATA_BILLBOARD_RENDER_CONSTRAINTS_ID
 public net.minecraft.world.entity.Display DATA_BRIGHTNESS_OVERRIDE_ID
 public net.minecraft.world.entity.Display DATA_GLOW_COLOR_OVERRIDE_ID
@@ -43,7 +44,6 @@ public net.minecraft.world.entity.LivingEntity DATA_EFFECT_PARTICLES
 public net.minecraft.world.entity.LivingEntity DATA_LIVING_ENTITY_FLAGS
 public net.minecraft.world.entity.LivingEntity DATA_STINGER_COUNT_ID
 public net.minecraft.world.entity.LivingEntity SLEEPING_POS_ID
-public net.minecraft.world.entity.Avatar DATA_PLAYER_MAIN_HAND
 public net.minecraft.world.entity.player.Player DATA_PLAYER_ABSORPTION_ID
 public net.minecraft.world.entity.player.Player DATA_SCORE_ID
 public net.minecraft.world.entity.player.Player DATA_SHOULDER_PARROT_LEFT
