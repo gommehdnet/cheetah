@@ -1,0 +1,15 @@
+--- a/net/minecraft/network/protocol/game/ClientboundLevelChunkPacketData.java
++++ b/net/minecraft/network/protocol/game/ClientboundLevelChunkPacketData.java
+@@ -153,6 +_,12 @@
+         return this.heightmaps;
+     }
+ 
++    // Cheetah start - add getter
++    public List<ClientboundLevelChunkPacketData.BlockEntityInfo> getBlockEntitiesData() {
++        return blockEntitiesData;
++    }
++    // Cheetah end - add getter
++
+     static class BlockEntityInfo {
+         public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundLevelChunkPacketData.BlockEntityInfo> STREAM_CODEC = StreamCodec.ofMember(
+             ClientboundLevelChunkPacketData.BlockEntityInfo::write, ClientboundLevelChunkPacketData.BlockEntityInfo::new
