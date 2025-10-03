@@ -1,0 +1,16 @@
+--- a/net/minecraft/network/protocol/game/ClientboundEntityEventPacket.java
++++ b/net/minecraft/network/protocol/game/ClientboundEntityEventPacket.java
+@@ -20,6 +_,13 @@
+         this.eventId = eventId;
+     }
+ 
++    // Cheetah start - add constructor with entity id
++    public ClientboundEntityEventPacket(int entityId, byte eventId) {
++        this.entityId = entityId;
++        this.eventId = eventId;
++    }
++    // Cheetah end - add constructor with entity id
++
+     private ClientboundEntityEventPacket(FriendlyByteBuf buffer) {
+         this.entityId = buffer.readInt();
+         this.eventId = buffer.readByte();

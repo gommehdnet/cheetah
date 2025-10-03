@@ -1,0 +1,33 @@
+--- a/net/minecraft/network/protocol/game/ServerboundInteractPacket.java
++++ b/net/minecraft/network/protocol/game/ServerboundInteractPacket.java
+@@ -91,7 +_,7 @@
+         this.action.dispatch(handler);
+     }
+ 
+-    interface Action {
++    public interface Action { // Cheetah - change access modifier
+         ServerboundInteractPacket.ActionType getType();
+ 
+         void dispatch(ServerboundInteractPacket.Handler handler);
+@@ -99,7 +_,7 @@
+         void write(FriendlyByteBuf buffer);
+     }
+ 
+-    static enum ActionType {
++    public static enum ActionType { // Cheetah - change access modifier
+         INTERACT(ServerboundInteractPacket.InteractionAction::new),
+         ATTACK(buffer -> ServerboundInteractPacket.ATTACK_ACTION),
+         INTERACT_AT(ServerboundInteractPacket.InteractionAtLocationAction::new);
+@@ -154,6 +_,12 @@
+         return this.action.getType() == ActionType.ATTACK;
+     }
+     // Paper end - PlayerUseUnknownEntityEvent
++
++    // Cheetah start - add getter
++    public ServerboundInteractPacket.Action getAction() {
++        return action;
++    }
++    // Cheetah end - add getter
+ 
+     static class InteractionAtLocationAction implements ServerboundInteractPacket.Action {
+         private final InteractionHand hand;

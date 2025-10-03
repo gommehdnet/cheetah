@@ -11,7 +11,7 @@
 +    }
 +    // Cheetah end - add getter
 +
-+    public static class BlockEntityInfo {
++    public static class BlockEntityInfo { // Cheetah - change access modifier
          public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundLevelChunkPacketData.BlockEntityInfo> STREAM_CODEC = StreamCodec.ofMember(
              ClientboundLevelChunkPacketData.BlockEntityInfo::write, ClientboundLevelChunkPacketData.BlockEntityInfo::new
          );
