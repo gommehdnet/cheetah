@@ -6,10 +6,10 @@ Subject: [PATCH] packet listener api
 
 diff --git a/net/gommehd/cheetah/network/packet/PacketListener.java b/net/gommehd/cheetah/network/packet/PacketListener.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..19535a51fa2cf7f27164094097dab2c2d000af9a
+index 0000000000000000000000000000000000000000..4c18215a75162267a38ab430bb8448af065a10a5
 --- /dev/null
 +++ b/net/gommehd/cheetah/network/packet/PacketListener.java
-@@ -0,0 +1,127 @@
+@@ -0,0 +1,155 @@
 +package net.gommehd.cheetah.network.packet;
 +
 +import net.minecraft.network.protocol.Packet;
@@ -52,15 +52,14 @@ index 0000000000000000000000000000000000000000..19535a51fa2cf7f27164094097dab2c2
 +    }
 +
 +    /**
-+     * Retrieves the priority of this listener.
-+     * <p>
-+     * This method allows defining the order in which listeners are executed.
-+     * Listeners with higher priority values are executed before those with lower values.
++     * Retrieves the priority level assigned to the listener.
++     * The priority determines the order in which the listener is executed
++     * relative to other listeners when processing events.
 +     *
-+     * @return the priority level of this listener, where higher values indicate higher priority
++     * @return the {@link ListenerPriority} of this listener, by default {@link ListenerPriority#NORMAL}
 +     */
-+    default int priority() {
-+        return 0;
++    default ListenerPriority priority() {
++        return ListenerPriority.NORMAL;
 +    }
 +
 +    /**
@@ -136,10 +135,39 @@ index 0000000000000000000000000000000000000000..19535a51fa2cf7f27164094097dab2c2
 +         */
 +        MODIFIED
 +    }
++
++    /**
++     * Represents different priority levels for listener execution in the system.
++     * The priority levels determine the order in which listeners are executed when processing events,
++     * with higher numeric values being executed earlier.
++     */
++    enum ListenerPriority {
++        LOWEST(0),
++
++        LOW(1),
++
++        NORMAL(2),
++
++        HIGH(3),
++
++        HIGHEST(4),
++
++        MONITOR(5);
++
++        private final int priority;
++
++        ListenerPriority(int priority) {
++            this.priority = priority;
++        }
++
++        public int getPriority() {
++            return priority;
++        }
++    }
 +}
 diff --git a/net/gommehd/cheetah/network/packet/PacketListenerBuilder.java b/net/gommehd/cheetah/network/packet/PacketListenerBuilder.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..5e4b135f0c2aee2a93da339c7ea2768d6abe3d09
+index 0000000000000000000000000000000000000000..2ea6ac20954fad43a5cd781240463038c4ad7c98
 --- /dev/null
 +++ b/net/gommehd/cheetah/network/packet/PacketListenerBuilder.java
 @@ -0,0 +1,470 @@
@@ -190,7 +218,7 @@ index 0000000000000000000000000000000000000000..5e4b135f0c2aee2a93da339c7ea2768d
 +     * @param <T> the type of the builder extending from this base class, enabling method chaining
 +     */
 +    protected static abstract class BaseBuilder<T extends BaseBuilder<T>> {
-+        protected int priority = 0;
++        protected PacketListener.ListenerPriority priority = PacketListener.ListenerPriority.NORMAL;
 +        protected BiFunction<Connection, Exception, Void> errorHandler;
 +
 +        @SuppressWarnings("unchecked")
@@ -199,16 +227,16 @@ index 0000000000000000000000000000000000000000..5e4b135f0c2aee2a93da339c7ea2768d
 +        }
 +
 +        /**
-+         * Sets the priority for the packet listener.
-+         * <p>
-+         * This priority value determines the execution order of listeners,
-+         * with higher values being executed earlier. The default priority is 0.
-+         * Negative values are allowed to set a lower priority.
++         * Sets the priority level for the packet listener.
++         * The priority determines the order in which the listener will
++         * handle events relative to other listeners.
++         * Higher priorities
++         * are executed before lower ones.
 +         *
-+         * @param priority the priority value to be assigned, higher values indicate higher priority
++         * @param priority the {@code ListenerPriority} to assign to the packet listener
 +         * @return the current builder instance for method chaining
 +         */
-+        public T withPriority(int priority) {
++        public T withPriority(PacketListener.ListenerPriority priority) {
 +            this.priority = priority;
 +            return self();
 +        }
@@ -489,24 +517,21 @@ index 0000000000000000000000000000000000000000..5e4b135f0c2aee2a93da339c7ea2768d
 +                                     BiFunction<Connection, ?, PacketListener.PacketProcessingResult> receiveHandler) {}
 +
 +    /**
-+     * Represents a global packet listener that intercepts all packets, regardless of their type.
++     * A packet listener implementation for handling sending, receiving, and error-related packet events globally.
 +     * <p>
-+     * This class implements the {@link PacketListener} interface and provides customizable
-+     * handlers for packet sending, receiving, and error handling. Each handler is defined as
-+     * a {@link BiFunction}, enabling flexible processing of packets at different stages of
-+     * their lifecycle. The priority of the listener determines the order in which it is invoked
-+     * relative to other listeners.
++     * This class allows for custom handling of packets traversing through the system by leveraging
++     * functional interfaces to define logic for sending, receiving, and error-handling scenarios.
++     * The class also defines a priority level which determines the order of execution relative to
++     * other listeners.
 +     * <p>
-+     * The class makes use of:
-+     * - A handler for processing packets before they are sent.
-+     * - A handler for processing packets after they are received.
-+     * - A handler for managing errors that occur during packet processing.
++     * Components:
++     * - Sending handler: Logic to process outgoing packets.
++     * - Receiving handler: Logic to process incoming packets.
++     * - Error handler: Logic to handle exceptions occurring during packet processing.
 +     * <p>
-+     * If a handler is not defined for a specific operation, the packet is passed through by
-+     * default.
-+     * Error handling provides a safeguard to prevent cascading failures.
++     * The listener provides a default pass-through behavior if no handlers are defined or an exception is raised.
 +     */
-+    private record GlobalPacketListener(int priority, BiFunction<Connection, Packet<?>, PacketProcessingResult> sendHandler,
++    private record GlobalPacketListener(ListenerPriority priority, BiFunction<Connection, Packet<?>, PacketProcessingResult> sendHandler,
 +                                        BiFunction<Connection, Packet<?>, PacketProcessingResult> receiveHandler,
 +                                        BiFunction<Connection, Exception, Void> errorHandler) implements PacketListener {
 +
@@ -551,18 +576,21 @@ index 0000000000000000000000000000000000000000..5e4b135f0c2aee2a93da339c7ea2768d
 +    }
 +
 +    /**
-+     * An implementation of the {@link PacketListener} interface that provides
-+     * specific packet-handling logic for defined packet types.
++     * A specific implementation of {@link PacketListener} that processes packets using configured handlers
++     * and an optional error handler. It is designed to allow targeted processing of specific packet types
++     * with defined behaviors for sending and receiving packets.
 +     * <p>
-+     * This implementation uses a mapping of packet classes to their respective
-+     * {@link PacketTypeHandler} to determine how each packet should be processed.
-+     * It supports handling of outgoing packets, incoming packets, and errors
-+     * encountered during their processing.
++     * This class relies on a map of packet types to handlers, enabling custom logic to be executed
++     * for each packet type during sending and receiving. If a handler is not present for a given packet type,
++     * the default behavior is to pass processing without modification.
 +     * <p>
-+     * Instances of this class are immutable and provide a fixed set of handlers
-+     * for the specified packet types at creation time.
++     * The listener operates with a specified {@link ListenerPriority}, controlling the order in which
++     * it is invoked relative to other packet listeners.
++     * <p>
++     * Error handling is facilitated by an optional {@link BiFunction} that can define custom behavior
++     * when exceptions occur during packet handling operations.
 +     */
-+    private record SpecificPacketListener(int priority, Map<Class<? extends Packet<?>>, PacketTypeHandler> handlers,
++    private record SpecificPacketListener(ListenerPriority priority, Map<Class<? extends Packet<?>>, PacketTypeHandler> handlers,
 +                                          BiFunction<Connection, Exception, Void> errorHandler) implements PacketListener {
 +
 +        @Override
@@ -615,10 +643,10 @@ index 0000000000000000000000000000000000000000..5e4b135f0c2aee2a93da339c7ea2768d
 +}
 diff --git a/net/gommehd/cheetah/network/packet/PacketListenerRegistry.java b/net/gommehd/cheetah/network/packet/PacketListenerRegistry.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..c9ce4ad852d6fa9e57c7d681f0e4ac9de34e685e
+index 0000000000000000000000000000000000000000..6378cedca4675e9a114128cd62365ece83d309a7
 --- /dev/null
 +++ b/net/gommehd/cheetah/network/packet/PacketListenerRegistry.java
-@@ -0,0 +1,398 @@
+@@ -0,0 +1,399 @@
 +package net.gommehd.cheetah.network.packet;
 +
 +import net.minecraft.network.protocol.Packet;
@@ -739,7 +767,8 @@ index 0000000000000000000000000000000000000000..c9ce4ad852d6fa9e57c7d681f0e4ac9d
 +        conditionalListenerCache.clear();
 +
 +        // Sort by priority
-+        conditionalListeners.sort((a, b) -> Integer.compare(b.listener().priority(), a.listener().priority()));
++        conditionalListeners.sort((a, b) ->
++            Integer.compare(b.listener().priority().getPriority(), a.listener().priority().getPriority()));
 +    }
 +
 +    /**
@@ -848,7 +877,7 @@ index 0000000000000000000000000000000000000000..c9ce4ad852d6fa9e57c7d681f0e4ac9d
 +        }
 +
 +        // Sort by priority
-+        result.sort((a, b) -> Integer.compare(b.priority(), a.priority()));
++        result.sort((a, b) -> Integer.compare(b.priority().getPriority(), a.priority().getPriority()));
 +        return result;
 +    }
 +
@@ -974,12 +1003,12 @@ index 0000000000000000000000000000000000000000..c9ce4ad852d6fa9e57c7d681f0e4ac9d
 +    }
 +
 +    /**
-+     * Sorts a list of listeners by priority in descending order.
++     * Sorts the given list of PacketListener objects in descending order based on their priority.
 +     *
-+     * @param listeners the list to sort must not be null
++     * @param listeners the list of PacketListener objects to be sorted
 +     */
 +    private void sortListenersByPriority(List<PacketListener> listeners) {
-+        listeners.sort((a, b) -> Integer.compare(b.priority(), a.priority()));
++        listeners.sort((a, b) -> Integer.compare(b.priority().getPriority(), a.priority().getPriority()));
 +    }
 +
 +    /**
