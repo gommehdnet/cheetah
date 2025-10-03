@@ -5,315 +5,71 @@ Subject: [PATCH] packet listener api
 
 
 diff --git a/net/minecraft/network/Connection.java b/net/minecraft/network/Connection.java
-index 53d54aa67affc629424dbbc0f9678292734c559e..585288229e403120a88fbc81987fa126ff8411f7 100644
+index 53d54aa67affc629424dbbc0f9678292734c559e..33d4d35faa2f0618641a66e12936fd53f48c54d3 100644
 --- a/net/minecraft/network/Connection.java
 +++ b/net/minecraft/network/Connection.java
-@@ -308,10 +308,54 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -72,6 +72,10 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+     public static final Marker PACKET_MARKER = Util.make(MarkerFactory.getMarker("NETWORK_PACKETS"), marker -> marker.add(ROOT_MARKER));
+     public static final Marker PACKET_RECEIVED_MARKER = Util.make(MarkerFactory.getMarker("PACKET_RECEIVED"), marker -> marker.add(PACKET_MARKER));
+     public static final Marker PACKET_SENT_MARKER = Util.make(MarkerFactory.getMarker("PACKET_SENT"), marker -> marker.add(PACKET_MARKER));
++    // Cheetah start - packet listener api
++    private static final net.gommehd.cheetah.network.packet.PacketProcessor PACKET_PROCESSOR =
++        new net.gommehd.cheetah.network.packet.DefaultPacketProcessor();
++    // Cheetah end - packet listener api
+     public static final Supplier<NioEventLoopGroup> NETWORK_WORKER_GROUP = Suppliers.memoize(
+         () -> new NioEventLoopGroup(0, new ThreadFactoryBuilder().setNameFormat("Netty Client IO #%d").setDaemon(true).setUncaughtExceptionHandler(new net.minecraft.DefaultUncaughtExceptionHandlerWithName(LOGGER)).build()) // Paper
+     );
+@@ -308,7 +312,15 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
          }
      }
  
 +    @SuppressWarnings("unchecked")
      private static <T extends PacketListener> void genericsFtw(Packet<T> packet, PacketListener listener) {
 +        // Cheetah start - packet listener api
-+        net.gommehd.cheetah.network.packet.PacketListenerRegistry registry =
-+            net.gommehd.cheetah.network.packet.PacketListenerRegistry.getInstance();
-+        java.util.List<net.gommehd.cheetah.network.packet.PacketListener> packetListeners =
-+            registry.getListeners(packet.getClass());
-+
-+        // Get the connection instance from context - this is a bit of a hack but necessary
-+        Connection connection = getCurrentConnection(listener);
-+
-+        // Call packet receive listeners
-+        for (net.gommehd.cheetah.network.packet.PacketListener packetListener : packetListeners) {
-+            try {
-+                net.gommehd.cheetah.network.packet.PacketListener.PacketProcessingResult result =
-+                    packetListener.onPacketSend(connection, packet);
-+
-+                if (result.result() == net.gommehd.cheetah.network.packet.PacketListener.PacketResult.MODIFIED) {
-+                    packet = (net.minecraft.network.protocol.Packet<T>) result.modifiedPacket();
-+                } else if (result.result() == net.gommehd.cheetah.network.packet.PacketListener.PacketResult.CANCEL) {
-+                    return; // Skip packet processing
-+                }
-+            } catch (Exception e) {
-+                LOGGER.warn("Error in packet receive listener for {}", packet.getClass().getSimpleName(), e);
-+                try {
-+                    packetListener.onPacketError(connection, packet, e);
-+                } catch (Exception errorHandlerException) {
-+                    LOGGER.error("Error in packet error handler", errorHandlerException);
-+                }
-+            }
++        Connection connection = net.gommehd.cheetah.network.packet.ConnectionHelper.getCurrentConnection(listener);
++        packet = PACKET_PROCESSOR.processInbound(packet, connection);
++        if (packet == null) {
++            return; // Packet was cancelled
 +        }
 +        // Cheetah end - packet listener api
          packet.handle((T)listener);
      }
  
-+    // Cheetah start - packet listener api
-+    // Helper method to get Connection from PacketListener context
-+    @org.jspecify.annotations.Nullable
-+    private static Connection getCurrentConnection(PacketListener listener) {
-+        if (listener instanceof net.minecraft.server.network.ServerCommonPacketListenerImpl serverListener) {
-+            return serverListener.connection;
-+        }
-+        // For other listener types, try to find connection through reflection or other means
-+        // This is implementation-specific and may need adjustment based on your server version
-+        return null;
-+    }
-+    // Cheetah end - packet listener api
-+
-     private void validateListener(ProtocolInfo<?> protocolInfo, PacketListener packetListener) {
-         Objects.requireNonNull(packetListener, "packetListener");
-         PacketFlow packetFlow = packetListener.flow();
-@@ -485,30 +529,240 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -485,6 +497,20 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
              packet.onPacketDispatchFinish(player, null);
              return;
          }
--        try {
--        final ChannelFuture channelFuture;
--        // Paper end - Optimize network
--        if (sendListener != null) {
--            channelFuture = flush ? this.channel.writeAndFlush(packet) : this.channel.write(packet); // Paper - Optimize network
--            channelFuture.addListener(sendListener);
--        } else if (flush) {
--            channelFuture = this.channel.writeAndFlush(packet, this.channel.voidPromise()); // Paper - Optimize network
++
 +        // Cheetah start - packet listener api
-+        net.gommehd.cheetah.network.packet.PacketListenerRegistry registry =
-+            net.gommehd.cheetah.network.packet.PacketListenerRegistry.getInstance();
-+
-+        // Handle bundle packets specially - process sub-packets individually for listeners
-+        if (packet instanceof net.minecraft.network.protocol.BundlePacket<?> bundlePacket) {
-+            // Process each sub-packet through listeners and collect modified/non-cancelled packets
-+            java.util.List<Packet<?>> processedSubPackets = new java.util.ArrayList<>();
-+
-+            for (Packet<?> subPacket : bundlePacket.subPackets()) {
-+                java.util.List<net.gommehd.cheetah.network.packet.PacketListener> subPacketListeners =
-+                    registry.getListeners(subPacket.getClass());
-+
-+                Packet<?> currentSubPacket = subPacket;
-+                boolean subCancelled = false;
-+
-+                // Call packet send listeners for sub-packet
-+                for (net.gommehd.cheetah.network.packet.PacketListener packetListener : subPacketListeners) {
-+                    try {
-+                        net.gommehd.cheetah.network.packet.PacketListener.PacketProcessingResult result =
-+                            packetListener.onPacketSend(this, currentSubPacket);
-+
-+                        if (result.result() == net.gommehd.cheetah.network.packet.PacketListener.PacketResult.CANCEL) {
-+                            subCancelled = true;
-+                            break;
-+                        } else if (result.result() == net.gommehd.cheetah.network.packet.PacketListener.PacketResult.MODIFIED) {
-+                            currentSubPacket = result.modifiedPacket();
-+                        }
-+                    } catch (Exception e) {
-+                        LOGGER.warn("Error in packet send listener for bundle sub-packet {}",
-+                            currentSubPacket.getClass().getSimpleName(), e);
-+                        try {
-+                            packetListener.onPacketError(this, currentSubPacket, e);
-+                        } catch (Exception errorHandlerException) {
-+                            LOGGER.error("Error in packet error handler", errorHandlerException);
-+                        }
-+                    }
-+                }
-+
-+                // Only add the sub-packet to processed list if not cancelled
-+                if (!subCancelled) {
-+                    processedSubPackets.add(currentSubPacket);
-+                }
++        packet = PACKET_PROCESSOR.processOutbound(packet, this);
++        if (packet == null) {
++            // Packet was cancelled - handle cleanup
++            if (sendListener != null) {
++                io.netty.channel.ChannelFuture completedFuture = this.channel.newSucceededFuture();
++                completedFuture.addListener(sendListener);
 +            }
-+
-+            // If all sub-packets were cancelled, cancel the entire bundle
-+            if (processedSubPackets.isEmpty()) {
-+                if (packet.hasFinishListener()) {
-+                    packet.onPacketDispatchFinish(player, null);
-+                }
-+                if (sendListener != null) {
-+                    io.netty.channel.ChannelFuture completedFuture = this.channel.newSucceededFuture();
-+                    completedFuture.addListener(sendListener);
-+                }
-+                return;
-+            }
-+
-+            // Create a new bundle packet with processed sub-packets if any were modified/cancelled
-+            if (processedSubPackets.size() != getBundleSubPacketCount(bundlePacket) || hasAnySubPacketBeenModified(bundlePacket, processedSubPackets)) {
-+                // Reconstruct the bundle with the processed sub-packets
-+                if (packet instanceof net.minecraft.network.protocol.game.ClientboundBundlePacket) {
-+                    @SuppressWarnings("unchecked")
-+                    java.util.List<Packet<? super net.minecraft.network.protocol.game.ClientGamePacketListener>> typedSubPackets =
-+                        (java.util.List<Packet<? super net.minecraft.network.protocol.game.ClientGamePacketListener>>) (java.util.List<?>) processedSubPackets;
-+                    packet = new net.minecraft.network.protocol.game.ClientboundBundlePacket(typedSubPackets);
-+                }
-+                // Add support for other bundle packet types if needed in the future
-+            }
-+
-+            // Also process the bundle packet itself for listeners that might be interested in the bundle
-+            java.util.List<net.gommehd.cheetah.network.packet.PacketListener> bundleListeners =
-+                registry.getListeners(packet.getClass());
-+
-+            boolean bundleCancelled = false;
-+            for (net.gommehd.cheetah.network.packet.PacketListener packetListener : bundleListeners) {
-+                try {
-+                    net.gommehd.cheetah.network.packet.PacketListener.PacketProcessingResult result =
-+                        packetListener.onPacketSend(this, packet);
-+
-+                    if (result.result() == net.gommehd.cheetah.network.packet.PacketListener.PacketResult.MODIFIED) {
-+                        packet = result.modifiedPacket();
-+                    } else if (result.result() == net.gommehd.cheetah.network.packet.PacketListener.PacketResult.CANCEL) {
-+                        bundleCancelled = true;
-+                        break;
-+                    }
-+                } catch (Exception e) {
-+                    LOGGER.warn("Error in packet send listener for bundle {}", packet.getClass().getSimpleName(), e);
-+                    try {
-+                        packetListener.onPacketError(this, packet, e);
-+                    } catch (Exception errorHandlerException) {
-+                        LOGGER.error("Error in packet error handler", errorHandlerException);
-+                    }
-+                }
-+            }
-+
-+            if (bundleCancelled) {
-+                if (packet.hasFinishListener()) {
-+                    packet.onPacketDispatchFinish(player, null);
-+                }
-+                if (sendListener != null) {
-+                    io.netty.channel.ChannelFuture completedFuture = this.channel.newSucceededFuture();
-+                    completedFuture.addListener(sendListener);
-+                }
-+                return;
-+            }
-         } else {
--            channelFuture = this.channel.write(packet, this.channel.voidPromise()); // Paper - Optimize network
--        }
-+            // Handle non-bundle packets as before
-+            java.util.List<net.gommehd.cheetah.network.packet.PacketListener> packetListeners =
-+                registry.getListeners(packet.getClass());
- 
--        // Paper start - Optimize network
--        if (packet.hasFinishListener()) {
--            channelFuture.addListener((ChannelFutureListener) future -> packet.onPacketDispatchFinish(player, future));
-+            // Call packet send listeners
-+            boolean cancelled = false;
-+            for (net.gommehd.cheetah.network.packet.PacketListener packetListener : packetListeners) {
-+                try {
-+                    net.gommehd.cheetah.network.packet.PacketListener.PacketProcessingResult result =
-+                        packetListener.onPacketSend(this, packet);
-+
-+                    if (result.result() == net.gommehd.cheetah.network.packet.PacketListener.PacketResult.MODIFIED) {
-+                        packet = result.modifiedPacket();
-+                    } else if (result.result() == net.gommehd.cheetah.network.packet.PacketListener.PacketResult.CANCEL) {
-+                        cancelled = true;
-+                        break;
-+                    }
-+                } catch (Exception e) {
-+                    LOGGER.warn("Error in packet send listener for {}", packet.getClass().getSimpleName(), e);
-+                    try {
-+                        packetListener.onPacketError(this, packet, e);
-+                    } catch (Exception errorHandlerException) {
-+                        LOGGER.error("Error in packet error handler", errorHandlerException);
-+                    }
-+                }
-+            }
-+
-+            if (cancelled) {
-+                if (packet.hasFinishListener()) {
-+                    packet.onPacketDispatchFinish(player, null);
-+                }
-+                if (sendListener != null) {
-+                    io.netty.channel.ChannelFuture completedFuture = this.channel.newSucceededFuture();
-+                    completedFuture.addListener(sendListener);
-+                }
-+                return;
-+            }
-         }
++            return;
++        }
 +        final Packet<?> finalPacket = packet;
 +        // Cheetah end - packet listener api
 +
-+        try {
-+            final ChannelFuture channelFuture;
-+            // Paper end - Optimize network
-+            if (sendListener != null) {
-+                channelFuture = flush ? this.channel.writeAndFlush(packet) : this.channel.write(packet); // Paper - Optimize network
-+                channelFuture.addListener(sendListener);
-+            } else if (flush) {
-+                channelFuture = this.channel.writeAndFlush(packet, this.channel.voidPromise()); // Paper - Optimize network
-+            } else {
-+                channelFuture = this.channel.write(packet, this.channel.voidPromise()); // Paper - Optimize network
-+            }
-+
-+            // Paper start - Optimize network
-+            if (packet.hasFinishListener()) {
-+                channelFuture.addListener((ChannelFutureListener) future -> finalPacket.onPacketDispatchFinish(player, future)); // Cheetah - packet listener api
-+            }
+         try {
+         final ChannelFuture channelFuture;
+         // Paper end - Optimize network
+@@ -499,10 +525,15 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+ 
+         // Paper start - Optimize network
+         if (packet.hasFinishListener()) {
+-            channelFuture.addListener((ChannelFutureListener) future -> packet.onPacketDispatchFinish(player, future));
++            channelFuture.addListener((ChannelFutureListener) future -> finalPacket.onPacketDispatchFinish(player, future)); // Cheetah - packet listener api
+         }
          } catch (final Exception e) {
              LOGGER.error("NetworkException: {}", player, e);
 +
 +            // Cheetah start - packet listener api
-+            // Handle error notifications for bundle packets
-+            if (finalPacket instanceof net.minecraft.network.protocol.BundlePacket<?> bundlePacket) {
-+                // Notify listeners about error for each sub-packet
-+                for (Packet<?> subPacket : bundlePacket.subPackets()) {
-+                    java.util.List<net.gommehd.cheetah.network.packet.PacketListener> subPacketListeners =
-+                        registry.getListeners(subPacket.getClass());
-+                    for (net.gommehd.cheetah.network.packet.PacketListener packetListener : subPacketListeners) {
-+                        try {
-+                            packetListener.onPacketError(this, subPacket, e);
-+                        } catch (Exception errorHandlerException) {
-+                            LOGGER.error("Error in packet error handler", errorHandlerException);
-+                        }
-+                    }
-+                }
-+            }
-+
-+            // Notify packet listeners about the error for the main packet
-+            java.util.List<net.gommehd.cheetah.network.packet.PacketListener> packetListeners =
-+                registry.getListeners(finalPacket.getClass());
-+            for (net.gommehd.cheetah.network.packet.PacketListener packetListener : packetListeners) {
-+                try {
-+                    packetListener.onPacketError(this, finalPacket, e);
-+                } catch (Exception errorHandlerException) {
-+                    LOGGER.error("Error in packet error handler", errorHandlerException);
-+                }
-+            }
++            PACKET_PROCESSOR.notifyError(finalPacket, e, this);
 +            // Cheetah end - packet listener api
 +
              this.disconnect(Component.translatable("disconnect.genericReason", "Internal Exception: " + e.getMessage()));
              packet.onPacketDispatchFinish(player, null);
          }
-         // Paper end - Optimize network
-     }
- 
-+    // Cheetah start - packet listener api - Helper methods for bundle packet handling
-+    private int getBundleSubPacketCount(net.minecraft.network.protocol.BundlePacket<?> bundlePacket) {
-+        int count = 0;
-+        for (Packet<?> ignored : bundlePacket.subPackets()) {
-+            count++;
-+        }
-+        return count;
-+    }
-+
-+    private boolean hasAnySubPacketBeenModified(net.minecraft.network.protocol.BundlePacket<?> originalBundle,
-+                                                java.util.List<Packet<?>> processedSubPackets) {
-+        // Convert original sub-packets to a list for comparison
-+        java.util.List<Packet<?>> originalSubPackets = new java.util.ArrayList<>();
-+        for (Packet<?> subPacket : originalBundle.subPackets()) {
-+            originalSubPackets.add(subPacket);
-+        }
-+
-+        // Check if lists have different sizes
-+        if (originalSubPackets.size() != processedSubPackets.size()) {
-+            return true;
-+        }
-+
-+        // Check if any packet reference has changed (indicating modification)
-+        for (int i = 0; i < originalSubPackets.size(); i++) {
-+            if (originalSubPackets.get(i) != processedSubPackets.get(i)) {
-+                return true; // Reference inequality means modification occurred
-+            }
-+        }
-+
-+        return false;
-+    }
-+    // Cheetah end - packet listener api
-+
-     public void flushChannel() {
-         if (this.isConnected()) {
-             this.flush();
