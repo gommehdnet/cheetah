@@ -1,24 +1,15 @@
 --- a/net/minecraft/network/protocol/game/ClientboundSetPlayerTeamPacket.java
 +++ b/net/minecraft/network/protocol/game/ClientboundSetPlayerTeamPacket.java
-@@ -36,7 +_,7 @@
-         return new ClientboundSetPlayerTeamPacket(team.getName(), operation == ClientboundSetPlayerTeamPacket.Action.ADD ? 3 : 4, Optional.empty(), players);
-     }
-     // Paper end - Multiple Entries with Scoreboards
--    private ClientboundSetPlayerTeamPacket(String name, int method, Optional<ClientboundSetPlayerTeamPacket.Parameters> parameters, Collection<String> players) {
-+    public ClientboundSetPlayerTeamPacket(String name, int method, Optional<ClientboundSetPlayerTeamPacket.Parameters> parameters, Collection<String> players) { // Cheetah - change access modifier
-         this.name = name;
-         this.method = method;
-         this.parameters = parameters;
-@@ -125,6 +_,12 @@
-     public void handle(ClientGamePacketListener handler) {
+@@ -126,6 +_,12 @@
          handler.handleSetPlayerTeamPacket(this);
      }
-+
-+    // Cheetah start - add getter
-+    public int getMethod() {
-+        return method;
-+    }
-+    // Cheetah end - add getter
  
++    // Cheetah start - Expose method getter
++    public int getMethod() {
++        return this.method;
++    }
++    // Cheetah end - Expose method getter
++
      public String getName() {
          return this.name;
+     }
