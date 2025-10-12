@@ -5,7 +5,7 @@ Subject: [PATCH] packet listener api
 
 
 diff --git a/net/minecraft/network/Connection.java b/net/minecraft/network/Connection.java
-index 53d54aa67affc629424dbbc0f9678292734c559e..33d4d35faa2f0618641a66e12936fd53f48c54d3 100644
+index 53d54aa67affc629424dbbc0f9678292734c559e..53150ea00958f04d6b23ac9d1fba68dc6f3e245a 100644
 --- a/net/minecraft/network/Connection.java
 +++ b/net/minecraft/network/Connection.java
 @@ -72,6 +72,10 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
@@ -35,11 +35,10 @@ index 53d54aa67affc629424dbbc0f9678292734c559e..33d4d35faa2f0618641a66e12936fd53
          packet.handle((T)listener);
      }
  
-@@ -485,6 +497,20 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
-             packet.onPacketDispatchFinish(player, null);
-             return;
-         }
-+
+@@ -470,11 +482,24 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+     }
+ 
+     private void sendPacket(Packet<?> packet, @Nullable ChannelFutureListener sendListener, boolean flush) {
 +        // Cheetah start - packet listener api
 +        packet = PACKET_PROCESSOR.processOutbound(packet, this);
 +        if (packet == null) {
@@ -53,22 +52,22 @@ index 53d54aa67affc629424dbbc0f9678292734c559e..33d4d35faa2f0618641a66e12936fd53
 +        final Packet<?> finalPacket = packet;
 +        // Cheetah end - packet listener api
 +
-         try {
-         final ChannelFuture channelFuture;
-         // Paper end - Optimize network
-@@ -499,10 +525,15 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+         this.sentPackets++;
+         if (this.channel.eventLoop().inEventLoop()) {
+-            this.doSendPacket(packet, sendListener, flush);
++            this.doSendPacket(finalPacket, sendListener, flush); // Cheetah - packet listener api
+         } else {
+-            this.channel.eventLoop().execute(() -> this.doSendPacket(packet, sendListener, flush));
++            this.channel.eventLoop().execute(() -> this.doSendPacket(finalPacket, sendListener, flush)); // Cheetah - packet listener api
+         }
+     }
  
-         // Paper start - Optimize network
-         if (packet.hasFinishListener()) {
--            channelFuture.addListener((ChannelFutureListener) future -> packet.onPacketDispatchFinish(player, future));
-+            channelFuture.addListener((ChannelFutureListener) future -> finalPacket.onPacketDispatchFinish(player, future)); // Cheetah - packet listener api
+@@ -503,6 +528,9 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
          }
          } catch (final Exception e) {
              LOGGER.error("NetworkException: {}", player, e);
 +
-+            // Cheetah start - packet listener api
-+            PACKET_PROCESSOR.notifyError(finalPacket, e, this);
-+            // Cheetah end - packet listener api
++            PACKET_PROCESSOR.notifyError(packet, e, this); // Cheetah - packet listener api
 +
              this.disconnect(Component.translatable("disconnect.genericReason", "Internal Exception: " + e.getMessage()));
              packet.onPacketDispatchFinish(player, null);
