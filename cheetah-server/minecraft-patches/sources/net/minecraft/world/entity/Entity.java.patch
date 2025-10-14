@@ -1,38 +1,6 @@
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -265,7 +_,7 @@
-     public int invulnerableTime;
-     protected boolean firstTick = true;
-     protected final SynchedEntityData entityData;
--    protected static final EntityDataAccessor<Byte> DATA_SHARED_FLAGS_ID = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.BYTE);
-+    public static final EntityDataAccessor<Byte> DATA_SHARED_FLAGS_ID = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.BYTE);
-     protected static final int FLAG_ONFIRE = 0;
-     private static final int FLAG_SHIFT_KEY_DOWN = 1;
-     private static final int FLAG_SPRINTING = 3;
-@@ -273,15 +_,15 @@
-     public static final int FLAG_INVISIBLE = 5;
-     protected static final int FLAG_GLOWING = 6;
-     protected static final int FLAG_FALL_FLYING = 7;
--    private static final EntityDataAccessor<Integer> DATA_AIR_SUPPLY_ID = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.INT);
--    private static final EntityDataAccessor<Optional<Component>> DATA_CUSTOM_NAME = SynchedEntityData.defineId(
-+    public static final EntityDataAccessor<Integer> DATA_AIR_SUPPLY_ID = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.INT);
-+    public static final EntityDataAccessor<Optional<Component>> DATA_CUSTOM_NAME = SynchedEntityData.defineId(
-         Entity.class, EntityDataSerializers.OPTIONAL_COMPONENT
-     );
--    private static final EntityDataAccessor<Boolean> DATA_CUSTOM_NAME_VISIBLE = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.BOOLEAN);
--    private static final EntityDataAccessor<Boolean> DATA_SILENT = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.BOOLEAN);
--    private static final EntityDataAccessor<Boolean> DATA_NO_GRAVITY = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.BOOLEAN);
--    protected static final EntityDataAccessor<Pose> DATA_POSE = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.POSE);
--    private static final EntityDataAccessor<Integer> DATA_TICKS_FROZEN = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.INT);
-+    public static final EntityDataAccessor<Boolean> DATA_CUSTOM_NAME_VISIBLE = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.BOOLEAN);
-+    public static final EntityDataAccessor<Boolean> DATA_SILENT = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.BOOLEAN);
-+    public static final EntityDataAccessor<Boolean> DATA_NO_GRAVITY = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.BOOLEAN);
-+    public static final EntityDataAccessor<Pose> DATA_POSE = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.POSE);
-+    public static final EntityDataAccessor<Integer> DATA_TICKS_FROZEN = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.INT);
-     private EntityInLevelCallback levelCallback = EntityInLevelCallback.NULL;
-     private final VecDeltaCodec packetPositionCodec = new VecDeltaCodec();
-     public boolean hasImpulse;
-@@ -3430,7 +_,17 @@
+@@ -3647,7 +_,17 @@
      }
  
      public boolean isAlliedTo(@Nullable Team team) {
@@ -41,13 +9,13 @@
 +        final Team ownTeam = this.getTeam();
 +        if (ownTeam != null) {
 +            if (!io.papermc.paper.configuration.GlobalConfiguration.get().collisions.enablePlayerCollisions &&
-+                ownTeam.getName().equals(MinecraftServer.getServer().getPlayerList().collideRuleTeamName)) {
++                ownTeam.getName().equals(net.minecraft.server.MinecraftServer.getServer().getPlayerList().collideRuleTeamName)) {
 +                return false;
 +            }
 +            return ownTeam.isAlliedTo(team);
 +        }
 +        return false;
-+        // Cheetah end
++        // Cheetah end - Return false when the allied team is the collide rule team
      }
  
      public void setInvisible(boolean invisible) {

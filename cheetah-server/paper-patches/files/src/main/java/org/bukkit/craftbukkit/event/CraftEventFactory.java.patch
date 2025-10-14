@@ -1,6 +1,6 @@
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-@@ -1482,7 +_,10 @@
+@@ -1317,7 +_,10 @@
          com.destroystokyo.paper.event.entity.ProjectileCollideEvent event = new com.destroystokyo.paper.event.entity.ProjectileCollideEvent(projectile, collided);
  
          if (projectile.getShooter() instanceof Player && collided instanceof Player) {
@@ -8,15 +8,14 @@
 +            // Cheetah start - Added ProjectileAllowCollideWithPlayerEvent
 +            net.gommehd.cheetah.event.entity.ProjectileAllowCollideWithPlayerEvent allowCollideEvent = callProjectileAllowCollideWithPlayerEvent(entity, position.getEntity());
 +            if (!allowCollideEvent.isAllowCollide() && !((Player) projectile.getShooter()).canSee((Player) collided)) {
-+                // Cheetah end
++                // Cheetah end - Added ProjectileAllowCollideWithPlayerEvent
                  event.setCancelled(true);
                  return event;
              }
-@@ -1492,6 +_,15 @@
-         return event;
+@@ -1328,6 +_,15 @@
      }
      // Paper end
-+
+ 
 +    // Cheetah start - Added ProjectileAllowCollideWithPlayerEvent
 +    public static net.gommehd.cheetah.event.entity.ProjectileAllowCollideWithPlayerEvent callProjectileAllowCollideWithPlayerEvent(Entity entity, Entity player) {
 +        Projectile projectile = (Projectile) entity.getBukkitEntity();
@@ -24,7 +23,41 @@
 +        event.callEvent();
 +        return event;
 +    }
-+    // Cheetah end
- 
++    // Cheetah end - Added ProjectileAllowCollideWithPlayerEvent
++
      public static ProjectileLaunchEvent callProjectileLaunchEvent(Entity entity) {
          Projectile bukkitEntity = (Projectile) entity.getBukkitEntity();
+         ProjectileLaunchEvent event = new ProjectileLaunchEvent(bukkitEntity);
+@@ -2093,26 +_,27 @@
+     }
+ 
+     @SuppressWarnings("OptionalAssignedToNull")
+-    public static Component handleLoginResult(PlayerList.LoginResult result, PlayerConnection paperConnection, Connection connection, GameProfile profile, MinecraftServer server, boolean loginPhase) {
++    public static HorriblePlayerLoginEventHack.LoginResult handleLoginResult(PlayerList.LoginResult result, PlayerConnection paperConnection, Connection connection, GameProfile profile, MinecraftServer server, boolean loginPhase) { // Cheetah - Allow skipping log messages for canceled login events
+         PlayerConnectionValidateLoginEvent event = new PlayerConnectionValidateLoginEvent(
+             paperConnection, result.isAllowed() ? null : PaperAdventure.asAdventure(result.message())
+         );
+         event.callEvent();
+ 
+         Component disconnectReason = PaperAdventure.asVanilla(event.getKickMessage());
++        HorriblePlayerLoginEventHack.LoginResult loginResult = new HorriblePlayerLoginEventHack.LoginResult(disconnectReason, false); // Cheetah - Allow skipping log messages for canceled login events
+ 
+         // For the login event it normally was never fired during configuration phase. In order to make this deprecation less
+         // breaky we will cache result and use it next time.
+         if (loginPhase) {
+-            disconnectReason = HorriblePlayerLoginEventHack.execute(connection, server, profile,
+-                disconnectReason == null ? PlayerList.LoginResult.ALLOW : new PlayerList.LoginResult(disconnectReason, disconnectReason == null ? PlayerLoginEvent.Result.KICK_OTHER : result.result())
++            loginResult = HorriblePlayerLoginEventHack.execute(connection, server, profile,
++                disconnectReason == null ? PlayerList.LoginResult.ALLOW : new PlayerList.LoginResult(disconnectReason, disconnectReason == null ? PlayerLoginEvent.Result.KICK_OTHER : result.result()) // Cheetah - Allow skipping log messages for canceled login events
+             );
+         } else if (connection.legacySavedLoginEventResultOverride != null) {
+             // If the override is set, use it.
+-            disconnectReason = connection.legacySavedLoginEventResultOverride.orElse(null);
++            loginResult = new HorriblePlayerLoginEventHack.LoginResult(connection.legacySavedLoginEventResultOverride.orElse(null), false); // Cheetah - Allow skipping log messages for canceled login events
+         }
+ 
+-        return disconnectReason;
++        return loginResult; // Cheetah - Allow skipping log messages for canceled login events
+     }
+ 
+     public static boolean callTransporterValidateTarget(final PathfinderMob mob, final Level level, final BlockPos transportItemTarget) {

@@ -1,0 +1,16 @@
+--- a/net/minecraft/network/protocol/game/ClientboundAnimatePacket.java
++++ b/net/minecraft/network/protocol/game/ClientboundAnimatePacket.java
+@@ -23,6 +_,13 @@
+         this.action = action;
+     }
+ 
++    // Cheetah start - add constructor with entity id
++    public ClientboundAnimatePacket(int id, int action) {
++        this.id = id;
++        this.action = action;
++    }
++    // Cheetah end - add constructor with entity id
++
+     private ClientboundAnimatePacket(FriendlyByteBuf buffer) {
+         this.id = buffer.readVarInt();
+         this.action = buffer.readUnsignedByte();

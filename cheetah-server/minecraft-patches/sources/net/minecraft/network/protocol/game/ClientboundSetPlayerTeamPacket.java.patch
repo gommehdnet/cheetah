@@ -1,0 +1,15 @@
+--- a/net/minecraft/network/protocol/game/ClientboundSetPlayerTeamPacket.java
++++ b/net/minecraft/network/protocol/game/ClientboundSetPlayerTeamPacket.java
+@@ -126,6 +_,12 @@
+         handler.handleSetPlayerTeamPacket(this);
+     }
+ 
++    // Cheetah start - Expose method getter
++    public int getMethod() {
++        return this.method;
++    }
++    // Cheetah end - Expose method getter
++
+     public String getName() {
+         return this.name;
+     }

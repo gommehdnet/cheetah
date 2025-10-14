@@ -1,0 +1,29 @@
+--- a/src/main/java/io/papermc/paper/connection/HorriblePlayerLoginEventHack.java
++++ b/src/main/java/io/papermc/paper/connection/HorriblePlayerLoginEventHack.java
+@@ -45,9 +_,9 @@
+         return true;
+     }
+ 
+-    public static @Nullable Component execute(final Connection connection, MinecraftServer server, GameProfile profile, PlayerList.LoginResult result) {
++    public static LoginResult execute(final Connection connection, MinecraftServer server, GameProfile profile, PlayerList.LoginResult result) { // Cheetah - Allow skipping log messages for canceled login events
+         if (PlayerLoginEvent.getHandlerList().getRegisteredListeners().length == 0) {
+-            return result.message();
++            return new LoginResult(result.message(), false); // Cheetah - Allow skipping log messages for canceled login events
+         }
+ 
+         if (!nagged) {
+@@ -100,6 +_,12 @@
+             connection.legacySavedLoginEventResultOverride = Optional.ofNullable(finalResult);
+         }
+ 
+-        return finalResult;
+-    }
++        return new LoginResult(finalResult, event.isSkipLog()); // Cheetah - Allow skipping log messages for canceled login events
++    }
++
++    // Cheetah start - Allow skipping log messages for canceled login events
++    public record LoginResult(@Nullable Component message, boolean isSkipLog) {
++
++    }
++    // Cheetah end - Allow skipping log messages for canceled login events
+ }

@@ -1,10 +1,46 @@
-# Ignore Gradle project-specific cache directory
-.gradle
+.gradle/
+build/
 
-# Ignore Gradle build output directory
-build
+# Eclipse stuff
+.classpath
+.project
+.settings/
 
-/run
+# VSCode stuff
+.vscode/
+
+# netbeans
+nbproject/
+nbactions.xml
+
+# vim
+.*.sw[a-p]
+
+# various other potential build files
+bin/
+dist/
+manifest.mf
+
+# Mac filesystem dust
+.DS_Store/
+.DS_Store
+
+# intellij
+*.iml
+*.ipr
+*.iws
+.idea/
+out/
+
+# JetBrains Fleet
+.fleet/
+
+# Linux temp files
+*~
+
+# other stuff
+run/
+logs/
 
 /cheetah-server/build.gradle.kts
 /cheetah-server/src/minecraft
@@ -12,5 +48,3 @@ build
 /cheetah-api/build.gradle.kts
 /paper-api
 /paper-api-generator
-
-.idea/

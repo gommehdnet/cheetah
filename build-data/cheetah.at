@@ -1,3 +1,55 @@
 # This file is auto generated, any changes may be overridden!
 # See CONTRIBUTING.md on how to add access transformers.
 public net.minecraft.data.registries.TradeRebalanceRegistries BUILDER
+public net.minecraft.network.protocol.game.ClientboundLevelChunkPacketData$BlockEntityInfo
+public net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket <init>(Ljava/lang/String;ILjava/util/Optional;Ljava/util/Collection;)V
+public net.minecraft.network.protocol.game.ServerboundInteractPacket$Action
+public net.minecraft.network.protocol.game.ServerboundInteractPacket$ActionType
+public net.minecraft.world.entity.Avatar DATA_PLAYER_MAIN_HAND
+public net.minecraft.world.entity.Display DATA_BILLBOARD_RENDER_CONSTRAINTS_ID
+public net.minecraft.world.entity.Display DATA_BRIGHTNESS_OVERRIDE_ID
+public net.minecraft.world.entity.Display DATA_GLOW_COLOR_OVERRIDE_ID
+public net.minecraft.world.entity.Display DATA_HEIGHT_ID
+public net.minecraft.world.entity.Display DATA_LEFT_ROTATION_ID
+public net.minecraft.world.entity.Display DATA_RIGHT_ROTATION_ID
+public net.minecraft.world.entity.Display DATA_SCALE_ID
+public net.minecraft.world.entity.Display DATA_SHADOW_RADIUS_ID
+public net.minecraft.world.entity.Display DATA_SHADOW_STRENGTH_ID
+public net.minecraft.world.entity.Display DATA_TRANSLATION_ID
+public net.minecraft.world.entity.Display DATA_VIEW_RANGE_ID
+public net.minecraft.world.entity.Display DATA_WIDTH_ID
+public net.minecraft.world.entity.Display$BlockDisplay DATA_BLOCK_STATE_ID
+public net.minecraft.world.entity.Display$ItemDisplay DATA_ITEM_DISPLAY_ID
+public net.minecraft.world.entity.Display$ItemDisplay DATA_ITEM_STACK_ID
+public net.minecraft.world.entity.Display$ItemDisplay TAG_ITEM
+public net.minecraft.world.entity.Display$ItemDisplay TAG_ITEM_DISPLAY
+public net.minecraft.world.entity.Display$TextDisplay DATA_STYLE_FLAGS_ID
+public net.minecraft.world.entity.Display$TextDisplay DATA_TEXT_ID
+public net.minecraft.world.entity.Display$TextDisplay DATA_TEXT_OPACITY_ID
+public net.minecraft.world.entity.Display$TextDisplay INITIAL_TEXT_OPACITY
+public net.minecraft.world.entity.Display$TextDisplay TAG_ALIGNMENT
+public net.minecraft.world.entity.Display$TextDisplay TAG_BACKGROUND_COLOR
+public net.minecraft.world.entity.Display$TextDisplay TAG_LINE_WIDTH
+public net.minecraft.world.entity.Display$TextDisplay TAG_SEE_THROUGH
+public net.minecraft.world.entity.Display$TextDisplay TAG_SHADOW
+public net.minecraft.world.entity.Display$TextDisplay TAG_TEXT_OPACITY
+public net.minecraft.world.entity.Display$TextDisplay TAG_USE_DEFAULT_BACKGROUND
+public net.minecraft.world.entity.Display$TextDisplay TEXT_RENDER_STATE_IDS
+public net.minecraft.world.entity.Entity DATA_AIR_SUPPLY_ID
+public net.minecraft.world.entity.Entity DATA_CUSTOM_NAME
+public net.minecraft.world.entity.Entity DATA_CUSTOM_NAME_VISIBLE
+public net.minecraft.world.entity.Entity DATA_NO_GRAVITY
+public net.minecraft.world.entity.Entity DATA_POSE
+public net.minecraft.world.entity.Entity DATA_SHARED_FLAGS_ID
+public net.minecraft.world.entity.Entity DATA_SILENT
+public net.minecraft.world.entity.Entity DATA_TICKS_FROZEN
+public net.minecraft.world.entity.LivingEntity DATA_EFFECT_AMBIENCE_ID
+public net.minecraft.world.entity.LivingEntity DATA_EFFECT_PARTICLES
+public net.minecraft.world.entity.LivingEntity DATA_LIVING_ENTITY_FLAGS
+public net.minecraft.world.entity.LivingEntity DATA_STINGER_COUNT_ID
+public net.minecraft.world.entity.LivingEntity SLEEPING_POS_ID
+public net.minecraft.world.entity.item.ItemEntity DATA_ITEM
+public net.minecraft.world.entity.player.Player DATA_PLAYER_ABSORPTION_ID
+public net.minecraft.world.entity.player.Player DATA_SCORE_ID
+public net.minecraft.world.entity.player.Player DATA_SHOULDER_PARROT_LEFT
+public net.minecraft.world.entity.player.Player DATA_SHOULDER_PARROT_RIGHT

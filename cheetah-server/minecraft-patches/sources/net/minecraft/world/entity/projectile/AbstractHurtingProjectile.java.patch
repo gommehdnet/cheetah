@@ -1,9 +1,9 @@
 --- a/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java
 +++ b/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java
-@@ -68,6 +_,13 @@
+@@ -69,6 +_,13 @@
          Entity owner = this.getOwner();
          this.applyInertia();
-         if (this.level().isClientSide || (owner == null || !owner.isRemoved()) && this.level().hasChunkAt(this.blockPosition())) {
+         if (this.level().isClientSide() || (owner == null || !owner.isRemoved()) && this.level().hasChunkAt(this.blockPosition())) {
 +            // Cheetah start - fix NaN delta movement
 +            final Vec3 deltaMovement = this.getDeltaMovement();
 +            if (Double.isNaN(deltaMovement.x) && Double.isNaN(deltaMovement.y) && Double.isNaN(deltaMovement.z)) {

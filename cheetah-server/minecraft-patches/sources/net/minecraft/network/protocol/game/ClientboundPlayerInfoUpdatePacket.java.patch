@@ -1,6 +1,6 @@
 --- a/net/minecraft/network/protocol/game/ClientboundPlayerInfoUpdatePacket.java
 +++ b/net/minecraft/network/protocol/game/ClientboundPlayerInfoUpdatePacket.java
-@@ -50,6 +_,13 @@
+@@ -51,6 +_,13 @@
      }
      // Paper end - Add Listing API for Player
  
@@ -9,7 +9,7 @@
 +        this.actions = EnumSet.of(action);
 +        this.entries = List.of(entry);
 +    }
-+    // Cheetah end
++    // Cheetah end - Expose constructor for player info update packet
 +
      public static ClientboundPlayerInfoUpdatePacket createPlayerInitializing(Collection<ServerPlayer> players) {
          EnumSet<ClientboundPlayerInfoUpdatePacket.Action> set = EnumSet.of(
