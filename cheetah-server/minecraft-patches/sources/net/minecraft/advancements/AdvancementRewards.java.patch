@@ -1,0 +1,109 @@
+--- a/net/minecraft/advancements/AdvancementRewards.java
++++ b/net/minecraft/advancements/AdvancementRewards.java
+@@ -13,9 +_,6 @@
+ import net.minecraft.server.MinecraftServer;
+ import net.minecraft.server.level.ServerLevel;
+ import net.minecraft.server.level.ServerPlayer;
+-import net.minecraft.sounds.SoundEvents;
+-import net.minecraft.sounds.SoundSource;
+-import net.minecraft.world.entity.item.ItemEntity;
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.item.crafting.Recipe;
+ import net.minecraft.world.level.storage.loot.LootParams;
+@@ -36,7 +_,7 @@
+     public static final AdvancementRewards EMPTY = new AdvancementRewards(0, List.of(), List.of(), Optional.empty());
+ 
+     public void grant(ServerPlayer player) {
+-        player.giveExperiencePoints(this.experience);
++        // Cheetah start - Added PlayerAdvancementRewardsGrantEvent
+         ServerLevel serverLevel = player.level();
+         MinecraftServer server = serverLevel.getServer();
+         LootParams lootParams = new LootParams.Builder(serverLevel)
+@@ -45,36 +_,65 @@
+             .create(LootContextParamSets.ADVANCEMENT_REWARD);
+         boolean flag = false;
+ 
++        List<ItemStack> rewards = new java.util.ArrayList<>();
++
+         for (ResourceKey<LootTable> resourceKey : this.loot) {
+-            for (ItemStack itemStack : server.reloadableRegistries().getLootTable(resourceKey).getRandomItems(lootParams)) {
+-                if (player.addItem(itemStack)) {
+-                    serverLevel.playSound(
+-                        null,
+-                        player.getX(),
+-                        player.getY(),
+-                        player.getZ(),
+-                        SoundEvents.ITEM_PICKUP,
+-                        SoundSource.PLAYERS,
+-                        0.2F,
+-                        ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F
+-                    );
+-                    flag = true;
+-                } else {
+-                    ItemEntity itemEntity = player.drop(itemStack, false);
+-                    if (itemEntity != null) {
+-                        itemEntity.setNoPickUpDelay();
+-                        itemEntity.setTarget(player.getUUID());
++            rewards.addAll(server.reloadableRegistries().getLootTable(resourceKey).getRandomItems(lootParams));
++        }
++
++        net.gommehd.cheetah.event.entity.PlayerAdvancementRewardsGrantEvent event = new net.gommehd.cheetah.event.entity.PlayerAdvancementRewardsGrantEvent(
++            player.getBukkitEntity(),
++            recipes.stream().map(recipe -> org.bukkit.craftbukkit.util.CraftNamespacedKey.fromMinecraft(recipe.location())).collect(java.util.stream.Collectors.toList()),
++            rewards.stream().map(org.bukkit.craftbukkit.inventory.CraftItemStack::asCraftMirror).collect(java.util.stream.Collectors.toList()),
++            this.experience
++        );
++
++        org.bukkit.Bukkit.getPluginManager().callEvent(event);
++
++        if (!event.isCancelled()) {
++            rewards = event.getItems().stream().map(org.bukkit.craftbukkit.inventory.CraftItemStack::asNMSCopy).collect(java.util.stream.Collectors.toList());
++
++            if (event.getExperience() != 0) {
++                player.giveExperiencePoints(0);
++            }
++
++            if (!rewards.isEmpty()) {
++                for (ItemStack itemStack : rewards) {
++                    if (player.addItem(itemStack)) {
++                        serverLevel.playSound(
++                            null,
++                            player.getX(),
++                            player.getY(),
++                            player.getZ(),
++                            net.minecraft.sounds.SoundEvents.ITEM_PICKUP,
++                            net.minecraft.sounds.SoundSource.PLAYERS,
++                            0.2F,
++                            ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F
++                        );
++                        flag = true;
++                    } else {
++                        net.minecraft.world.entity.item.ItemEntity itemEntity = player.drop(itemStack, false);
++                        if (itemEntity != null) {
++                            itemEntity.setNoPickUpDelay();
++                            itemEntity.setTarget(player.getUUID());
++                        }
+                     }
+                 }
+             }
+         }
+ 
++        if (!event.getRecipes().isEmpty()) {
++            player.awardRecipesByKey(
++                event.getRecipes().stream()
++                    .map(key -> ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, org.bukkit.craftbukkit.util.CraftNamespacedKey.toMinecraft(key)))
++                    .toList()
++            );
++        }
++
++        // Cheetah - end
++
+         if (flag) {
+             player.containerMenu.broadcastChanges();
+-        }
+-
+-        if (!this.recipes.isEmpty()) {
+-            player.awardRecipesByKey(this.recipes);
+         }
+ 
+         this.function
