@@ -1,15 +1,5 @@
 --- a/net/minecraft/advancements/AdvancementRewards.java
 +++ b/net/minecraft/advancements/AdvancementRewards.java
-@@ -13,9 +_,6 @@
- import net.minecraft.server.MinecraftServer;
- import net.minecraft.server.level.ServerLevel;
- import net.minecraft.server.level.ServerPlayer;
--import net.minecraft.sounds.SoundEvents;
--import net.minecraft.sounds.SoundSource;
--import net.minecraft.world.entity.item.ItemEntity;
- import net.minecraft.world.item.ItemStack;
- import net.minecraft.world.item.crafting.Recipe;
- import net.minecraft.world.level.storage.loot.LootParams;
 @@ -36,7 +_,7 @@
      public static final AdvancementRewards EMPTY = new AdvancementRewards(0, List.of(), List.of(), Optional.empty());
  
@@ -71,14 +61,14 @@
 +                            player.getX(),
 +                            player.getY(),
 +                            player.getZ(),
-+                            net.minecraft.sounds.SoundEvents.ITEM_PICKUP,
-+                            net.minecraft.sounds.SoundSource.PLAYERS,
++                            SoundEvents.ITEM_PICKUP,
++                            SoundSource.PLAYERS,
 +                            0.2F,
 +                            ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F
 +                        );
 +                        flag = true;
 +                    } else {
-+                        net.minecraft.world.entity.item.ItemEntity itemEntity = player.drop(itemStack, false);
++                        ItemEntity itemEntity = player.drop(itemStack, false);
 +                        if (itemEntity != null) {
 +                            itemEntity.setNoPickUpDelay();
 +                            itemEntity.setTarget(player.getUUID());
