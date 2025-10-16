@@ -7,7 +7,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Called when a {@link Player} is about to get advancement rewards
@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PlayerAdvancementRewardsGrantEvent extends PlayerEvent implements Cancellable {
 
-
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled;
 
@@ -25,7 +24,7 @@ public class PlayerAdvancementRewardsGrantEvent extends PlayerEvent implements C
     private List<ItemStack> items;
     private int experience;
 
-    public PlayerAdvancementRewardsGrantEvent(final @NotNull Player who, List<NamespacedKey> recipes, List<ItemStack> items, int experience) {
+    public PlayerAdvancementRewardsGrantEvent(final @NonNull Player who, List<NamespacedKey> recipes, List<ItemStack> items, int experience) {
         super(who);
 
         this.experience = experience;
@@ -33,19 +32,19 @@ public class PlayerAdvancementRewardsGrantEvent extends PlayerEvent implements C
         this.items = items;
     }
 
-    public @NotNull List<NamespacedKey> getRecipes() {
+    public @NonNull List<NamespacedKey> getRecipes() {
         return recipes;
     }
 
-    public void setRecipes(@NotNull List<NamespacedKey> recipes) {
+    public void setRecipes(@NonNull List<NamespacedKey> recipes) {
         this.recipes = recipes;
     }
 
-    public @NotNull List<ItemStack> getItems() {
+    public @NonNull List<ItemStack> getItems() {
         return items;
     }
 
-    public void setItems(@NotNull List<ItemStack> items) {
+    public void setItems(@NonNull List<ItemStack> items) {
         this.items = items;
     }
 
@@ -68,11 +67,11 @@ public class PlayerAdvancementRewardsGrantEvent extends PlayerEvent implements C
     }
 
     @Override
-    public @NotNull HandlerList getHandlers() {
+    public @NonNull HandlerList getHandlers() {
         return handlers;
     }
 
-    public static @NotNull HandlerList getHandlerList() {
+    public static @NonNull HandlerList getHandlerList() {
         return handlers;
     }
 
