@@ -1,0 +1,11 @@
+--- a/net/minecraft/world/level/block/DriedGhastBlock.java
++++ b/net/minecraft/world/level/block/DriedGhastBlock.java
+@@ -171,7 +_,7 @@
+     @Override
+     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+         if ((state.getValue(WATERLOGGED) || state.getValue(HYDRATION_LEVEL) > 0) && !level.getBlockTicks().hasScheduledTick(pos, this)) {
+-            level.scheduleTick(pos, this, 5000);
++            level.scheduleTick(pos, this, HYDRATION_TICK_DELAY);    // Cheetah - Using HYDRATION_TICK_DELAY instead of a magic number
+         }
+     }
+ 
