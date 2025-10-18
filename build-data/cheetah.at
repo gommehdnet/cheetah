@@ -53,3 +53,8 @@ public net.minecraft.world.entity.player.Player DATA_PLAYER_ABSORPTION_ID
 public net.minecraft.world.entity.player.Player DATA_SCORE_ID
 public net.minecraft.world.entity.player.Player DATA_SHOULDER_PARROT_LEFT
 public net.minecraft.world.entity.player.Player DATA_SHOULDER_PARROT_RIGHT
+public-f net.minecraft.world.level.block.DriedGhastBlock HYDRATION_TICK_DELAY
+public-f net.minecraft.world.level.block.SnifferEggBlock BOOSTED_HATCH_TIME_TICKS
+public-f net.minecraft.world.level.block.SnifferEggBlock RANDOM_HATCH_OFFSET_TICKS
+public-f net.minecraft.world.level.block.SnifferEggBlock REGULAR_HATCH_TIME_TICKS
+public-f net.minecraft.world.level.block.TurtleEggBlock MAX_HATCH_LEVEL
