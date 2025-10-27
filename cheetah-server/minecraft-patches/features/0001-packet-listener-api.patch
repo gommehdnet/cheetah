@@ -5,7 +5,7 @@ Subject: [PATCH] packet listener api
 
 
 diff --git a/net/minecraft/network/Connection.java b/net/minecraft/network/Connection.java
-index 53d54aa67affc629424dbbc0f9678292734c559e..53150ea00958f04d6b23ac9d1fba68dc6f3e245a 100644
+index 03488cb6bd0e812d473256475777f392866eaae8..26537dc55bb1767a2f448691048e91b3f7f9d60f 100644
 --- a/net/minecraft/network/Connection.java
 +++ b/net/minecraft/network/Connection.java
 @@ -72,6 +72,10 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
@@ -35,7 +35,7 @@ index 53d54aa67affc629424dbbc0f9678292734c559e..53150ea00958f04d6b23ac9d1fba68dc
          packet.handle((T)listener);
      }
  
-@@ -470,11 +482,24 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -468,11 +480,24 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
      }
  
      private void sendPacket(Packet<?> packet, @Nullable ChannelFutureListener sendListener, boolean flush) {
@@ -62,7 +62,7 @@ index 53d54aa67affc629424dbbc0f9678292734c559e..53150ea00958f04d6b23ac9d1fba68dc
          }
      }
  
-@@ -503,6 +528,9 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -501,6 +526,9 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
          }
          } catch (final Exception e) {
              LOGGER.error("NetworkException: {}", player, e);

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -2069,6 +_,20 @@
+@@ -2070,6 +_,20 @@
          }
      }
  

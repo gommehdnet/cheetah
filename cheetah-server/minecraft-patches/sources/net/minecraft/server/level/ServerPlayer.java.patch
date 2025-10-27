@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -746,8 +_,23 @@
+@@ -747,8 +_,23 @@
          Entity camera = this.getCamera();
          if (camera != this) {
              if (camera.isAlive()) {

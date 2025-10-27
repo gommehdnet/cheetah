@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/animal/Dolphin.java
 +++ b/net/minecraft/world/entity/animal/Dolphin.java
-@@ -156,7 +_,11 @@
+@@ -157,7 +_,11 @@
      protected void registerGoals() {
          this.goalSelector.addGoal(0, new BreathAirGoal(this));
          this.goalSelector.addGoal(0, new TryFindWaterGoal(this));
