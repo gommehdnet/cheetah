@@ -1,0 +1,16 @@
+--- a/net/minecraft/network/protocol/game/ClientboundSetEntityLinkPacket.java
++++ b/net/minecraft/network/protocol/game/ClientboundSetEntityLinkPacket.java
+@@ -19,6 +_,13 @@
+         this.destId = destination != null ? destination.getId() : 0;
+     }
+ 
++    // Chetaah start - add constructor with entity id
++    public ClientboundSetEntityLinkPacket(int sourceId, int destId) {
++        this.sourceId = sourceId;
++        this.destId = destId;
++    }
++    // Chetaah end - add constructor with entity id
++
+     private ClientboundSetEntityLinkPacket(FriendlyByteBuf buffer) {
+         this.sourceId = buffer.readInt();
+         this.destId = buffer.readInt();
