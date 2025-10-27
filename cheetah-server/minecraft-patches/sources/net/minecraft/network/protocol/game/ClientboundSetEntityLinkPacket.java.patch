@@ -1,0 +1,13 @@
+--- a/net/minecraft/network/protocol/game/ClientboundSetEntityLinkPacket.java
++++ b/net/minecraft/network/protocol/game/ClientboundSetEntityLinkPacket.java
+@@ -18,6 +_,10 @@
+         this.sourceId = source.getId();
+         this.destId = destination != null ? destination.getId() : 0;
+     }
++    public ClientboundSetEntityLinkPacket(int sourceId, int destId) {
++        this.sourceId = sourceId;
++        this.destId = destId;
++    }
+ 
+     private ClientboundSetEntityLinkPacket(FriendlyByteBuf buffer) {
+         this.sourceId = buffer.readInt();
