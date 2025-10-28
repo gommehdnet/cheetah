@@ -1,9 +1,40 @@
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -2070,6 +_,20 @@
-         }
+@@ -1411,6 +_,29 @@
+         return this.getHealth() <= 0.0F;
      }
  
++    // Cheetah start - re-add isDamageSourceBlocked method
++    public boolean isDamageSourceBlocked(DamageSource damageSource) {
++        Entity directEntity = damageSource.getDirectEntity();
++        boolean flag = false;
++        if (directEntity instanceof AbstractArrow abstractArrow && abstractArrow.getPierceLevel() > 0) {
++            flag = true;
++        }
++
++        ItemStack itemBlockingWith = this.getItemBlockingWith();
++        if (!damageSource.is(DamageTypeTags.BYPASSES_SHIELD) && itemBlockingWith != null && itemBlockingWith.getItem() instanceof net.minecraft.world.item.ShieldItem && !flag) {
++            Vec3 sourcePosition = damageSource.getSourcePosition();
++            if (sourcePosition != null) {
++                Vec3 vec3 = this.calculateViewVector(0.0F, this.getYHeadRot());
++                Vec3 vec31 = sourcePosition.vectorTo(this.position());
++                vec31 = new Vec3(vec31.x, 0.0, vec31.z).normalize();
++                return vec31.dot(vec3) < 0.0;
++            }
++        }
++
++        return false;
++    }
++    // Cheetah end - re-add isDamageSourceBlocked method
++
+     @Override
+     public boolean hurtServer(ServerLevel level, DamageSource damageSource, float amount) {
+         if (this.isInvulnerableTo(level, damageSource)) {
+@@ -2069,6 +_,20 @@
+             return false;
+         }
+     }
++
 +    // Cheetah start - Added VillagerGiveGiftToHeroEvent
 +    public List<ItemStack> getFromGiftLootTable(ServerLevel world, ResourceKey<LootTable> lootTableKey) {
 +        return this.getFromLootTable(world, lootTableKey, (lootparams_a) -> {
@@ -17,7 +48,6 @@
 +        return loottable.getRandomItems(lootparams);
 +    }
 +    // Cheetah end - Added VillagerGiveGiftToHeroEvent
-+
+ 
      public void knockback(double strength, double x, double z) {
          // CraftBukkit start - EntityKnockbackEvent
-         this.knockback(strength, x, z, null, io.papermc.paper.event.entity.EntityKnockbackEvent.Cause.UNKNOWN); // Paper - knockback events
