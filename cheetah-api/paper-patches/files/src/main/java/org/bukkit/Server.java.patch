@@ -1,0 +1,20 @@
+--- a/src/main/java/org/bukkit/Server.java
++++ b/src/main/java/org/bukkit/Server.java
+@@ -2162,6 +_,17 @@
+     @Nullable
+     Entity getEntity(@NotNull UUID uuid);
+ 
++    // Cheetah start - add entity accessor by id
++    /**
++     * Gets an entity on the server by its UUID
++     *
++     * @param entityId the id of the entity
++     * @return the entity with the given id, or null if it isn't found
++     */
++    @Nullable
++    Entity getEntity(@NotNull Integer entityId);
++    // Cheetah end - add entity accessor by id
++
+     // Paper start
+     /**
+      * Gets the current server TPS

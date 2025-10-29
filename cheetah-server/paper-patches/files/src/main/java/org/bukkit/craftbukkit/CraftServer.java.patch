@@ -1,0 +1,23 @@
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -2497,6 +_,20 @@
+         return null;
+     }
+ 
++    // Cheetah start - add entity accessor by id
++    @Override
++    public @Nullable Entity getEntity(@NotNull Integer entityId) {
++        for (ServerLevel world : this.getServer().getAllLevels()) {
++            net.minecraft.world.entity.Entity entity = world.getEntity(entityId);
++            if (entity != null) {
++                return entity.getBukkitEntity();
++            }
++        }
++
++        return null;
++    }
++    // Cheetah end - add entity accessor by id
++
+     @Override
+     public org.bukkit.advancement.Advancement getAdvancement(NamespacedKey key) {
+         Preconditions.checkArgument(key != null, "key cannot be null");
