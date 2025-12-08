@@ -1,6 +1,6 @@
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -2162,6 +_,17 @@
+@@ -2163,6 +_,17 @@
      @Nullable
      Entity getEntity(@NotNull UUID uuid);
  
