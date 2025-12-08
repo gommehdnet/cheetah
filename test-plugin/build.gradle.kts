@@ -6,13 +6,9 @@ dependencies {
 }
 
 tasks.processResources {
-    var apiVersion = rootProject.providers.gradleProperty("mcVersion").get()
-    // Bukkit api versioning does not support suffixed versions
-    apiVersion = apiVersion.substringBefore('-')
-
     val props = mapOf(
         "version" to project.version,
-        "apiVersion" to "\"$apiVersion\""
+        "apiVersion" to "\"${rootProject.providers.gradleProperty("apiVersion").get()}\""
     )
     inputs.properties(props)
     filesMatching("paper-plugin.yml") {
