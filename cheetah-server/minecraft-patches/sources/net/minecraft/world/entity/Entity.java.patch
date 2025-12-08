@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -3638,7 +_,17 @@
+@@ -3660,7 +_,17 @@
      }
  
      public boolean isAlliedTo(@Nullable Team team) {

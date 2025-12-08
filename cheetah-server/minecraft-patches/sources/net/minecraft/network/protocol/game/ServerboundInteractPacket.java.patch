@@ -1,6 +1,6 @@
 --- a/net/minecraft/network/protocol/game/ServerboundInteractPacket.java
 +++ b/net/minecraft/network/protocol/game/ServerboundInteractPacket.java
-@@ -155,6 +_,12 @@
+@@ -162,6 +_,12 @@
      }
      // Paper end - PlayerUseUnknownEntityEvent
  

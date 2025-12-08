@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/network/ServerConfigurationPacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerConfigurationPacketListenerImpl.java
-@@ -201,7 +_,8 @@
+@@ -198,7 +_,8 @@
                  return;
              }
  

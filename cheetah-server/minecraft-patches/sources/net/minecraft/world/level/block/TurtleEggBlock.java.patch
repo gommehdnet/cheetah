@@ -1,8 +1,8 @@
 --- a/net/minecraft/world/level/block/TurtleEggBlock.java
 +++ b/net/minecraft/world/level/block/TurtleEggBlock.java
-@@ -107,7 +_,7 @@
+@@ -108,7 +_,7 @@
      protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-         if (this.shouldUpdateHatchLevel(level) && onSand(level, pos)) {
+         if (this.shouldUpdateHatchLevel(level, pos) && onSand(level, pos)) {
              int hatchValue = state.getValue(HATCH);
 -            if (hatchValue < 2) {
 +            if (hatchValue < MAX_HATCH_LEVEL) { // Cheetah - Using MAX_HATCH_LEVEL instead of a magic number

@@ -13,7 +13,7 @@
      public static class BlockEntityInfo {
          public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundLevelChunkPacketData.BlockEntityInfo> STREAM_CODEC = StreamCodec.ofMember(
              ClientboundLevelChunkPacketData.BlockEntityInfo::write, ClientboundLevelChunkPacketData.BlockEntityInfo::new
-@@ -186,6 +_,25 @@
+@@ -185,6 +_,25 @@
              ByteBufCodecs.registry(Registries.BLOCK_ENTITY_TYPE).encode(buffer, this.type);
              buffer.writeNbt(this.tag);
          }
