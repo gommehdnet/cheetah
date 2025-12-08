@@ -30,7 +30,7 @@
      @Override
      public boolean hurtServer(ServerLevel level, DamageSource damageSource, float amount) {
          if (this.isInvulnerableTo(level, damageSource)) {
-@@ -2069,6 +_,20 @@
+@@ -2068,6 +_,20 @@
              return false;
          }
      }

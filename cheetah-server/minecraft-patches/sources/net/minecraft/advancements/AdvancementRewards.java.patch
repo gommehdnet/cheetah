@@ -1,6 +1,6 @@
 --- a/net/minecraft/advancements/AdvancementRewards.java
 +++ b/net/minecraft/advancements/AdvancementRewards.java
-@@ -36,7 +_,7 @@
+@@ -37,7 +_,7 @@
      public static final AdvancementRewards EMPTY = new AdvancementRewards(0, List.of(), List.of(), Optional.empty());
  
      public void grant(ServerPlayer player) {
@@ -9,7 +9,7 @@
          ServerLevel serverLevel = player.level();
          MinecraftServer server = serverLevel.getServer();
          LootParams lootParams = new LootParams.Builder(serverLevel)
-@@ -45,36 +_,65 @@
+@@ -46,36 +_,65 @@
              .create(LootContextParamSets.ADVANCEMENT_REWARD);
          boolean flag = false;
  
