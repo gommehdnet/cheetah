@@ -1,16 +1,15 @@
---- a/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java
-+++ b/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java
-@@ -69,6 +_,13 @@
+--- a/net/minecraft/world/entity/projectile/hurtingprojectile/AbstractHurtingProjectile.java
++++ b/net/minecraft/world/entity/projectile/hurtingprojectile/AbstractHurtingProjectile.java
+@@ -71,6 +_,12 @@
          Entity owner = this.getOwner();
          this.applyInertia();
          if (this.level().isClientSide() || (owner == null || !owner.isRemoved()) && this.level().hasChunkAt(this.blockPosition())) {
-+            // Cheetah start - fix NaN delta movement
++            // Cheetah start - Fix NaN delta movement
 +            final Vec3 deltaMovement = this.getDeltaMovement();
 +            if (Double.isNaN(deltaMovement.x) && Double.isNaN(deltaMovement.y) && Double.isNaN(deltaMovement.z)) {
 +                this.setDeltaMovement(Vec3.ZERO);
 +            }
-+            // Cheetah end - fix NaN delta movement
-+
++            // Cheetah end - Fix NaN delta movement
              HitResult hitResultOnMoveVector = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity, this.getClipType());
              Vec3 location;
              if (hitResultOnMoveVector.getType() != HitResult.Type.MISS) {
