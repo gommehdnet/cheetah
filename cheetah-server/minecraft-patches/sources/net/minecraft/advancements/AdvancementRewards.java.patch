@@ -39,7 +39,7 @@
 +
 +        net.gommehd.cheetah.event.entity.PlayerAdvancementRewardsGrantEvent event = new net.gommehd.cheetah.event.entity.PlayerAdvancementRewardsGrantEvent(
 +            player.getBukkitEntity(),
-+            recipes.stream().map(recipe -> org.bukkit.craftbukkit.util.CraftNamespacedKey.fromMinecraft(recipe.location())).collect(java.util.stream.Collectors.toList()),
++            recipes.stream().map(recipe -> org.bukkit.craftbukkit.util.CraftNamespacedKey.fromMinecraft(recipe.identifier())).collect(java.util.stream.Collectors.toList()),
 +            rewards.stream().map(org.bukkit.craftbukkit.inventory.CraftItemStack::asCraftMirror).collect(java.util.stream.Collectors.toList()),
 +            this.experience
 +        );
