@@ -1,4 +1,4 @@
-# GommeHD.net Cheetah 1.21.11-rc3
+# GommeHD.net Cheetah 1.21.11
 
 [![Patch and Build](https://github.com/gommehdnet/cheetah/actions/workflows/build.yml/badge.svg)](https://github.com/gommehdnet/cheetah/actions/workflows/build.yml)
 
@@ -21,7 +21,7 @@ Thus, changes to the NMS code will not be reflected to plugins using it.
 <dependency>
   <groupId>net.gommehd.cheetah</groupId>
   <artifactId>cheetah-api</artifactId>
-  <version>1.21.11-rc3-R0.1-SNAPSHOT</version>
+  <version>1.21.11-R0.1-SNAPSHOT</version>
 </dependency>
 ```
 
