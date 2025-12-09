@@ -1,5 +1,13 @@
 --- a/net/minecraft/network/Connection.java
 +++ b/net/minecraft/network/Connection.java
+@@ -62,6 +_,7 @@
+     public static final Marker PACKET_MARKER = Util.make(MarkerFactory.getMarker("NETWORK_PACKETS"), marker -> marker.add(ROOT_MARKER));
+     public static final Marker PACKET_RECEIVED_MARKER = Util.make(MarkerFactory.getMarker("PACKET_RECEIVED"), marker -> marker.add(PACKET_MARKER));
+     public static final Marker PACKET_SENT_MARKER = Util.make(MarkerFactory.getMarker("PACKET_SENT"), marker -> marker.add(PACKET_MARKER));
++    private static final net.gommehd.cheetah.network.packet.PacketProcessor PACKET_PROCESSOR = new net.gommehd.cheetah.network.packet.DefaultPacketProcessor(); // Cheetah - Packet listener api
+     private static final ProtocolInfo<ServerHandshakePacketListener> INITIAL_PROTOCOL = HandshakeProtocols.SERVERBOUND;
+     private final PacketFlow receiving;
+     private volatile boolean sendLoginDisconnect = true;
 @@ -188,7 +_,7 @@
  
                      if (player != null) player.quitReason = org.bukkit.event.player.PlayerQuitEvent.QuitReason.ERRONEOUS_STATE; // Paper - Add API for quit reason
@@ -9,3 +17,52 @@
                          boolean doesDisconnectExist = this.packetListener.protocol() != ConnectionProtocol.STATUS && this.packetListener.protocol() != ConnectionProtocol.HANDSHAKING; // Paper
                          if (this.getSending() == PacketFlow.CLIENTBOUND && doesDisconnectExist) { // Paper
                              Packet<?> packet = (Packet<?>)(this.sendLoginDisconnect
+@@ -285,6 +_,13 @@
+     }
+ 
+     private static <T extends PacketListener> void genericsFtw(Packet<T> packet, PacketListener listener) {
++        // Cheetah start - Packet listener api
++        Connection connection = net.gommehd.cheetah.network.packet.ConnectionHelper.getCurrentConnection(listener);
++        packet = PACKET_PROCESSOR.processInbound(packet, connection);
++        if (packet == null) {
++            return; // Packet was cancelled
++        }
++        // Cheetah end - Packet listener api
+         packet.handle((T)listener);
+     }
+ 
+@@ -444,11 +_,24 @@
+     }
+ 
+     private void sendPacket(Packet<?> packet, @Nullable ChannelFutureListener sendListener, boolean flush) {
++        // Cheetah start - Packet listener api
++        packet = PACKET_PROCESSOR.processOutbound(packet, this);
++        if (packet == null) {
++            // Packet was cancelled - handle cleanup
++            if (sendListener != null) {
++                io.netty.channel.ChannelFuture completedFuture = this.channel.newSucceededFuture();
++                completedFuture.addListener(sendListener);
++            }
++            return;
++        }
++        final Packet<?> finalPacket = packet;
++        // Cheetah end - Packet listener api
++
+         this.sentPackets++;
+         if (this.channel.eventLoop().inEventLoop()) {
+-            this.doSendPacket(packet, sendListener, flush);
++            this.doSendPacket(finalPacket, sendListener, flush); // Cheetah - Packet listener api
+         } else {
+-            this.channel.eventLoop().execute(() -> this.doSendPacket(packet, sendListener, flush));
++            this.channel.eventLoop().execute(() -> this.doSendPacket(finalPacket, sendListener, flush)); // Cheetah - Packet listener api
+         }
+     }
+ 
+@@ -477,6 +_,7 @@
+         }
+         } catch (final Exception e) {
+             LOGGER.error("NetworkException: {}", player, e);
++            PACKET_PROCESSOR.notifyError(packet, e, this); // Cheetah - Packet listener api
+             this.disconnect(Component.translatable("disconnect.genericReason", "Internal Exception: " + e.getMessage()));
+             packet.onPacketDispatchFinish(player, null);
+         }
