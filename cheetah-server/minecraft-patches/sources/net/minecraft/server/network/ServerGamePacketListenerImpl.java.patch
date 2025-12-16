@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2294,12 +_,23 @@
+@@ -2287,12 +_,23 @@
      }
  
      @Override
@@ -25,7 +25,7 @@
          // CraftBukkit end
          Optional<LastSeenMessages> optional = this.unpackAndApplyLastSeen(packet.lastSeenMessages());
          if (!optional.isEmpty()) {
-@@ -2312,6 +_,13 @@
+@@ -2305,6 +_,13 @@
                      return;
                  }
  
@@ -39,7 +39,7 @@
                  CompletableFuture<FilteredText> completableFuture = this.filterTextPacket(signedMessage.signedContent()).thenApplyAsync(java.util.function.Function.identity(), this.server.chatExecutor); // CraftBukkit - async chat
                  CompletableFuture<Component> componentFuture = this.server.getChatDecorator().decorate(this.player, null, signedMessage.decoratedContent()); // Paper - Adventure
  
-@@ -2364,8 +_,23 @@
+@@ -2357,8 +_,23 @@
  
      @Override
      public void handleSignedChatCommand(ServerboundChatCommandSignedPacket packet) {
@@ -63,7 +63,7 @@
              this.tryHandleChat(packet.command(), true, () -> {
                  // CraftBukkit start - SPIGOT-7346: Prevent disconnected players from executing commands
                  if (this.player.hasDisconnected()) {
-@@ -2476,9 +_,20 @@
+@@ -2469,9 +_,20 @@
          return new SignedMessageChain.DecodeException(INVALID_COMMAND_SIGNATURE);
      }
  
