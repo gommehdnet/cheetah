@@ -1,0 +1,10 @@
+--- a/net/minecraft/world/inventory/TransientCraftingContainer.java
++++ b/net/minecraft/world/inventory/TransientCraftingContainer.java
+@@ -130,6 +_,7 @@
+ 
+     @Override
+     public void setChanged() {
++        this.menu.slotsChanged(this); // Cheetah - Fix PrepareItemCraftEvent not being fired
+     }
+ 
+     @Override
