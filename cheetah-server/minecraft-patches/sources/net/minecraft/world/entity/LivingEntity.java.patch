@@ -21,6 +21,34 @@
          LivingEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS
      );
      private static final int PARTICLE_FREQUENCY_WHEN_INVISIBLE = 15;
+@@ -1127,8 +_,12 @@
+             boolean flag = false;
+             // CraftBukkit start
+             boolean override = false;
++            // Cheetah start - Properly update hidden effects; Remove when #13173 was merged
++            boolean addAsHiddenEffect = false;
+             if (mobEffectInstance != null) {
+                 override = new MobEffectInstance(mobEffectInstance).update(effectInstance);
++                addAsHiddenEffect = mobEffectInstance.getAmplifier() > effectInstance.getAmplifier() && mobEffectInstance.isShorterDurationThan(effectInstance);
++            // Cheetah end - Properly update hidden effects; Remove when #13173 was merged
+             }
+ 
+             if (fireEvent) { // Paper - Don't fire sync event during generation
+@@ -1149,6 +_,14 @@
+                 mobEffectInstance.update(effectInstance);
+                 this.onEffectUpdated(mobEffectInstance, true, entity);
+                 flag = true;
++                // Cheetah start - Properly update hidden effects; Remove when #13173 was merged
++            } else if (addAsHiddenEffect) {
++                if (mobEffectInstance.hiddenEffect == null) {
++                    mobEffectInstance.hiddenEffect = new MobEffectInstance(effectInstance);
++                } else {
++                    mobEffectInstance.hiddenEffect.update(effectInstance);
++                }
++                // Cheetah end - Properly update hidden effects; Remove when #13173 was merged
+             }
+ 
+             effectInstance.onEffectStarted(this);
 @@ -1913,6 +_,20 @@
              return false;
          }
