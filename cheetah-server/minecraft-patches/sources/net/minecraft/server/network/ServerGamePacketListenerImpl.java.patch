@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2147,12 +_,23 @@
+@@ -2254,12 +_,23 @@
      }
  
      @Override
@@ -17,15 +17,15 @@
 +        // but the server will ignore the chat message, i.e. no events are called, it is not logged, and no player will see the message
 +        final ServerboundChatPacket packet;
 +        if (cancelled)  {
-+            packet = new ServerboundChatPacket(originalPacket.message(), originalPacket.timeStamp(), originalPacket.salt(), originalPacket.signature(), new LastSeenMessages.Update(originalPacket.lastSeenMessages().offset() == Integer.MIN_VALUE ? 0 : -originalPacket.lastSeenMessages().offset(), originalPacket.lastSeenMessages().acknowledged())); // Restore the correct offset (copy packet here, packet itself is immutable record)
++            packet = new ServerboundChatPacket(originalPacket.message(), originalPacket.timeStamp(), originalPacket.salt(), originalPacket.signature(), new LastSeenMessages.Update(originalPacket.lastSeenMessages().offset() == Integer.MIN_VALUE ? 0 : -originalPacket.lastSeenMessages().offset(), originalPacket.lastSeenMessages().acknowledged(), originalPacket.lastSeenMessages().checksum())); // Restore the correct offset (copy packet here, packet itself is immutable record)
 +        } else {
 +            packet = originalPacket;
 +        }
-+        // Cheetah end
++        // Cheetah end  - Do not break message chain if proxy cancels a chat message
          // CraftBukkit end
          Optional<LastSeenMessages> optional = this.unpackAndApplyLastSeen(packet.lastSeenMessages());
          if (!optional.isEmpty()) {
-@@ -2165,6 +_,13 @@
+@@ -2272,6 +_,13 @@
                      return;
                  }
  
@@ -34,12 +34,12 @@
 +                    LOGGER.info("Skipping message of " + player.getScoreboardName() + ": '" + signedMessage.signedContent() + " because it was cancelled by BungeeCord.");
 +                    return;
 +                }
-+                // Cheetah end
++                // Cheetah end - Do not break message chain if proxy cancels a chat message
 +
-                 CompletableFuture<FilteredText> completableFuture = this.filterTextPacket(signedMessage.signedContent()).thenApplyAsync(Function.identity(), this.server.chatExecutor); // CraftBukkit - async chat
+                 CompletableFuture<FilteredText> completableFuture = this.filterTextPacket(signedMessage.signedContent()).thenApplyAsync(java.util.function.Function.identity(), this.server.chatExecutor); // CraftBukkit - async chat
                  CompletableFuture<Component> componentFuture = this.server.getChatDecorator().decorate(this.player, null, signedMessage.decoratedContent()); // Paper - Adventure
  
-@@ -2217,8 +_,23 @@
+@@ -2324,8 +_,23 @@
  
      @Override
      public void handleSignedChatCommand(ServerboundChatCommandSignedPacket packet) {
@@ -47,11 +47,11 @@
 +        boolean cancelled = packet.lastSeenMessages().offset() < 0; // Same behavior as for ServerboundChatPacket
 +        ServerboundChatCommandSignedPacket packet1;
 +        if (cancelled) {
-+            packet1 = new ServerboundChatCommandSignedPacket(packet.command(), packet.timeStamp(), packet.salt(), packet.argumentSignatures(), new LastSeenMessages.Update(packet.lastSeenMessages().offset() == Integer.MIN_VALUE ? 0 : -packet.lastSeenMessages().offset(), packet.lastSeenMessages().acknowledged())); // Restore the correct offset (copy packet here, packet itself is immutable record)
++            packet1 = new ServerboundChatCommandSignedPacket(packet.command(), packet.timeStamp(), packet.salt(), packet.argumentSignatures(), new LastSeenMessages.Update(packet.lastSeenMessages().offset() == Integer.MIN_VALUE ? 0 : -packet.lastSeenMessages().offset(), packet.lastSeenMessages().acknowledged(), packet.lastSeenMessages().checksum())); // Restore the correct offset (copy packet here, packet itself is immutable record)
 +        } else {
 +            packet1 = packet;
 +        }
-+        // Cheetah end
++        // Cheetah end - Do not break message chain if proxy cancels a chat message
          Optional<LastSeenMessages> optional = this.unpackAndApplyLastSeen(packet.lastSeenMessages());
          if (!optional.isEmpty()) {
 +            // Cheetah start - Do not break message chain if proxy cancels a chat message
@@ -59,11 +59,11 @@
 +                LOGGER.info("Skipping command of " + player.getScoreboardName() + ": '" + packet1.command() + " because it was cancelled by BungeeCord.");
 +                return;
 +            }
-+            // Cheetah end
-             this.tryHandleChat(packet.command(), () -> {
++            // Cheetah end - Do not break message chain if proxy cancels a chat message
+             this.tryHandleChat(packet.command(), true, () -> {
                  // CraftBukkit start - SPIGOT-7346: Prevent disconnected players from executing commands
                  if (this.player.hasDisconnected()) {
-@@ -2327,9 +_,20 @@
+@@ -2436,9 +_,20 @@
          return new SignedMessageChain.DecodeException(INVALID_COMMAND_SIGNATURE);
      }
  
@@ -76,7 +76,7 @@
 +        split[0] = split[0].toLowerCase();
 +        return String.join(" ", split);
 +    }
-+    // Cheetah end
++    // Cheetah end - Support case insensitive commands
 +
      private ParseResults<CommandSourceStack> parseCommand(String command) {
          CommandDispatcher<CommandSourceStack> dispatcher = this.server.getCommands().getDispatcher();
@@ -84,4 +84,4 @@
 +        return dispatcher.parse(commandToLower(command), this.player.createCommandSourceStack()); // Cheetah - Support case insensitive commands
      }
  
-     private void tryHandleChat(String message, Runnable handler, boolean sync) { // CraftBukkit
+     private void tryHandleChat(String message, boolean bypassHiddenChat, Runnable handler, boolean sync) { // CraftBukkit

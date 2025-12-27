@@ -1,11 +1,11 @@
 --- a/net/minecraft/world/level/chunk/ChunkGenerator.java
 +++ b/net/minecraft/world/level/chunk/ChunkGenerator.java
-@@ -132,7 +_,7 @@
-         final org.bukkit.Location origin = io.papermc.paper.util.MCUtil.toLocation(level, pos);
-         final List<org.bukkit.generator.structure.Structure> apiStructures = structure.stream().map(Holder::value).map(nms -> org.bukkit.craftbukkit.generator.structure.CraftStructure.minecraftToBukkit(nms)).toList();
-         if (!apiStructures.isEmpty()) {
--            final io.papermc.paper.event.world.StructuresLocateEvent event = new io.papermc.paper.event.world.StructuresLocateEvent(bukkitWorld, origin, apiStructures, searchRadius, skipKnownStructures);
-+            final io.papermc.paper.event.world.StructuresLocateEvent event = new io.papermc.paper.event.world.StructuresLocateEvent(bukkitWorld, origin, apiStructures, searchRadius, skipKnownStructures, !io.papermc.paper.util.MCUtil.isMainThread()); // Cheetah - added async parameter
-             if (!event.callEvent()) {
-                 return null;
-             }
+@@ -135,7 +_,7 @@
+             final org.bukkit.Location origin = org.bukkit.craftbukkit.util.CraftLocation.toBukkit(pos, level);
+             final List<org.bukkit.generator.structure.Structure> apiStructures = structure.stream().map(Holder::value).map(nms -> org.bukkit.craftbukkit.generator.structure.CraftStructure.minecraftToBukkit(nms)).toList();
+             if (!apiStructures.isEmpty()) {
+-                final io.papermc.paper.event.world.StructuresLocateEvent event = new io.papermc.paper.event.world.StructuresLocateEvent(bukkitWorld, origin, apiStructures, radius, skipKnownStructures);
++                final io.papermc.paper.event.world.StructuresLocateEvent event = new io.papermc.paper.event.world.StructuresLocateEvent(bukkitWorld, origin, apiStructures, radius, skipKnownStructures, !io.papermc.paper.util.MCUtil.isMainThread()); // Cheetah - added async parameter
+                 if (!event.callEvent()) {
+                     return null;
+                 }

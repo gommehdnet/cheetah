@@ -1,0 +1,22 @@
+--- a/src/main/java/org/bukkit/Bukkit.java
++++ b/src/main/java/org/bukkit/Bukkit.java
+@@ -2425,6 +_,19 @@
+         return server.getEntity(uuid);
+     }
+ 
++    // Cheetah start - get entity accessor by id
++    /**
++     * Gets an entity on the server by its UUID
++     *
++     * @param entityId the id of the entity
++     * @return the entity with the given id, or null if it isn't found
++     */
++    @Nullable
++    public static Entity getEntity(@NotNull Integer entityId) {
++        return server.getEntity(entityId);
++    }
++    // Cheetah end - get entity accessor by id
++
+     // Paper start
+     /**
+      * Gets the current server TPS

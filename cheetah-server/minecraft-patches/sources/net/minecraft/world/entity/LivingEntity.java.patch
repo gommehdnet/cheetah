@@ -1,27 +1,36 @@
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -187,15 +_,15 @@
-     protected static final int LIVING_ENTITY_FLAG_IS_USING = 1;
-     protected static final int LIVING_ENTITY_FLAG_OFF_HAND = 2;
-     public static final int LIVING_ENTITY_FLAG_SPIN_ATTACK = 4;
--    protected static final EntityDataAccessor<Byte> DATA_LIVING_ENTITY_FLAGS = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.BYTE);
-+    public static final EntityDataAccessor<Byte> DATA_LIVING_ENTITY_FLAGS = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.BYTE);
-     public static final EntityDataAccessor<Float> DATA_HEALTH_ID = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.FLOAT);
--    private static final EntityDataAccessor<List<ParticleOptions>> DATA_EFFECT_PARTICLES = SynchedEntityData.defineId(
-+    public static final EntityDataAccessor<List<ParticleOptions>> DATA_EFFECT_PARTICLES = SynchedEntityData.defineId(
-         LivingEntity.class, EntityDataSerializers.PARTICLES
-     );
--    private static final EntityDataAccessor<Boolean> DATA_EFFECT_AMBIENCE_ID = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.BOOLEAN);
-+    public static final EntityDataAccessor<Boolean> DATA_EFFECT_AMBIENCE_ID = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.BOOLEAN);
-     public static final EntityDataAccessor<Integer> DATA_ARROW_COUNT_ID = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.INT);
--    private static final EntityDataAccessor<Integer> DATA_STINGER_COUNT_ID = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.INT);
--    private static final EntityDataAccessor<Optional<BlockPos>> SLEEPING_POS_ID = SynchedEntityData.defineId(
-+    public static final EntityDataAccessor<Integer> DATA_STINGER_COUNT_ID = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.INT);
-+    public static final EntityDataAccessor<Optional<BlockPos>> SLEEPING_POS_ID = SynchedEntityData.defineId(
-         LivingEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS
-     );
-     private static final int PARTICLE_FREQUENCY_WHEN_INVISIBLE = 15;
-@@ -1913,6 +_,20 @@
+@@ -1411,6 +_,29 @@
+         return this.getHealth() <= 0.0F;
+     }
+ 
++    // Cheetah start - re-add isDamageSourceBlocked method
++    public boolean isDamageSourceBlocked(DamageSource damageSource) {
++        Entity directEntity = damageSource.getDirectEntity();
++        boolean flag = false;
++        if (directEntity instanceof AbstractArrow abstractArrow && abstractArrow.getPierceLevel() > 0) {
++            flag = true;
++        }
++
++        ItemStack itemBlockingWith = this.getItemBlockingWith();
++        if (!damageSource.is(DamageTypeTags.BYPASSES_SHIELD) && itemBlockingWith != null && itemBlockingWith.getItem() instanceof net.minecraft.world.item.ShieldItem && !flag) {
++            Vec3 sourcePosition = damageSource.getSourcePosition();
++            if (sourcePosition != null) {
++                Vec3 vec3 = this.calculateViewVector(0.0F, this.getYHeadRot());
++                Vec3 vec31 = sourcePosition.vectorTo(this.position());
++                vec31 = new Vec3(vec31.x, 0.0, vec31.z).normalize();
++                return vec31.dot(vec3) < 0.0;
++            }
++        }
++
++        return false;
++    }
++    // Cheetah end - re-add isDamageSourceBlocked method
++
+     @Override
+     public boolean hurtServer(ServerLevel level, DamageSource damageSource, float amount) {
+         if (this.isInvulnerableTo(level, damageSource)) {
+@@ -2069,6 +_,20 @@
              return false;
          }
      }

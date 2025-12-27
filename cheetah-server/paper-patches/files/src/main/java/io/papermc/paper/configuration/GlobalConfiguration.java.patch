@@ -1,10 +1,10 @@
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -354,6 +_,7 @@
+@@ -338,6 +_,7 @@
          public IntOr.Default compressionLevel = IntOr.Default.USE_DEFAULT;
          @Comment("Defines the leniency distance added on the server to the interaction range of a player when validating interact packets.")
          public DoubleOr.Default clientInteractionLeniencyDistance = DoubleOr.Default.USE_DEFAULT;
 +        public boolean enableElytraInEndCities = true; // Cheetah - Added option to disable elytra in end cities
-     }
- 
-     public BlockUpdates blockUpdates;
+         @Comment("Defines how many orbs groups can exist in an area.")
+         @Constraints.Min(1)
+         public IntOr.Default xpOrbGroupsPerArea = IntOr.Default.USE_DEFAULT;

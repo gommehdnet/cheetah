@@ -1,16 +1,16 @@
 --- a/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/PlayerPreLoginEvent.java
-@@ -31,6 +_,7 @@
+@@ -33,6 +_,7 @@
      private final String name;
      private final InetAddress ipAddress;
      private final UUID uniqueId;
 +    private boolean skipLog; // Cheetah - Allow skipping log messages for canceled login events
+     private Result result;
+     private Component message;
  
-     @Deprecated(since = "1.7.5", forRemoval = true)
-     public PlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress) {
-@@ -177,6 +_,16 @@
-     public UUID getUniqueId() {
-         return uniqueId;
+@@ -184,6 +_,16 @@
+     public static HandlerList getHandlerList() {
+         return HANDLER_LIST;
      }
 +
 +    // Cheetah start - Allow skipping log messages for canceled login events
@@ -21,7 +21,7 @@
 +    public void setSkipLog(boolean skipLog) {
 +        this.skipLog = skipLog;
 +    }
-+    // Cheetah end
++    // Cheetah end - Allow skipping log messages for canceled login events
  
-     @NotNull
-     public static HandlerList getHandlerList() {
+     /**
+      * Basic kick reasons for communicating to plugins

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-@@ -36,6 +_,7 @@
+@@ -38,6 +_,7 @@
      public int cooldownTime = -1;
      private long tickedGameTime;
      private Direction facing;
@@ -8,7 +8,7 @@
  
      // CraftBukkit start - add fields and methods
      public List<org.bukkit.entity.HumanEntity> transaction = new java.util.ArrayList<>();
-@@ -67,6 +_,15 @@
+@@ -73,6 +_,16 @@
      }
      // CraftBukkit end
  
@@ -20,35 +20,32 @@
 +    public void setHopperTransferMultiplier(float hopperTransferMultiplier) {
 +        this.hopperTransferMultiplier = hopperTransferMultiplier;
 +    }
-+    // Cheetah end
- 
++    // Cheetah end - Configurable hopper transfer multiplier
++
      public HopperBlockEntity(BlockPos pos, BlockState blockState) {
          super(BlockEntityType.HOPPER, pos, blockState);
-@@ -82,6 +_,11 @@
+         this.facing = blockState.getValue(HopperBlock.FACING);
+@@ -87,6 +_,7 @@
          }
  
-         this.cooldownTime = tag.getInt("TransferCooldown");
-+        // Cheetah start - Configurable hopper transfer multiplier
-+        if (tag.contains("TransferMultiplier")) {
-+            this.hopperTransferMultiplier = tag.getFloat("TransferMultiplier");
-+        }
-+        // Cheetah end
+         this.cooldownTime = input.getIntOr("TransferCooldown", -1);
++        this.hopperTransferMultiplier = input.getFloatOr("TransferMultiplier", 1.0F); // Cheetah - Configurable hopper transfer multiplier
      }
  
      @Override
-@@ -92,6 +_,11 @@
+@@ -97,6 +_,11 @@
          }
  
-         tag.putInt("TransferCooldown", this.cooldownTime);
+         output.putInt("TransferCooldown", this.cooldownTime);
 +        // Cheetah start - Configurable hopper transfer multiplier
 +        if (this.hopperTransferMultiplier != 1.0F) {
-+            tag.putFloat("TransferMultiplier", this.hopperTransferMultiplier);
++            output.putFloat("TransferMultiplier", this.hopperTransferMultiplier);
 +        }
-+        // Cheetah end
++        // Cheetah end - Configurable hopper transfer multiplier
      }
  
      @Override
-@@ -228,7 +_,7 @@
+@@ -233,7 +_,7 @@
                  ItemStack movedItem = origItemStack;
  
                  final int originalItemCount = origItemStack.getCount();
@@ -57,7 +54,7 @@
                  origItemStack.setCount(movedItemCount);
  
                  // We only need to fire the event once to give protection plugins a chance to cancel this event
-@@ -265,7 +_,7 @@
+@@ -270,7 +_,7 @@
      private static boolean hopperPull(final Level level, final Hopper hopper, final Container container, ItemStack origItemStack, final int i) {
          ItemStack movedItem = origItemStack;
          final int originalItemCount = origItemStack.getCount();

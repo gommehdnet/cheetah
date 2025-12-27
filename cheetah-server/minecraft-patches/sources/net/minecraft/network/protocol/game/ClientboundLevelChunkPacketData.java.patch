@@ -1,0 +1,41 @@
+--- a/net/minecraft/network/protocol/game/ClientboundLevelChunkPacketData.java
++++ b/net/minecraft/network/protocol/game/ClientboundLevelChunkPacketData.java
+@@ -153,6 +_,12 @@
+         return this.heightmaps;
+     }
+ 
++    // Cheetah start - Expose block entities data
++    public List<ClientboundLevelChunkPacketData.BlockEntityInfo> getBlockEntitiesData() {
++        return this.blockEntitiesData;
++    }
++    // Cheetah end - Expose block entities data
++
+     public static class BlockEntityInfo {
+         public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundLevelChunkPacketData.BlockEntityInfo> STREAM_CODEC = StreamCodec.ofMember(
+             ClientboundLevelChunkPacketData.BlockEntityInfo::write, ClientboundLevelChunkPacketData.BlockEntityInfo::new
+@@ -186,6 +_,25 @@
+             ByteBufCodecs.registry(Registries.BLOCK_ENTITY_TYPE).encode(buffer, this.type);
+             buffer.writeNbt(this.tag);
+         }
++
++        // Cheetah start - add getter
++        public int getPackedXZ() {
++            return this.packedXZ;
++        }
++
++        public int getY() {
++            return this.y;
++        }
++
++        public BlockEntityType<?> getType() {
++            return this.type;
++        }
++
++        @Nullable
++        public CompoundTag getTag() {
++            return this.tag;
++        }
++        // Cheetah end - add getter
+ 
+         static ClientboundLevelChunkPacketData.BlockEntityInfo create(BlockEntity blockEntity) {
+             CompoundTag updateTag = blockEntity.getUpdateTag(blockEntity.getLevel().registryAccess());

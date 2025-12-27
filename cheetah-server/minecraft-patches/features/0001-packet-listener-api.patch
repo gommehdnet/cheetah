@@ -1,0 +1,74 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jendrik Eggers <jendrikeggerskapp@web.de>
+Date: Thu, 2 Oct 2025 12:40:21 +0200
+Subject: [PATCH] packet listener api
+
+
+diff --git a/net/minecraft/network/Connection.java b/net/minecraft/network/Connection.java
+index 03488cb6bd0e812d473256475777f392866eaae8..26537dc55bb1767a2f448691048e91b3f7f9d60f 100644
+--- a/net/minecraft/network/Connection.java
++++ b/net/minecraft/network/Connection.java
+@@ -72,6 +72,10 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+     public static final Marker PACKET_MARKER = Util.make(MarkerFactory.getMarker("NETWORK_PACKETS"), marker -> marker.add(ROOT_MARKER));
+     public static final Marker PACKET_RECEIVED_MARKER = Util.make(MarkerFactory.getMarker("PACKET_RECEIVED"), marker -> marker.add(PACKET_MARKER));
+     public static final Marker PACKET_SENT_MARKER = Util.make(MarkerFactory.getMarker("PACKET_SENT"), marker -> marker.add(PACKET_MARKER));
++    // Cheetah start - packet listener api
++    private static final net.gommehd.cheetah.network.packet.PacketProcessor PACKET_PROCESSOR =
++        new net.gommehd.cheetah.network.packet.DefaultPacketProcessor();
++    // Cheetah end - packet listener api
+     public static final Supplier<NioEventLoopGroup> NETWORK_WORKER_GROUP = Suppliers.memoize(
+         () -> new NioEventLoopGroup(0, new ThreadFactoryBuilder().setNameFormat("Netty Client IO #%d").setDaemon(true).setUncaughtExceptionHandler(new net.minecraft.DefaultUncaughtExceptionHandlerWithName(LOGGER)).build()) // Paper
+     );
+@@ -308,7 +312,15 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+         }
+     }
+ 
++    @SuppressWarnings("unchecked")
+     private static <T extends PacketListener> void genericsFtw(Packet<T> packet, PacketListener listener) {
++        // Cheetah start - packet listener api
++        Connection connection = net.gommehd.cheetah.network.packet.ConnectionHelper.getCurrentConnection(listener);
++        packet = PACKET_PROCESSOR.processInbound(packet, connection);
++        if (packet == null) {
++            return; // Packet was cancelled
++        }
++        // Cheetah end - packet listener api
+         packet.handle((T)listener);
+     }
+ 
+@@ -468,11 +480,24 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+     }
+ 
+     private void sendPacket(Packet<?> packet, @Nullable ChannelFutureListener sendListener, boolean flush) {
++        // Cheetah start - packet listener api
++        packet = PACKET_PROCESSOR.processOutbound(packet, this);
++        if (packet == null) {
++            // Packet was cancelled - handle cleanup
++            if (sendListener != null) {
++                io.netty.channel.ChannelFuture completedFuture = this.channel.newSucceededFuture();
++                completedFuture.addListener(sendListener);
++            }
++            return;
++        }
++        final Packet<?> finalPacket = packet;
++        // Cheetah end - packet listener api
++
+         this.sentPackets++;
+         if (this.channel.eventLoop().inEventLoop()) {
+-            this.doSendPacket(packet, sendListener, flush);
++            this.doSendPacket(finalPacket, sendListener, flush); // Cheetah - packet listener api
+         } else {
+-            this.channel.eventLoop().execute(() -> this.doSendPacket(packet, sendListener, flush));
++            this.channel.eventLoop().execute(() -> this.doSendPacket(finalPacket, sendListener, flush)); // Cheetah - packet listener api
+         }
+     }
+ 
+@@ -501,6 +526,9 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+         }
+         } catch (final Exception e) {
+             LOGGER.error("NetworkException: {}", player, e);
++
++            PACKET_PROCESSOR.notifyError(packet, e, this); // Cheetah - packet listener api
++
+             this.disconnect(Component.translatable("disconnect.genericReason", "Internal Exception: " + e.getMessage()));
+             packet.onPacketDispatchFinish(player, null);
+         }

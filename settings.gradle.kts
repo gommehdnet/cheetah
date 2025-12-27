@@ -7,9 +7,11 @@ pluginManagement {
 }
 
 plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-rootProject.name = "cheetah-1.21.4"
+rootProject.name = "cheetah"
 
-include("cheetah-api", "cheetah-server")
+include("cheetah-api")
+include("cheetah-server")
+include("test-plugin")

@@ -9,5 +9,5 @@
 +    default float getHopperTransferMultiplier() {
 +        return 1.0F;
 +    }
-+    // Cheetah end
++    // Cheetah end - Configurable hopper transfer multiplier
  }

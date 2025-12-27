@@ -27,6 +27,6 @@
 +    default void resetTransferMultiplier() {
 +        this.setTransferMultiplier(0F);
 +    }
-+    // Cheetah end
++    // Cheetah end - API for configurable hopper transfer rates
  }
 -
