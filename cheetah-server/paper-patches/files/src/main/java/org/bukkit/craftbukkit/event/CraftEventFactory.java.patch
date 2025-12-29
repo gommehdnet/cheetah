@@ -28,7 +28,7 @@
      public static ProjectileLaunchEvent callProjectileLaunchEvent(Entity entity) {
          Projectile bukkitEntity = (Projectile) entity.getBukkitEntity();
          ProjectileLaunchEvent event = new ProjectileLaunchEvent(bukkitEntity);
-@@ -2284,26 +_,27 @@
+@@ -2288,26 +_,27 @@
      }
  
      @SuppressWarnings("OptionalAssignedToNull")
