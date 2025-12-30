@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -1411,6 +_,29 @@
+@@ -1423,6 +_,29 @@
          return this.getHealth() <= 0.0F;
      }
  
@@ -30,7 +30,7 @@
      @Override
      public boolean hurtServer(ServerLevel level, DamageSource damageSource, float amount) {
          if (this.isInvulnerableTo(level, damageSource)) {
-@@ -2068,6 +_,20 @@
+@@ -2080,6 +_,20 @@
              return false;
          }
      }
