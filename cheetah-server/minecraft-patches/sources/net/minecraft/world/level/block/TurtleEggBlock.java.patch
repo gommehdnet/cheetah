@@ -7,5 +7,5 @@
 -            if (hatchValue < 2) {
 +            if (hatchValue < MAX_HATCH_LEVEL) { // Cheetah - Using MAX_HATCH_LEVEL instead of a magic number
                  // CraftBukkit start - Call BlockGrowEvent
-                 if (!org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockGrowEvent(level, pos, state.setValue(HATCH, hatchValue + 1), 2)) {
+                 if (!org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockGrowEvent(level, pos, state.setValue(HATCH, hatchValue + 1), Block.UPDATE_CLIENTS)) {
                      return;
