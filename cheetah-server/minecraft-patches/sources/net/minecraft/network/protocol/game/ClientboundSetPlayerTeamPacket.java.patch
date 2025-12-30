@@ -1,6 +1,6 @@
 --- a/net/minecraft/network/protocol/game/ClientboundSetPlayerTeamPacket.java
 +++ b/net/minecraft/network/protocol/game/ClientboundSetPlayerTeamPacket.java
-@@ -124,6 +_,12 @@
+@@ -125,6 +_,12 @@
          handler.handleSetPlayerTeamPacket(this);
      }
  
