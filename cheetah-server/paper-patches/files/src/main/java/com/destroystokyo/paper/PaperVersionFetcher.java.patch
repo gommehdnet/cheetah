@@ -1,90 +1,124 @@
 --- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-@@ -1,10 +_,7 @@
- package com.destroystokyo.paper;
- 
- import com.destroystokyo.paper.util.VersionFetcher;
--import com.google.common.io.Resources;
- import com.google.gson.Gson;
--import com.google.gson.JsonArray;
--import com.google.gson.JsonElement;
- import com.google.gson.JsonObject;
- import com.google.gson.JsonSyntaxException;
- import com.mojang.logging.LogUtils;
-@@ -16,8 +_,6 @@
- import java.net.URI;
- import java.nio.charset.StandardCharsets;
- import java.util.Optional;
--import java.util.OptionalInt;
--import java.util.stream.StreamSupport;
- import net.kyori.adventure.text.Component;
- import net.kyori.adventure.text.event.ClickEvent;
- import net.kyori.adventure.text.format.NamedTextColor;
-@@ -35,7 +_,7 @@
-     private static final Logger LOGGER = LogUtils.getClassLogger();
+@@ -40,8 +_,8 @@
+     private static final ComponentLogger COMPONENT_LOGGER = ComponentLogger.logger(LogManager.getRootLogger().getName());
      private static final int DISTANCE_ERROR = -1;
      private static final int DISTANCE_UNKNOWN = -2;
 -    private static final String DOWNLOAD_PAGE = "https://papermc.io/downloads/paper";
-+    private static final String DOWNLOAD_PAGE = "https://github.com/gommehdnet/cheetah";
- 
-     @Override
-     public long getCacheTime() {
-@@ -49,7 +_,7 @@
-         if (build.buildNumber().isEmpty() && build.gitCommit().isEmpty()) {
-             updateMessage = text("You are running a development version without access to version information", color(0xFF5300));
+-    private static final String REPOSITORY = "PaperMC/Paper";
++    private static final String DOWNLOAD_PAGE = "https://github.com/gommehdnet/cheetah"; // Cheetah - Build changes
++    private static final String REPOSITORY = "gommehdnet/cheetah"; // Cheetah - Build changes
+     private static final ServerBuildInfo BUILD_INFO;
+     private static final String USER_AGENT;
+     private static final Gson GSON = new Gson();
+@@ -76,54 +_,77 @@
+         if (buildNumber.isEmpty() && BUILD_INFO.gitCommit().isEmpty()) {
+             COMPONENT_LOGGER.warn(text("*** You are running a development version without access to version information ***"));
          } else {
--            updateMessage = getUpdateStatusMessage("PaperMC/Paper", build);
-+            updateMessage = getUpdateStatusMessage("gommehdnet/cheetah", build); // Cheetah - Build changes
+-            final Optional<MinecraftVersionFetcher> apiResult = fetchMinecraftVersionList();
+-            if (buildNumber.isPresent()) {
+-                distance = fetchDistanceFromSiteApi(buildNumber.getAsInt());
+-            } else {
+-                final Optional<String> gitBranch = BUILD_INFO.gitBranch();
+-                final Optional<String> gitCommit = BUILD_INFO.gitCommit();
+-                if (gitBranch.isPresent() && gitCommit.isPresent()) {
+-                    distance = fetchDistanceFromGitHub(gitBranch.get(), gitCommit.get());
+-                }
++            // Cheetah start - Build changes
++            final Optional<String> gitBranch = BUILD_INFO.gitBranch();
++            final Optional<String> gitCommit = BUILD_INFO.gitCommit();
++            if (gitBranch.isPresent() && gitCommit.isPresent()) {
++                distance = fetchDistanceFromGitHub(gitBranch.get(), gitCommit.get());
+             }
+ 
+             switch (distance) {
+                 case DISTANCE_ERROR -> COMPONENT_LOGGER.error(text("*** Error obtaining version information! Cannot fetch version info ***"));
+-                case 0 -> apiResult.ifPresent(result -> {
+-                    COMPONENT_LOGGER.warn(text("*************************************************************************************"));
+-                    COMPONENT_LOGGER.warn(text("You are running the latest build for your Minecraft version (" + BUILD_INFO.minecraftVersionId() + ")"));
+-                    COMPONENT_LOGGER.warn(text("However, you are " + result.distance() + " release(s) behind the latest stable release (" + result.latestVersion() + ")!"));
+-                    COMPONENT_LOGGER.warn(text("It is recommended that you update as soon as possible"));
+-                    COMPONENT_LOGGER.warn(text(DOWNLOAD_PAGE));
+-                    COMPONENT_LOGGER.warn(text("*************************************************************************************"));
+-                });
+                 case DISTANCE_UNKNOWN -> COMPONENT_LOGGER.warn(text("*** You are running an unknown version! Cannot fetch version info ***"));
+                 default -> {
+-                    if (apiResult.isPresent()) {
+-                        COMPONENT_LOGGER.warn(text("*** You are running an outdated version of Minecraft, which is " + apiResult.get().distance() + " release(s) and " + distance + " build(s) behind!"));
+-                        COMPONENT_LOGGER.warn(text("*** Please update to the latest stable version on " + DOWNLOAD_PAGE + " ***"));
+-                    } else {
+-                        COMPONENT_LOGGER.info(text("*** Currently you are " + distance + " build(s) behind ***"));
+-                        COMPONENT_LOGGER.info(text("*** It is highly recommended to download the latest build from " + DOWNLOAD_PAGE + " ***"));
+-                    }
++                    COMPONENT_LOGGER.info(text("*** Currently you are " + distance + " build(s) behind ***"));
++                    COMPONENT_LOGGER.info(text("*** It is highly recommended to download the latest build from " + DOWNLOAD_PAGE + " ***"));
+                 }
+             }
++            // final Optional<MinecraftVersionFetcher> apiResult = fetchMinecraftVersionList();
++            // if (buildNumber.isPresent()) {
++            //     distance = fetchDistanceFromSiteApi(buildNumber.getAsInt());
++            // } else {
++            //     final Optional<String> gitBranch = BUILD_INFO.gitBranch();
++            //     final Optional<String> gitCommit = BUILD_INFO.gitCommit();
++            //     if (gitBranch.isPresent() && gitCommit.isPresent()) {
++            //         distance = fetchDistanceFromGitHub(gitBranch.get(), gitCommit.get());
++            //     }
++            // }
++            //
++            // switch (distance) {
++            //     case DISTANCE_ERROR -> COMPONENT_LOGGER.error(text("*** Error obtaining version information! Cannot fetch version info ***"));
++            //     case 0 -> apiResult.ifPresent(result -> {
++            //         COMPONENT_LOGGER.warn(text("*************************************************************************************"));
++            //         COMPONENT_LOGGER.warn(text("You are running the latest build for your Minecraft version (" + BUILD_INFO.minecraftVersionId() + ")"));
++            //         COMPONENT_LOGGER.warn(text("However, you are " + result.distance() + " release(s) behind the latest stable release (" + result.latestVersion() + ")!"));
++            //         COMPONENT_LOGGER.warn(text("It is recommended that you update as soon as possible"));
++            //         COMPONENT_LOGGER.warn(text(DOWNLOAD_PAGE));
++            //         COMPONENT_LOGGER.warn(text("*************************************************************************************"));
++            //     });
++            //     case DISTANCE_UNKNOWN -> COMPONENT_LOGGER.warn(text("*** You are running an unknown version! Cannot fetch version info ***"));
++            //     default -> {
++            //         if (apiResult.isPresent()) {
++            //             COMPONENT_LOGGER.warn(text("*** You are running an outdated version of Minecraft, which is " + apiResult.get().distance() + " release(s) and " + distance + " build(s) behind!"));
++            //             COMPONENT_LOGGER.warn(text("*** Please update to the latest stable version on " + DOWNLOAD_PAGE + " ***"));
++            //         } else {
++            //             COMPONENT_LOGGER.info(text("*** Currently you are " + distance + " build(s) behind ***"));
++            //             COMPONENT_LOGGER.info(text("*** It is highly recommended to download the latest build from " + DOWNLOAD_PAGE + " ***"));
++            //         }
++            //     }
++            // }
++            // Cheetah end - Build changes
          }
-         final @Nullable Component history = this.getHistory();
- 
-@@ -59,15 +_,10 @@
-     private static Component getUpdateStatusMessage(final String repo, final ServerBuildInfo build) {
-         int distance = DISTANCE_ERROR;
- 
--        final OptionalInt buildNumber = build.buildNumber();
--        if (buildNumber.isPresent()) {
--            distance = fetchDistanceFromSiteApi(build, buildNumber.getAsInt());
--        } else {
--            final Optional<String> gitBranch = build.gitBranch();
--            final Optional<String> gitCommit = build.gitCommit();
--            if (gitBranch.isPresent() && gitCommit.isPresent()) {
--                distance = fetchDistanceFromGitHub(repo, gitBranch.get(), gitCommit.get());
--            }
-+        final Optional<String> gitBranch = build.gitBranch();
-+        final Optional<String> gitCommit = build.gitCommit();
-+        if (gitBranch.isPresent() && gitCommit.isPresent()) {
-+            distance = fetchDistanceFromGitHub(repo, gitBranch.get(), gitCommit.get());
-         }
- 
-         return switch (distance) {
-@@ -81,29 +_,6 @@
-                         .hoverEvent(text("Click to open", NamedTextColor.WHITE))
-                         .clickEvent(ClickEvent.openUrl(DOWNLOAD_PAGE))));
-         };
--    }
--
--    private static int fetchDistanceFromSiteApi(final ServerBuildInfo build, final int jenkinsBuild) {
--        try {
--            try (final BufferedReader reader = Resources.asCharSource(
--                URI.create("https://api.papermc.io/v2/projects/paper/versions/" + build.minecraftVersionId()).toURL(),
--                StandardCharsets.UTF_8
--            ).openBufferedStream()) {
--                final JsonObject json = new Gson().fromJson(reader, JsonObject.class);
--                final JsonArray builds = json.getAsJsonArray("builds");
--                final int latest = StreamSupport.stream(builds.spliterator(), false)
--                    .mapToInt(JsonElement::getAsInt)
--                    .max()
--                    .orElseThrow();
--                return latest - jenkinsBuild;
--            } catch (final JsonSyntaxException ex) {
--                LOGGER.error("Error parsing json from Paper's downloads API", ex);
--                return DISTANCE_ERROR;
--            }
--        } catch (final IOException e) {
--            LOGGER.error("Error while parsing version", e);
--            return DISTANCE_ERROR;
--        }
      }
  
-     // Contributed by Techcable <Techcable@outlook.com> in GH-65
+     private static Component getUpdateStatusMessage() {
+         int distance = DISTANCE_ERROR;
+ 
+-        final OptionalInt buildNumber = PaperVersionFetcher.BUILD_INFO.buildNumber();
+-        if (buildNumber.isPresent()) {
+-            distance = fetchDistanceFromSiteApi(buildNumber.getAsInt());
+-        } else {
+-            final Optional<String> gitBranch = PaperVersionFetcher.BUILD_INFO.gitBranch();
+-            final Optional<String> gitCommit = PaperVersionFetcher.BUILD_INFO.gitCommit();
+-            if (gitBranch.isPresent() && gitCommit.isPresent()) {
+-                distance = fetchDistanceFromGitHub(gitBranch.get(), gitCommit.get());
+-            }
++        // Cheetah start - Build changes
++        final Optional<String> gitBranch = PaperVersionFetcher.BUILD_INFO.gitBranch();
++        final Optional<String> gitCommit = PaperVersionFetcher.BUILD_INFO.gitCommit();
++        if (gitBranch.isPresent() && gitCommit.isPresent()) {
++            distance = fetchDistanceFromGitHub(gitBranch.get(), gitCommit.get());
+         }
++        // final OptionalInt buildNumber = PaperVersionFetcher.BUILD_INFO.buildNumber();
++        // if (buildNumber.isPresent()) {
++        //     distance = fetchDistanceFromSiteApi(buildNumber.getAsInt());
++        // } else {
++        //     final Optional<String> gitBranch = PaperVersionFetcher.BUILD_INFO.gitBranch();
++        //     final Optional<String> gitCommit = PaperVersionFetcher.BUILD_INFO.gitCommit();
++        //     if (gitBranch.isPresent() && gitCommit.isPresent()) {
++        //         distance = fetchDistanceFromGitHub(gitBranch.get(), gitCommit.get());
++        //     }
++        // }
++        // Cheetah end - Build changes
+ 
+         return switch (distance) {
+             case DISTANCE_ERROR -> text("Error obtaining version information", NamedTextColor.YELLOW);
