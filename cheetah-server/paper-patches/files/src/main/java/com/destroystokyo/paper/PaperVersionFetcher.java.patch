@@ -11,7 +11,7 @@
      private static final ServerBuildInfo BUILD_INFO;
      private static final String USER_AGENT;
      private static final Gson GSON = new Gson();
-@@ -76,54 +_,77 @@
+@@ -76,54 +_,78 @@
          if (buildNumber.isEmpty() && BUILD_INFO.gitCommit().isEmpty()) {
              COMPONENT_LOGGER.warn(text("*** You are running a development version without access to version information ***"));
          } else {
@@ -41,6 +41,7 @@
 -                    COMPONENT_LOGGER.warn(text(DOWNLOAD_PAGE));
 -                    COMPONENT_LOGGER.warn(text("*************************************************************************************"));
 -                });
++                case 0 -> {}
                  case DISTANCE_UNKNOWN -> COMPONENT_LOGGER.warn(text("*** You are running an unknown version! Cannot fetch version info ***"));
                  default -> {
 -                    if (apiResult.isPresent()) {
