@@ -12,14 +12,14 @@
                  if (!shieldDisableEvent.callEvent()) return;
                  player.getCooldowns().addCooldown(stack, shieldDisableEvent.getCooldown());
                  // Paper end
-+                playShieldBreakSound = !shieldDisableEvent.isCancelled(); // Cheetah - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
++                playShieldBreakSound = !shieldDisableEvent.isSoundCancelled(); // Cheetah - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
              }
  
              entity.stopUsingItem();
 +
 +            // Cheetah start - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
-+            if (playShieldBreakSound) {
-+                level.broadcastEntityEvent(entity, (byte) 30);
++            if (!playShieldBreakSound) {
++                return;
 +            }
 +            // Cheetah end - Suppress shield break sound if it was cancelled in the PlayerShieldDisableEvent
              this.disableSound
