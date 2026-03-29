@@ -1,17 +1,23 @@
 --- a/net/minecraft/world/entity/projectile/Projectile.java
 +++ b/net/minecraft/world/entity/projectile/Projectile.java
-@@ -394,6 +_,14 @@
+@@ -394,9 +_,18 @@
              if (owner instanceof net.minecraft.server.level.ServerPlayer) {
                  org.bukkit.entity.Entity collided = target.getBukkitEntity();
                  org.bukkit.entity.Player shooter = (org.bukkit.entity.Player) owner.getBukkitEntity();
+-                if (!shooter.canSee(collided)) {
+-                    return false;
 +                // Cheetah start - Add ProjectileAllowCollideWithPlayerEvent
 +                if (target instanceof net.minecraft.server.level.ServerPlayer) {
 +                    net.gommehd.cheetah.event.entity.ProjectileAllowCollideWithPlayerEvent allowCollideEvent = org.bukkit.craftbukkit.event.CraftEventFactory.callProjectileAllowCollideWithPlayerEvent(this, target);
 +                    if (!allowCollideEvent.isAllowCollide() && !shooter.canSee(collided)) {
 +                        return false;
 +                    }
-+                }
-+                // Cheetah end - Add ProjectileAllowCollideWithPlayerEvent
-                 if (!shooter.canSee(collided)) {
-                     return false;
++                } else {
++                    if (!shooter.canSee(collided)) {
++                        return false;
++                    }
                  }
++                // Cheetah end - Add ProjectileAllowCollideWithPlayerEvent
+             }
+             // Paper end - Cancel hit for vanished entities
+             return owner == null || this.leftOwner || !owner.isPassengerOfSameVehicle(target);
