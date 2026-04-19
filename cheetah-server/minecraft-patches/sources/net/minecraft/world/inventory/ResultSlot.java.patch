@@ -5,7 +5,7 @@
                  .getRecipeFor(RecipeType.CRAFTING, input, serverLevel, this.craftSlots.getCurrentRecipe()) // Paper - Perf: Improve mass crafting; check last recipe used first
                  .map(recipe -> recipe.value().getRemainingItems(input))
 -                .orElseGet(() -> copyAllInputItems(input))
-+                .orElseGet(() ->  CraftingRecipe.defaultCraftingReminder(input)) // Paper - Fix #1822: Return default remainder when recipe is null
++                .orElseGet(() -> CraftingRecipe.defaultCraftingReminder(input)) // Paper - Fix #1822: Return default remainder when recipe is null
              : CraftingRecipe.defaultCraftingReminder(input);
      }
  
