@@ -1,0 +1,36 @@
+--- a/src/main/java/com/destroystokyo/paper/profile/PaperMinecraftSessionService.java
++++ b/src/main/java/com/destroystokyo/paper/profile/PaperMinecraftSessionService.java
+@@ -11,6 +_,7 @@
+ import java.net.Proxy;
+ import java.util.Collections;
+ import java.util.UUID;
++import net.minecraft.server.players.NameAndId;
+ import org.jetbrains.annotations.Nullable;
+ 
+ public class PaperMinecraftSessionService extends YggdrasilMinecraftSessionService {
+@@ -19,7 +_,13 @@
+         super(servicesKeySet, proxy, environment);
+     }
+ 
+-    public @Nullable ProfileResult fetchProfile(GameProfile profile, final boolean requireSecure) {
++    @Override
++    @Deprecated
++    public @Nullable ProfileResult fetchProfile(final UUID profileId, final boolean requireSecure) {
++        GameProfile profile = new GameProfile(
++            profileId,
++            ""
++        );
+         CraftPlayerProfile playerProfile = (CraftPlayerProfile) CraftPlayerProfile.asBukkitCopy(profile);
+         new PreFillProfileEvent(playerProfile).callEvent();
+         profile = playerProfile.getGameProfile();
+@@ -33,10 +_,5 @@
+             result = new ProfileResult(CraftPlayerProfile.asAuthlibCopy(event.getPlayerProfile()), result.actions());
+         }
+         return result;
+-    }
+-
+-    @Override @Deprecated
+-    public @Nullable ProfileResult fetchProfile(final UUID profileId, final boolean requireSecure) {
+-        return super.fetchProfile(profileId, requireSecure);
+     }
+ }
