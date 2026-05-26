@@ -8,11 +8,12 @@
  import org.jetbrains.annotations.Nullable;
  
  public class PaperMinecraftSessionService extends YggdrasilMinecraftSessionService {
-@@ -19,7 +_,13 @@
+@@ -19,7 +_,14 @@
          super(servicesKeySet, proxy, environment);
      }
  
 -    public @Nullable ProfileResult fetchProfile(GameProfile profile, final boolean requireSecure) {
++    // Cheetah start - Call PreFillProfile and FillProfileEvent
 +    @Override
 +    @Deprecated
 +    public @Nullable ProfileResult fetchProfile(final UUID profileId, final boolean requireSecure) {
@@ -23,14 +24,14 @@
          CraftPlayerProfile playerProfile = (CraftPlayerProfile) CraftPlayerProfile.asBukkitCopy(profile);
          new PreFillProfileEvent(playerProfile).callEvent();
          profile = playerProfile.getGameProfile();
-@@ -33,10 +_,5 @@
-             result = new ProfileResult(CraftPlayerProfile.asAuthlibCopy(event.getPlayerProfile()), result.actions());
+@@ -34,9 +_,5 @@
          }
          return result;
--    }
+     }
 -
 -    @Override @Deprecated
 -    public @Nullable ProfileResult fetchProfile(final UUID profileId, final boolean requireSecure) {
 -        return super.fetchProfile(profileId, requireSecure);
-     }
+-    }
++    // Cheetah end - Call PreFillProfile and FillProfileEvent
  }
