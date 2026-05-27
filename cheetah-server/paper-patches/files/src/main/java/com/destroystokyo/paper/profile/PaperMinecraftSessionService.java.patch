@@ -1,6 +1,6 @@
 --- a/src/main/java/com/destroystokyo/paper/profile/PaperMinecraftSessionService.java
 +++ b/src/main/java/com/destroystokyo/paper/profile/PaperMinecraftSessionService.java
-@@ -19,7 +_,14 @@
+@@ -19,9 +_,19 @@
          super(servicesKeySet, proxy, environment);
      }
  
@@ -14,8 +14,14 @@
 +            ""
 +        );
          CraftPlayerProfile playerProfile = (CraftPlayerProfile) CraftPlayerProfile.asBukkitCopy(profile);
-         new PreFillProfileEvent(playerProfile).callEvent();
+-        new PreFillProfileEvent(playerProfile).callEvent();
++        final PreFillProfileEvent preFillProfileEvent = new PreFillProfileEvent(playerProfile);
++        preFillProfileEvent.callEvent();
++        playerProfile = (CraftPlayerProfile) preFillProfileEvent.getPlayerProfile();
++
          profile = playerProfile.getGameProfile();
+         if (profile.properties().containsKey("textures")) {
+             return new ProfileResult(profile, Collections.emptySet());
 @@ -34,9 +_,5 @@
          }
          return result;

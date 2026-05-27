@@ -1,0 +1,28 @@
+--- a/src/main/java/com/destroystokyo/paper/event/profile/PreFillProfileEvent.java
++++ b/src/main/java/com/destroystokyo/paper/event/profile/PreFillProfileEvent.java
+@@ -41,7 +_,7 @@
+ 
+     private static final HandlerList HANDLER_LIST = new HandlerList();
+ 
+-    private final PlayerProfile profile;
++    private PlayerProfile profile;
+ 
+     @ApiStatus.Internal
+     public PreFillProfileEvent(final PlayerProfile profile) {
+@@ -55,6 +_,16 @@
+     public PlayerProfile getPlayerProfile() {
+         return this.profile;
+     }
++
++    // Cheetah start
++    /**
++     * Sets the modified player profile
++     * @param profile the profile
++     */
++    public void setPlayerProfile(PlayerProfile profile) {
++        this.profile = profile.clone();
++    }
++    // Cheetah end
+ 
+     /**
+      * Sets the properties on the profile, avoiding the call to the Mojang API
