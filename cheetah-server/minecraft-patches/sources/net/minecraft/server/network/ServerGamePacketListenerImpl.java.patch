@@ -1,11 +1,11 @@
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2308,12 +_,23 @@
+@@ -2361,12 +_,23 @@
      }
  
      @Override
--    public void handleChat(ServerboundChatPacket packet) {
-+    public void handleChat(ServerboundChatPacket originalPacket) {
+-    public void handleChat(final ServerboundChatPacket packet) {
++    public void handleChat(final ServerboundChatPacket originalPacket) { // Cheetah - Do not break message chain if proxy cancels a chat message
          // CraftBukkit start - async chat
          // SPIGOT-3638
          if (this.server.isStopped()) {
@@ -16,33 +16,32 @@
 +        // We implement a little hack here: If the offset in the lastSeenMessages field is negative, the message will be correctly validated and the chat chain will be updated
 +        // but the server will ignore the chat message, i.e. no events are called, it is not logged, and no player will see the message
 +        final ServerboundChatPacket packet;
-+        if (cancelled)  {
++        if (cancelled) {
 +            packet = new ServerboundChatPacket(originalPacket.message(), originalPacket.timeStamp(), originalPacket.salt(), originalPacket.signature(), new LastSeenMessages.Update(originalPacket.lastSeenMessages().offset() == Integer.MIN_VALUE ? 0 : -originalPacket.lastSeenMessages().offset(), originalPacket.lastSeenMessages().acknowledged(), originalPacket.lastSeenMessages().checksum())); // Restore the correct offset (copy packet here, packet itself is immutable record)
 +        } else {
 +            packet = originalPacket;
 +        }
-+        // Cheetah end  - Do not break message chain if proxy cancels a chat message
++        // Cheetah end - Do not break message chain if proxy cancels a chat message
          // CraftBukkit end
-         Optional<LastSeenMessages> optional = this.unpackAndApplyLastSeen(packet.lastSeenMessages());
-         if (!optional.isEmpty()) {
-@@ -2326,6 +_,13 @@
+         Optional<LastSeenMessages> unpackedLastSeen = this.unpackAndApplyLastSeen(packet.lastSeenMessages());
+         if (!unpackedLastSeen.isEmpty()) {
+@@ -2379,6 +_,12 @@
                      return;
                  }
  
 +                // Cheetah start - Do not break message chain if proxy cancels a chat message
 +                if (cancelled) {
-+                    LOGGER.info("Skipping message of " + player.getScoreboardName() + ": '" + signedMessage.signedContent() + " because it was cancelled by BungeeCord.");
++                    LOGGER.info("Skipping message of {}: '{} because it was cancelled by BungeeCord.", player.getScoreboardName(), signedMessage.signedContent());
 +                    return;
 +                }
 +                // Cheetah end - Do not break message chain if proxy cancels a chat message
-+
-                 CompletableFuture<FilteredText> completableFuture = this.filterTextPacket(signedMessage.signedContent()).thenApplyAsync(java.util.function.Function.identity(), this.server.chatExecutor); // CraftBukkit - async chat
-                 CompletableFuture<Component> componentFuture = this.server.getChatDecorator().decorate(this.player, null, signedMessage.decoratedContent()); // Paper - Adventure
+                 CompletableFuture<FilteredText> filteredFuture = this.filterTextPacket(signedMessage.signedContent()).thenApplyAsync(java.util.function.Function.identity(), this.server.chatExecutor); // CraftBukkit - async chat
+                 CompletableFuture<Component> decoratedFuture = this.server.getChatDecorator().decorate(this.player, null, signedMessage.decoratedContent()); // Paper - Adventure
  
-@@ -2378,8 +_,23 @@
+@@ -2431,8 +_,23 @@
  
      @Override
-     public void handleSignedChatCommand(ServerboundChatCommandSignedPacket packet) {
+     public void handleSignedChatCommand(final ServerboundChatCommandSignedPacket packet) {
 +        // Cheetah start - Do not break message chain if proxy cancels a chat message
 +        boolean cancelled = packet.lastSeenMessages().offset() < 0; // Same behavior as for ServerboundChatPacket
 +        ServerboundChatCommandSignedPacket packet1;
@@ -52,22 +51,27 @@
 +            packet1 = packet;
 +        }
 +        // Cheetah end - Do not break message chain if proxy cancels a chat message
-         Optional<LastSeenMessages> optional = this.unpackAndApplyLastSeen(packet.lastSeenMessages());
-         if (!optional.isEmpty()) {
+         Optional<LastSeenMessages> unpackedLastSeen = this.unpackAndApplyLastSeen(packet.lastSeenMessages());
+         if (!unpackedLastSeen.isEmpty()) {
 +            // Cheetah start - Do not break message chain if proxy cancels a chat message
 +            if (cancelled) {
-+                LOGGER.info("Skipping command of " + player.getScoreboardName() + ": '" + packet1.command() + " because it was cancelled by BungeeCord.");
++                LOGGER.info("Skipping command of {}: '{} because it was cancelled by BungeeCord.", player.getScoreboardName(), packet1.command());
 +                return;
 +            }
 +            // Cheetah end - Do not break message chain if proxy cancels a chat message
              this.tryHandleChat(packet.command(), true, () -> {
                  // CraftBukkit start - SPIGOT-7346: Prevent disconnected players from executing commands
                  if (this.player.hasDisconnected()) {
-@@ -2490,9 +_,20 @@
-         return new SignedMessageChain.DecodeException(INVALID_COMMAND_SIGNATURE);
-     }
+@@ -2543,8 +_,19 @@
  
-+    // Cheetah start - Support case insensitive commands
+     private ParseResults<CommandSourceStack> parseCommand(final String command) {
+         CommandDispatcher<CommandSourceStack> commands = this.server.getCommands().getDispatcher();
+-        return commands.parse(command, this.player.createCommandSourceStack());
+-    }
++        // Cheetah start - Support case-insensitive commands
++        return commands.parse(commandToLower(command), this.player.createCommandSourceStack());
++    }
++
 +    private static String commandToLower(String command) {
 +        if (command.isEmpty()) {
 +            return command;
@@ -76,21 +80,16 @@
 +        split[0] = split[0].toLowerCase();
 +        return String.join(" ", split);
 +    }
-+    // Cheetah end - Support case insensitive commands
-+
-     private ParseResults<CommandSourceStack> parseCommand(String command) {
-         CommandDispatcher<CommandSourceStack> dispatcher = this.server.getCommands().getDispatcher();
--        return dispatcher.parse(command, this.player.createCommandSourceStack());
-+        return dispatcher.parse(commandToLower(command), this.player.createCommandSourceStack()); // Cheetah - Support case insensitive commands
-     }
++    // Cheetah end - Support case-insensitive commands
  
-     private void tryHandleChat(String message, boolean bypassHiddenChat, Runnable handler, boolean sync) { // CraftBukkit
-@@ -2858,7 +_,7 @@
-                                         // Refresh the current entity metadata
-                                         target.refreshEntityData(ServerGamePacketListenerImpl.this.player);
-                                         // SPIGOT-7136 - Allays
--                                        if (target instanceof net.minecraft.world.entity.animal.allay.Allay || target instanceof net.minecraft.world.entity.animal.equine.AbstractHorse) { // Paper - Fix horse armor desync
-+                                        if (target instanceof net.minecraft.world.entity.animal.allay.Allay || target instanceof net.minecraft.world.entity.animal.equine.AbstractHorse || target instanceof net.minecraft.world.entity.animal.nautilus.AbstractNautilus || target instanceof net.minecraft.world.entity.animal.golem.CopperGolem) { // Paper - Fix horse armor desync // Cheetah - Fix nautilus/copper golem desync
-                                             ServerGamePacketListenerImpl.this.send(new net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket(
-                                                 target.getId(), java.util.Arrays.stream(net.minecraft.world.entity.EquipmentSlot.values())
-                                                 .map((slot) -> com.mojang.datafixers.util.Pair.of(slot, ((LivingEntity) target).getItemBySlot(slot).copy()))
+     private void tryHandleChat(final String message, final boolean isCommand, final Runnable chatHandler, final boolean sync) { // CraftBukkit
+         if (isChatMessageIllegal(message)) {
+@@ -2944,7 +_,7 @@
+                             // Refresh the current entity metadata
+                             target.refreshEntityData(ServerGamePacketListenerImpl.this.player);
+                             // SPIGOT-7136 - Allays
+-                            if (target instanceof net.minecraft.world.entity.animal.allay.Allay || target instanceof net.minecraft.world.entity.animal.equine.AbstractHorse) { // Paper - Fix horse armor desync
++                            if (target instanceof net.minecraft.world.entity.animal.allay.Allay || target instanceof net.minecraft.world.entity.animal.equine.AbstractHorse || target instanceof net.minecraft.world.entity.animal.nautilus.AbstractNautilus || target instanceof net.minecraft.world.entity.animal.golem.CopperGolem) { // Paper - Fix horse armor desync // Cheetah - Fix nautilus/copper golem desync
+                                 ServerGamePacketListenerImpl.this.send(new net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket(
+                                     target.getId(), java.util.Arrays.stream(net.minecraft.world.entity.EquipmentSlot.values())
+                                     .map((slot) -> com.mojang.datafixers.util.Pair.of(slot, ((LivingEntity) target).getItemBySlot(slot).copy()))

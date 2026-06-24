@@ -1,13 +1,13 @@
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -313,9 +_,8 @@
+@@ -314,9 +_,8 @@
          // Paper end - Configurable player collision
          // CraftBukkit start - moved down
          LOGGER.info(
--            "{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", // CraftBukkit - add world name
-+            "{} logged in with entity id {} at ([{}]{}, {}, {})", // CraftBukkit - add world name // Cheetah - removed ip address
+-            "{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", // Paper - add world identifier
++            "{} logged in with entity id {} at ([{}]{}, {}, {})", // Paper - add world identifier // Cheetah - removed ip address
              player.getPlainTextName(),
--            loggableAddress,
+-            address,
              player.getId(),
-             serverLevel.serverLevelData.getLevelName(), // CraftBukkit - add world name
+             level.dimension().identifier(), // Paper - add world identifier
              player.getX(),

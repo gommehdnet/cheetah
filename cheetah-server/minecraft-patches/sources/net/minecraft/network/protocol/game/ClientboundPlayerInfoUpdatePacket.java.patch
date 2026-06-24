@@ -11,6 +11,6 @@
 +    }
 +    // Cheetah end - Expose constructor for player info update packet
 +
-     public static ClientboundPlayerInfoUpdatePacket createPlayerInitializing(Collection<ServerPlayer> players) {
-         EnumSet<ClientboundPlayerInfoUpdatePacket.Action> set = EnumSet.of(
+     public static ClientboundPlayerInfoUpdatePacket createPlayerInitializing(final Collection<ServerPlayer> players) {
+         EnumSet<ClientboundPlayerInfoUpdatePacket.Action> actions = EnumSet.of(
              ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER,

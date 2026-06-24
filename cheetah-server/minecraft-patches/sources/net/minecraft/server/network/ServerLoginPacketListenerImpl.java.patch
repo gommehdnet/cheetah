@@ -1,55 +1,72 @@
 --- a/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-@@ -69,6 +_,7 @@
-     public final boolean transferred; // Paper
-     public boolean iKnowThisMayNotBeTheBestIdeaButPleaseDisableUsernameValidation = false; // Paper - username validation overriding
+@@ -71,6 +_,7 @@
      private int velocityLoginMessageId = -1; // Paper - Add Velocity IP Forwarding Support
-+    private boolean disconnectLogged = false; // Cheetah - Allow skipping log messages for canceled login events
      public java.util.@Nullable UUID requestedUuid; // Paper
      private final io.papermc.paper.connection.PaperPlayerLoginConnection paperLoginConnection; // Paper - Config API
-     private volatile boolean disconnecting = false; // Paper - Fix disconnect still ticking login
-@@ -125,8 +_,17 @@
-     }
++    private boolean disconnectLogged = false; // Cheetah - Allow skipping log messages for canceled login events
  
-     public void disconnect(Component reason) {
-+        // Cheetah start - Allow skipping log messages for canceled login events
-+        disconnect(reason, false);
+     public ServerLoginPacketListenerImpl(final MinecraftServer minecraftserver, final Connection connection, final boolean transferred) {
+         this.server = minecraftserver;
+@@ -124,8 +_,15 @@
+ 
+     // Paper start
+     public void disconnectAsync(Component reason) {
++        disconnectAsync(reason, false);
 +    }
 +
-+    public void disconnect(Component reason, boolean skipLog) {
++    public void disconnectAsync(Component reason, boolean skipLog) {
          try {
 -            LOGGER.info("Disconnecting {}: {}", this.getUserName(), reason.getString());
 +            this.disconnectLogged = true;
 +            if (!skipLog) {
 +                LOGGER.info("Disconnecting {}: {}", this.getUserName(), reason.getString());
 +            }
+             this.connection.send(new ClientboundLoginDisconnectPacket(reason), PacketSendListener.thenRun(() -> this.connection.disconnect(reason)));
+             this.connection.handleConnectionDisconnectOnNextTick = true;
+         } catch (Exception var3) {
+@@ -134,8 +_,17 @@
+     }
+     // Paper end
+     public void disconnect(final Component component) {
++        // Cheetah start - Allow skipping log messages for canceled login events
++       disconnect(component, false);
++    }
++
++    public void disconnect(Component component, boolean skipLog) {
+         try {
+-            LOGGER.info("Disconnecting {}: {}", this.getUserName(), component.getString());
++            this.disconnectLogged = true;
++            if (!skipLog) {
++                LOGGER.info("Disconnecting {}: {}", this.getUserName(), component.getString());
++            }
 +            // Cheetah end - Allow skipping log messages for canceled login events
-             this.connection.send(new ClientboundLoginDisconnectPacket(reason));
-             this.connection.disconnect(reason);
-             this.disconnecting = true; // Paper - Fix disconnect still ticking login
-@@ -141,7 +_,7 @@
+             this.connection.send(new ClientboundLoginDisconnectPacket(component));
+             this.connection.disconnect(component);
+         } catch (Exception e) {
+@@ -149,7 +_,7 @@
  
      @Override
-     public void onDisconnect(DisconnectionDetails details) {
+     public void onDisconnect(final DisconnectionDetails details) {
 -        LOGGER.info("{} lost connection: {}", this.getUserName(), details.reason().getString());
 +        if (!this.disconnectLogged) LOGGER.info("{} lost connection: {}", this.getUserName(), details.reason().getString()); // Cheetah - Allow skipping log messages for canceled login events
      }
  
      public String getUserName() {
-@@ -206,9 +_,10 @@
+@@ -212,9 +_,10 @@
  
-     private void verifyLoginAndFinishConnectionSetup(GameProfile profile) {
+     private void verifyLoginAndFinishConnectionSetup(final GameProfile profile) {
          PlayerList playerList = this.server.getPlayerList();
--        Component component = org.bukkit.craftbukkit.event.CraftEventFactory.handleLoginResult(playerList.canPlayerLogin(this.connection.getRemoteAddress(), new NameAndId(profile)), this.paperLoginConnection, this.connection, profile, this.server, true); // Paper
+-        Component error = org.bukkit.craftbukkit.event.CraftEventFactory.handleLoginResult(playerList.canPlayerLogin(this.connection.getRemoteAddress(), new NameAndId(profile)), this.paperLoginConnection, this.connection, profile, this.server, true); // Paper
 +        io.papermc.paper.connection.HorriblePlayerLoginEventHack.LoginResult loginResult = org.bukkit.craftbukkit.event.CraftEventFactory.handleLoginResult(playerList.canPlayerLogin(this.connection.getRemoteAddress(), new NameAndId(profile)), this.paperLoginConnection, this.connection, profile, this.server, true); // Paper // Cheetah - Allow skipping log messages for canceled login events
-+        Component component = loginResult.message();
-         if (component != null) {
--            this.disconnect(component);
-+            this.disconnect(component, loginResult.isSkipLog());
++        Component error = loginResult.message(); // Cheetah - Allow skipping log messages for canceled login events
+         if (error != null) {
+-            this.disconnectAsync(error); // Paper
++            this.disconnectAsync(error, loginResult.isSkipLog()); // Paper // Cheetah - Allow skipping log messages for canceled login events
          } else {
              if (this.server.getCompressionThreshold() >= 0 && !this.connection.isMemoryConnection()) {
                  this.connection
-@@ -331,12 +_,14 @@
+@@ -337,12 +_,14 @@
          playerName = gameprofile.name();
          uniqueId = gameprofile.id();
          // Paper end - Add more fields to AsyncPlayerPreLoginEvent
@@ -64,7 +81,7 @@
              Waitable<PlayerPreLoginEvent.Result> waitable = new Waitable<>() {
                  @Override
                  protected PlayerPreLoginEvent.Result evaluate() {
-@@ -347,11 +_,12 @@
+@@ -353,11 +_,12 @@
  
              ServerLoginPacketListenerImpl.this.server.processQueue.add(waitable);
              if (waitable.get() != PlayerPreLoginEvent.Result.ALLOWED) {

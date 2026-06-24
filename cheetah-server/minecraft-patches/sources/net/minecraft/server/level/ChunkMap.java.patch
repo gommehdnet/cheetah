@@ -1,12 +1,10 @@
 --- a/net/minecraft/server/level/ChunkMap.java
 +++ b/net/minecraft/server/level/ChunkMap.java
-@@ -1377,6 +_,9 @@
-                 }
-                 flag = flag && this.entity.broadcastToPlayer(player) && ChunkMap.this.isChunkTracked(player, this.entity.chunkPosition().x, this.entity.chunkPosition().z);
+@@ -1375,6 +_,7 @@
+                     && this.entity.broadcastToPlayer(player)
+                     && ChunkMap.this.isChunkTracked(player, this.entity.chunkPosition().x(), this.entity.chunkPosition().z());
                  // Paper end - Configurable entity tracking range by Y
-+
-+                flag |= player.getCamera() == this.entity; // Cheetah - Fix GLOBAL-1080
-+
++                visibleToPlayer |= player.getCamera() == this.entity; // Cheetah - Fix GLOBAL-1080
                  // CraftBukkit start - respect vanish API
-                 if (flag && !player.getBukkitEntity().canSee(this.entity.getBukkitEntity())) { // Paper - only consider hits
-                     flag = false;
+                 if (visibleToPlayer && !player.getBukkitEntity().canSee(this.entity.getBukkitEntity())) { // Paper - only consider hits
+                     visibleToPlayer = false;

@@ -4,13 +4,13 @@
          this.yHeadRot = yHeadRot;
      }
  
-+    // Cheetah start - add constructor with entity id
++    // Cheetah start - Expose constructor with entity id
 +    public ClientboundRotateHeadPacket(int entityId, byte yHeadRot) {
 +        this.entityId = entityId;
 +        this.yHeadRot = yHeadRot;
 +    }
-+    // Cheetah end - add constructor with entity id
++    // Cheetah end - Expose constructor with entity id
 +
-     private ClientboundRotateHeadPacket(FriendlyByteBuf buffer) {
-         this.entityId = buffer.readVarInt();
-         this.yHeadRot = buffer.readByte();
+     private ClientboundRotateHeadPacket(final FriendlyByteBuf input) {
+         this.entityId = input.readVarInt();
+         this.yHeadRot = input.readByte();

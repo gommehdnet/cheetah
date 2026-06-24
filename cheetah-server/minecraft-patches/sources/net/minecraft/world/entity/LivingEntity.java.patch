@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -1423,6 +_,29 @@
+@@ -1420,6 +_,29 @@
          return this.getHealth() <= 0.0F;
      }
  
@@ -28,14 +28,14 @@
 +    // Cheetah end - re-add isDamageSourceBlocked method
 +
      @Override
-     public boolean hurtServer(ServerLevel level, DamageSource damageSource, float amount) {
-         if (this.isInvulnerableTo(level, damageSource)) {
-@@ -2080,6 +_,20 @@
+     public boolean hurtServer(final ServerLevel level, final DamageSource source, float damage) {
+         if (this.isInvulnerableTo(level, source)) {
+@@ -2083,6 +_,20 @@
              return false;
          }
      }
 +
-+    // Cheetah start - Added VillagerGiveGiftToHeroEvent
++    // Cheetah start - Add VillagerGiveGiftToHeroEvent
 +    public List<ItemStack> getFromGiftLootTable(ServerLevel world, ResourceKey<LootTable> lootTableKey) {
 +        return this.getFromLootTable(world, lootTableKey, (lootparams_a) -> {
 +            return lootparams_a.withParameter(LootContextParams.ORIGIN, this.position()).withParameter(LootContextParams.THIS_ENTITY, this).create(LootContextParamSets.GIFT);
@@ -47,7 +47,7 @@
 +        LootParams lootparams = lootContextParametersFactory.apply(new LootParams.Builder(world));
 +        return loottable.getRandomItems(lootparams);
 +    }
-+    // Cheetah end - Added VillagerGiveGiftToHeroEvent
++    // Cheetah end - Add VillagerGiveGiftToHeroEvent
  
-     public void knockback(double strength, double x, double z) {
+     public void knockback(double power, double xd, double zd) {
          // CraftBukkit start - EntityKnockbackEvent
