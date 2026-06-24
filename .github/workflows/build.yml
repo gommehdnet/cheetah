@@ -29,7 +29,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           # Allow cache writes on main and dev branches
-          cache-read-only: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/heads/dev/') }}
+          cache-read-only: ${{ github.ref != 'refs/heads/master' && !startsWith(github.ref, 'refs/heads/dev/') }}
 
       - name: Apply Patches
         run: |
