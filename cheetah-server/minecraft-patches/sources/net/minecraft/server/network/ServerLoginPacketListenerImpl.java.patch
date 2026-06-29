@@ -8,13 +8,18 @@
  
      public ServerLoginPacketListenerImpl(final MinecraftServer minecraftserver, final Connection connection, final boolean transferred) {
          this.server = minecraftserver;
-@@ -124,8 +_,15 @@
+@@ -124,24 +_,40 @@
  
      // Paper start
      public void disconnectAsync(Component reason) {
-+        disconnectAsync(reason, false);
++        disconnectAsync(reason, false); // Cheetah - Allow skipping log messages for canceled login events
++    }
++    // Paper end
++    public void disconnect(final Component component) {
++        disconnect(component, false); // Cheetah - Allow skipping log messages for canceled login events
 +    }
 +
++    // Cheetah start - Allow skipping log messages for canceled login events
 +    public void disconnectAsync(Component reason, boolean skipLog) {
          try {
 -            LOGGER.info("Disconnecting {}: {}", this.getUserName(), reason.getString());
@@ -25,13 +30,11 @@
              this.connection.send(new ClientboundLoginDisconnectPacket(reason), PacketSendListener.thenRun(() -> this.connection.disconnect(reason)));
              this.connection.handleConnectionDisconnectOnNextTick = true;
          } catch (Exception var3) {
-@@ -134,8 +_,17 @@
+             LOGGER.error("Error whilst disconnecting player", (Throwable)var3);
+         }
      }
-     // Paper end
-     public void disconnect(final Component component) {
-+        // Cheetah start - Allow skipping log messages for canceled login events
-+       disconnect(component, false);
-+    }
+-    // Paper end
+-    public void disconnect(final Component component) {
 +
 +    public void disconnect(Component component, boolean skipLog) {
          try {
@@ -40,10 +43,16 @@
 +            if (!skipLog) {
 +                LOGGER.info("Disconnecting {}: {}", this.getUserName(), component.getString());
 +            }
-+            // Cheetah end - Allow skipping log messages for canceled login events
              this.connection.send(new ClientboundLoginDisconnectPacket(component));
              this.connection.disconnect(component);
          } catch (Exception e) {
+             LOGGER.error("Error whilst disconnecting player", e);
+         }
+     }
++    // Cheetah end - Allow skipping log messages for canceled login events
+ 
+     private boolean isPlayerAlreadyInWorld(final GameProfile gameProfile) {
+         return this.server.getPlayerList().getPlayer(gameProfile.id()) != null;
 @@ -149,7 +_,7 @@
  
      @Override
@@ -62,9 +71,10 @@
 +        Component error = loginResult.message(); // Cheetah - Allow skipping log messages for canceled login events
          if (error != null) {
 -            this.disconnectAsync(error); // Paper
-         } else if (this.connection.getIntendedProfileId() != null && !profile.id().equals(this.connection.getIntendedProfileId())) {
-             this.disconnectAsync(CommonComponents.CONNECT_FAILED); // Paper
 +            this.disconnectAsync(error, loginResult.isSkipLog()); // Paper // Cheetah - Allow skipping log messages for canceled login events
+         } else if (this.connection.getIntendedProfileId() != null && !profile.id().equals(this.connection.getIntendedProfileId())) {
+-            this.disconnectAsync(CommonComponents.CONNECT_FAILED); // Paper
++            this.disconnectAsync(CommonComponents.CONNECT_FAILED, loginResult.isSkipLog()); // Paper // Cheetah - Allow skipping log messages for canceled login events
          } else {
              if (this.server.getCompressionThreshold() >= 0 && !this.connection.isMemoryConnection()) {
                  this.connection
