@@ -23,7 +23,7 @@
 +    // Cheetah end - Configurable hopper transfer multiplier
  
      public HopperBlockEntity(final BlockPos worldPosition, final BlockState blockState) {
-         super(BlockEntityType.HOPPER, worldPosition, blockState);
+         super(BlockEntityTypes.HOPPER, worldPosition, blockState);
 @@ -87,6 +_,7 @@
          }
  

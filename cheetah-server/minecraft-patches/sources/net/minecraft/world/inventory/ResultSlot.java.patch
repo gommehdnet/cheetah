@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/inventory/ResultSlot.java
 +++ b/net/minecraft/world/inventory/ResultSlot.java
-@@ -79,7 +_,7 @@
+@@ -86,7 +_,7 @@
              ? serverLevel.recipeAccess()
                  .getRecipeFor(RecipeType.CRAFTING, input, serverLevel, this.craftSlots.getCurrentRecipe()) // Paper - Perf: Improve mass crafting; check last recipe used first
                  .map(recipe -> recipe.value().getRemainingItems(input))

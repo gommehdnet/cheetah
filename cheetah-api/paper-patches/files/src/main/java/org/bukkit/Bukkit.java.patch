@@ -1,6 +1,6 @@
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -2425,6 +_,19 @@
+@@ -2428,6 +_,19 @@
          return server.getEntity(uuid);
      }
  

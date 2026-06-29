@@ -1,7 +1,7 @@
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -1420,6 +_,29 @@
-         return this.getHealth() <= 0.0F;
+@@ -1423,6 +_,29 @@
+         return this.getHealth() <= 0.0F || this.dead;
      }
  
 +    // Cheetah start - re-add isDamageSourceBlocked method
@@ -30,7 +30,7 @@
      @Override
      public boolean hurtServer(final ServerLevel level, final DamageSource source, float damage) {
          if (this.isInvulnerableTo(level, source)) {
-@@ -2083,6 +_,20 @@
+@@ -2050,6 +_,20 @@
              return false;
          }
      }
@@ -49,5 +49,5 @@
 +    }
 +    // Cheetah end - Add VillagerGiveGiftToHeroEvent
  
-     public void knockback(double power, double xd, double zd) {
+     public void knockback(double power, double xd, double zd, final DamageSource source, final float damage, final boolean comesFromEffect) {
          // CraftBukkit start - EntityKnockbackEvent

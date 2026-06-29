@@ -1,11 +1,11 @@
 --- a/net/minecraft/world/item/ItemStack.java
 +++ b/net/minecraft/world/item/ItemStack.java
-@@ -383,7 +_,7 @@
+@@ -382,7 +_,7 @@
          ServerLevel level = (ServerLevel) context.getLevel();
          boolean isBonemeal = usedItem == Items.BONE_MEAL;
  
 -        if (!(usedItem instanceof BucketItem)) {
 +        if (!(usedItem instanceof BucketItem || usedItem instanceof EndCrystalItem)) { // Cheetah - Fix capturing blocks on end crystal placement
              level.captureBlockStates = true;
-             if (isBonemeal) {
-                 level.captureTreeGeneration = true;
+             level.captureTreeGeneration = isBonemeal;
+         }

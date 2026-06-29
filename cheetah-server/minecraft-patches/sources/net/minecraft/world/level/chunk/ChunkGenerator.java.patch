@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/chunk/ChunkGenerator.java
 +++ b/net/minecraft/world/level/chunk/ChunkGenerator.java
-@@ -138,7 +_,7 @@
+@@ -142,7 +_,7 @@
          final org.bukkit.Location origin = org.bukkit.craftbukkit.util.CraftLocation.toBukkit(pos, level);
          final List<org.bukkit.generator.structure.Structure> apiStructures = wantedStructures.stream().map(org.bukkit.craftbukkit.generator.structure.CraftStructure::minecraftHolderToBukkit).toList();
          if (!apiStructures.isEmpty()) {

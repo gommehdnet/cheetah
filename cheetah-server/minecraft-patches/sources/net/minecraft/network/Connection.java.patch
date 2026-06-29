@@ -1,6 +1,6 @@
 --- a/net/minecraft/network/Connection.java
 +++ b/net/minecraft/network/Connection.java
-@@ -61,6 +_,7 @@
+@@ -62,6 +_,7 @@
      public static final Marker PACKET_MARKER = Util.make(MarkerFactory.getMarker("NETWORK_PACKETS"), m -> m.add(ROOT_MARKER));
      public static final Marker PACKET_RECEIVED_MARKER = Util.make(MarkerFactory.getMarker("PACKET_RECEIVED"), m -> m.add(PACKET_MARKER));
      public static final Marker PACKET_SENT_MARKER = Util.make(MarkerFactory.getMarker("PACKET_SENT"), m -> m.add(PACKET_MARKER));
@@ -8,7 +8,7 @@
      private static final ProtocolInfo<ServerHandshakePacketListener> INITIAL_PROTOCOL = HandshakeProtocols.SERVERBOUND;
      private final PacketFlow receiving;
      private volatile boolean sendLoginDisconnect = true;
-@@ -188,7 +_,7 @@
+@@ -189,7 +_,7 @@
  
                      if (player != null) player.quitReason = org.bukkit.event.player.PlayerQuitEvent.QuitReason.ERRONEOUS_STATE; // Paper - Add API for quit reason
                      if (isFirstFault) {
@@ -17,7 +17,7 @@
                          boolean doesDisconnectExist = this.packetListener.protocol() != ConnectionProtocol.STATUS && this.packetListener.protocol() != ConnectionProtocol.HANDSHAKING; // Paper
                          if (this.getSending() == PacketFlow.CLIENTBOUND && doesDisconnectExist) { // Paper
                              Packet<?> packet = this.sendLoginDisconnect
-@@ -283,7 +_,14 @@
+@@ -284,7 +_,14 @@
          }
      }
  
@@ -33,7 +33,7 @@
          packet.handle((T)listener);
      }
  
-@@ -440,12 +_,25 @@
+@@ -441,12 +_,25 @@
          }
      }
  
@@ -62,7 +62,7 @@
          }
      }
  
-@@ -474,6 +_,7 @@
+@@ -475,6 +_,7 @@
          }
          } catch (final Exception e) {
              LOGGER.error("NetworkException: {}", player, e);

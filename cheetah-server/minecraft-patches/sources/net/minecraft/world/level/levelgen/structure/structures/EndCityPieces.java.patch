@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
 +++ b/net/minecraft/world/level/levelgen/structure/structures/EndCityPieces.java
-@@ -423,7 +_,7 @@
+@@ -427,7 +_,7 @@
                          sentry.setPos(position.getX() + 0.5, position.getY(), position.getZ() + 0.5);
                          level.addFreshEntity(sentry);
                      }
