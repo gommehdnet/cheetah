@@ -4,13 +4,13 @@
          this.eventId = eventId;
      }
  
-+    // Cheetah start - add constructor with entity id
++    // Cheetah start - Expose constructor with entity id
 +    public ClientboundEntityEventPacket(int entityId, byte eventId) {
 +        this.entityId = entityId;
 +        this.eventId = eventId;
 +    }
-+    // Cheetah end - add constructor with entity id
++    // Cheetah end - Expose constructor with entity id
 +
-     private ClientboundEntityEventPacket(FriendlyByteBuf buffer) {
-         this.entityId = buffer.readInt();
-         this.eventId = buffer.readByte();
+     private ClientboundEntityEventPacket(final FriendlyByteBuf input) {
+         this.entityId = input.readInt();
+         this.eventId = input.readByte();

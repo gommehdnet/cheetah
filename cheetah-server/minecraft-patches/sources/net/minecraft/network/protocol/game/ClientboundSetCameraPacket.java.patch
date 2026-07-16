@@ -1,15 +1,15 @@
 --- a/net/minecraft/network/protocol/game/ClientboundSetCameraPacket.java
 +++ b/net/minecraft/network/protocol/game/ClientboundSetCameraPacket.java
 @@ -18,6 +_,12 @@
-         this.cameraId = cameraEntity.getId();
+         this.cameraId = camera.getId();
      }
  
-+    // Cheetah start - add constructor with entity id
++    // Cheetah start - Expose constructor with entity id
 +    public ClientboundSetCameraPacket(int cameraId) {
 +        this.cameraId = cameraId;
 +    }
-+    // Cheetah end - add constructor with entity id
++    // Cheetah end - Expose constructor with entity id
 +
-     private ClientboundSetCameraPacket(FriendlyByteBuf buffer) {
-         this.cameraId = buffer.readVarInt();
+     private ClientboundSetCameraPacket(final FriendlyByteBuf input) {
+         this.cameraId = input.readVarInt();
      }

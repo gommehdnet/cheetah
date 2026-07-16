@@ -3,22 +3,22 @@
 @@ -37,7 +_,7 @@
      public static final AdvancementRewards EMPTY = new AdvancementRewards(0, List.of(), List.of(), Optional.empty());
  
-     public void grant(ServerPlayer player) {
+     public void grant(final ServerPlayer player) {
 -        player.giveExperiencePoints(this.experience);
-+        // Cheetah start - Added PlayerAdvancementRewardsGrantEvent
-         ServerLevel serverLevel = player.level();
-         MinecraftServer server = serverLevel.getServer();
-         LootParams lootParams = new LootParams.Builder(serverLevel)
-@@ -46,36 +_,65 @@
++        // Cheetah start - Add PlayerAdvancementRewardsGrantEvent
+         ServerLevel level = player.level();
+         MinecraftServer server = level.getServer();
+         LootParams params = new LootParams.Builder(level)
+@@ -46,37 +_,65 @@
              .create(LootContextParamSets.ADVANCEMENT_REWARD);
-         boolean flag = false;
+         boolean changes = false;
  
 +        List<ItemStack> rewards = new java.util.ArrayList<>();
 +
-         for (ResourceKey<LootTable> resourceKey : this.loot) {
--            for (ItemStack itemStack : server.reloadableRegistries().getLootTable(resourceKey).getRandomItems(lootParams)) {
+         for (ResourceKey<LootTable> lootTable : this.loot) {
+-            for (ItemStack itemStack : server.reloadableRegistries().getLootTable(lootTable).getRandomItems(params)) {
 -                if (player.addItem(itemStack)) {
--                    serverLevel.playSound(
+-                    level.playSound(
 -                        null,
 -                        player.getX(),
 -                        player.getY(),
@@ -28,13 +28,13 @@
 -                        0.2F,
 -                        ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F
 -                    );
--                    flag = true;
+-                    changes = true;
 -                } else {
--                    ItemEntity itemEntity = player.drop(itemStack, false);
--                    if (itemEntity != null) {
--                        itemEntity.setNoPickUpDelay();
--                        itemEntity.setTarget(player.getUUID());
-+            rewards.addAll(server.reloadableRegistries().getLootTable(resourceKey).getRandomItems(lootParams));
+-                    ItemEntity drop = player.drop(itemStack, false);
+-                    if (drop != null) {
+-                        drop.setNoPickUpDelay();
+-                        drop.setTarget(player.getUUID());
++            rewards.addAll(server.reloadableRegistries().getLootTable(lootTable).getRandomItems(params));
 +        }
 +
 +        net.gommehd.cheetah.event.entity.PlayerAdvancementRewardsGrantEvent event = new net.gommehd.cheetah.event.entity.PlayerAdvancementRewardsGrantEvent(
@@ -56,7 +56,7 @@
 +            if (!rewards.isEmpty()) {
 +                for (ItemStack itemStack : rewards) {
 +                    if (player.addItem(itemStack)) {
-+                        serverLevel.playSound(
++                        level.playSound(
 +                            null,
 +                            player.getX(),
 +                            player.getY(),
@@ -66,7 +66,7 @@
 +                            0.2F,
 +                            ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F
 +                        );
-+                        flag = true;
++                        changes = true;
 +                    } else {
 +                        ItemEntity itemEntity = player.drop(itemStack, false);
 +                        if (itemEntity != null) {
@@ -86,14 +86,14 @@
 +            );
 +        }
 +
-+        // Cheetah - end
-+
-         if (flag) {
+         if (changes) {
              player.containerMenu.broadcastChanges();
--        }
+         }
 -
 -        if (!this.recipes.isEmpty()) {
 -            player.awardRecipesByKey(this.recipes);
-         }
+-        }
++        // Cheetah end - Add PlayerAdvancementRewardsGrantEvent
  
          this.function
+             .flatMap(function -> function.get(server.getFunctions()))

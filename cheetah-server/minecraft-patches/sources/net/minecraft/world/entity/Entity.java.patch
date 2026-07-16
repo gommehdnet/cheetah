@@ -1,10 +1,10 @@
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -3660,7 +_,17 @@
+@@ -3749,7 +_,17 @@
      }
  
-     public boolean isAlliedTo(@Nullable Team team) {
--        return this.getTeam() != null && this.getTeam().isAlliedTo(team);
+     public boolean isAlliedTo(final @Nullable Team other) {
+-        return this.getTeam() != null && this.getTeam().isAlliedTo(other);
 +        // Cheetah start - Return false when the allied team is the collide rule team
 +        final Team ownTeam = this.getTeam();
 +        if (ownTeam != null) {
@@ -12,10 +12,10 @@
 +                ownTeam.getName().equals(net.minecraft.server.MinecraftServer.getServer().getPlayerList().collideRuleTeamName)) {
 +                return false;
 +            }
-+            return ownTeam.isAlliedTo(team);
++            return ownTeam.isAlliedTo(other);
 +        }
 +        return false;
 +        // Cheetah end - Return false when the allied team is the collide rule team
      }
  
-     public void setInvisible(boolean invisible) {
+     public void setInvisible(final boolean invisible) {

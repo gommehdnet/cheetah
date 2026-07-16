@@ -1,11 +1,11 @@
 --- a/net/minecraft/world/item/ItemStack.java
 +++ b/net/minecraft/world/item/ItemStack.java
-@@ -384,7 +_,7 @@
-             int oldCount = this.getCount();
-             ServerLevel serverLevel = (ServerLevel) context.getLevel();
+@@ -382,7 +_,7 @@
+         ServerLevel level = (ServerLevel) context.getLevel();
+         boolean isBonemeal = usedItem == Items.BONE_MEAL;
  
--            if (!(item instanceof BucketItem/* || item instanceof SolidBucketItem*/)) { // if not bucket // Paper - Fix cancelled powdered snow bucket placement
-+            if (!(item instanceof BucketItem/* || item instanceof SolidBucketItem*/ || item instanceof EndCrystalItem)) { // if not bucket // Paper - Fix cancelled powdered snow bucket placement // Cheetah - Fix capturing blocks on end crystal placement
-                 serverLevel.captureBlockStates = true;
-                 // special case bonemeal
-                 if (item == Items.BONE_MEAL) {
+-        if (!(usedItem instanceof BucketItem)) {
++        if (!(usedItem instanceof BucketItem || usedItem instanceof EndCrystalItem)) { // Cheetah - Fix capturing blocks on end crystal placement
+             level.captureBlockStates = true;
+             level.captureTreeGeneration = isBonemeal;
+         }
