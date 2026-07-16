@@ -43,3 +43,4 @@ Thus, changes to the NMS code will not be reflected to plugins using it.
 
 ## Contributing
 Only pull requests of the GommeHD.net dev team members are accepted. If you want to add a patch others could benefit from as well, consider submitting it to the upstream (https://github.com/PaperMC/Paper).
+
