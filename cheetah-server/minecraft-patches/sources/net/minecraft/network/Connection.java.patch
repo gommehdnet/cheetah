@@ -33,9 +33,9 @@
          packet.handle((T)listener);
      }
  
-@@ -441,12 +_,25 @@
-         }
+@@ -465,12 +_,25 @@
      }
+     // Paper end - Add netty task scheduling helper
  
 -    private void sendPacket(final Packet<?> packet, final @Nullable ChannelFutureListener listener, final boolean flush) {
 +    private void sendPacket(Packet<?> packet, final @Nullable ChannelFutureListener listener, final boolean flush) {
@@ -62,7 +62,7 @@
          }
      }
  
-@@ -475,6 +_,7 @@
+@@ -499,6 +_,7 @@
          }
          } catch (final Exception e) {
              LOGGER.error("NetworkException: {}", player, e);
