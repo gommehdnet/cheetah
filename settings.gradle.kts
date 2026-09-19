@@ -12,6 +12,14 @@ plugins {
 
 rootProject.name = "cheetah"
 
+for (name in listOf("cheetah-api", "cheetah-server")) {
+    include(name)
+    file(name).mkdirs()
+}
+
+include("test-plugin")
+include("cheetah-checkstyle")
+
 gradle.lifecycle.beforeProject {
     val mcVersion = providers.gradleProperty("mcVersion").get().trim()
     val paperVersionChannel = providers.gradleProperty("channel").get().trim()
@@ -23,7 +31,3 @@ gradle.lifecycle.beforeProject {
     }
     version = versionString
 }
-
-include("cheetah-api")
-include("cheetah-server")
-include("test-plugin")
