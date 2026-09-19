@@ -33,7 +33,7 @@
          packet.handle((T)listener);
      }
  
-@@ -465,12 +_,25 @@
+@@ -482,12 +_,25 @@
      }
      // Paper end - Add netty task scheduling helper
  
@@ -62,7 +62,7 @@
          }
      }
  
-@@ -499,6 +_,7 @@
+@@ -516,6 +_,7 @@
          }
          } catch (final Exception e) {
              LOGGER.error("NetworkException: {}", player, e);
