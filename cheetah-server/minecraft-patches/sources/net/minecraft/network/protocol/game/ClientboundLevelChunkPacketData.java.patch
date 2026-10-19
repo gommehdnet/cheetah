@@ -1,6 +1,6 @@
 --- a/net/minecraft/network/protocol/game/ClientboundLevelChunkPacketData.java
 +++ b/net/minecraft/network/protocol/game/ClientboundLevelChunkPacketData.java
-@@ -153,6 +_,12 @@
+@@ -158,6 +_,12 @@
          return this.heightmaps;
      }
  
@@ -10,13 +10,13 @@
 +    }
 +    // Cheetah end - Expose block entities data
 +
-     public static class BlockEntityInfo {
-         public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundLevelChunkPacketData.BlockEntityInfo> STREAM_CODEC = StreamCodec.ofMember(
-             ClientboundLevelChunkPacketData.BlockEntityInfo::write, ClientboundLevelChunkPacketData.BlockEntityInfo::new
-@@ -185,6 +_,25 @@
-             ByteBufCodecs.registry(Registries.BLOCK_ENTITY_TYPE).encode(output, this.type);
-             output.writeNbt(this.tag);
-         }
+     public record BlockEntityInfo(byte packedXZ, short y, BlockEntityType<?> type, Optional<CompoundTag> tag) {
+         public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundLevelChunkPacketData.BlockEntityInfo> STREAM_CODEC = StreamCodec.composite(
+             ByteBufCodecs.BYTE,
+@@ -170,6 +_,25 @@
+             ClientboundLevelChunkPacketData.BlockEntityInfo::tag,
+             ClientboundLevelChunkPacketData.BlockEntityInfo::new
+         );
 +
 +        // Cheetah start - Expose getter
 +        public int getPackedXZ() {
@@ -33,7 +33,7 @@
 +
 +        @Nullable
 +        public CompoundTag getTag() {
-+            return this.tag;
++            return this.tag.orElse(null);
 +        }
 +        // Cheetah end - Expose getter
  

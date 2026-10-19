@@ -1,14 +1,14 @@
 --- a/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/PlayerLoginEvent.java
-@@ -35,6 +_,7 @@
-     private final InetAddress realAddress;
+@@ -37,6 +_,7 @@
+     private final SocketAddress realAddress;
      private Result result = Result.ALLOWED;
      private Component message = Component.empty();
 +    private boolean skipLog; // Cheetah - Allow skipping log messages for canceled login events
  
      @ApiStatus.Internal
-     public PlayerLoginEvent(@NotNull final Player player, @NotNull final String hostname, @NotNull final InetAddress address, final @NotNull InetAddress realAddress) {
-@@ -74,6 +_,16 @@
+     public PlayerLoginEvent(@NotNull final Player player, @NotNull final String hostname, @NotNull final InetAddress address, final @NotNull SocketAddress realAddress) {
+@@ -81,6 +_,16 @@
      public String getHostname() {
          return this.hostname;
      }

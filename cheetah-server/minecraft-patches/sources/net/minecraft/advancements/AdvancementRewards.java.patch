@@ -1,7 +1,7 @@
 --- a/net/minecraft/advancements/AdvancementRewards.java
 +++ b/net/minecraft/advancements/AdvancementRewards.java
-@@ -37,7 +_,7 @@
-     public static final AdvancementRewards EMPTY = new AdvancementRewards(0, List.of(), List.of(), Optional.empty());
+@@ -40,7 +_,7 @@
+     public static final AdvancementRewards EMPTY = new AdvancementRewards(0, HolderSet.empty(), List.of(), Optional.empty());
  
      public void grant(final ServerPlayer player) {
 -        player.giveExperiencePoints(this.experience);
@@ -9,14 +9,14 @@
          ServerLevel level = player.level();
          MinecraftServer server = level.getServer();
          LootParams params = new LootParams.Builder(level)
-@@ -46,37 +_,65 @@
+@@ -49,37 +_,65 @@
              .create(LootContextParamSets.ADVANCEMENT_REWARD);
          boolean changes = false;
  
 +        List<ItemStack> rewards = new java.util.ArrayList<>();
 +
-         for (ResourceKey<LootTable> lootTable : this.loot) {
--            for (ItemStack itemStack : server.reloadableRegistries().getLootTable(lootTable).getRandomItems(params)) {
+         for (Holder<LootTable> lootTable : this.loot) {
+-            for (ItemStack itemStack : lootTable.value().getRandomItems(params)) {
 -                if (player.addItem(itemStack)) {
 -                    level.playSound(
 -                        null,
@@ -30,17 +30,17 @@
 -                    );
 -                    changes = true;
 -                } else {
--                    ItemEntity drop = player.drop(itemStack, false);
+-                    ItemEntity drop = player.drop(itemStack, false, Prediction.SERVER_ONLY);
 -                    if (drop != null) {
 -                        drop.setNoPickUpDelay();
 -                        drop.setTarget(player.getUUID());
-+            rewards.addAll(server.reloadableRegistries().getLootTable(lootTable).getRandomItems(params));
++            rewards.addAll(lootTable.value().getRandomItems(params));
 +        }
 +
 +        net.gommehd.cheetah.event.entity.PlayerAdvancementRewardsGrantEvent event = new net.gommehd.cheetah.event.entity.PlayerAdvancementRewardsGrantEvent(
 +            player.getBukkitEntity(),
 +            recipes.stream().map(recipe -> org.bukkit.craftbukkit.util.CraftNamespacedKey.fromMinecraft(recipe.identifier())).collect(java.util.stream.Collectors.toList()),
-+            rewards.stream().map(org.bukkit.craftbukkit.inventory.CraftItemStack::asCraftMirror).collect(java.util.stream.Collectors.toList()),
++            rewards.stream().map(org.bukkit.craftbukkit.inventory.CraftItemStack::asBukkitMirror).collect(java.util.stream.Collectors.toList()),
 +            this.experience
 +        );
 +
@@ -68,7 +68,7 @@
 +                        );
 +                        changes = true;
 +                    } else {
-+                        ItemEntity itemEntity = player.drop(itemStack, false);
++                        ItemEntity itemEntity = player.drop(itemStack, false, Prediction.SERVER_ONLY);
 +                        if (itemEntity != null) {
 +                            itemEntity.setNoPickUpDelay();
 +                            itemEntity.setTarget(player.getUUID());

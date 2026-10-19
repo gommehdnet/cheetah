@@ -44,7 +44,7 @@
      }
  
      @Override
-@@ -233,7 +_,7 @@
+@@ -235,7 +_,7 @@
                  ItemStack movedItem = origItemStack;
  
                  final int originalItemCount = origItemStack.getCount();
@@ -53,12 +53,12 @@
                  origItemStack.setCount(movedItemCount);
  
                  // We only need to fire the event once to give protection plugins a chance to cancel this event
-@@ -270,7 +_,7 @@
+@@ -272,7 +_,7 @@
      private static boolean hopperPull(final Level level, final Hopper hopper, final Container container, ItemStack origItemStack, final int i) {
          ItemStack movedItem = origItemStack;
          final int originalItemCount = origItemStack.getCount();
 -        final int movedItemCount = Math.min(level.spigotConfig.hopperAmount, originalItemCount);
 +        final int movedItemCount = Math.min((int) (level.spigotConfig.hopperAmount * hopper.getHopperTransferMultiplier()), originalItemCount); // Cheetah - Configurable hopper transfer multiplier
-         container.setChanged(); // original logic always marks source inv as changed even if no move happens.
          movedItem.setCount(movedItemCount);
  
+         if (!skipPullModeEventFire) {

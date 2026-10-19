@@ -3,7 +3,7 @@
 @@ -166,7 +_,11 @@
      protected void registerGoals() {
          this.goalSelector.addGoal(0, new BreathAirGoal(this));
-         this.goalSelector.addGoal(0, new TryFindWaterGoal(this));
+         this.goalSelector.addGoal(0, new TryFindLiquidGoal(this, FluidTags.DOLPHIN_TRIES_TO_FIND));
 -        this.goalSelector.addGoal(1, new Dolphin.DolphinSwimToTreasureGoal(this));
 +        // Cheetah start - Respect treasure map option for dolphins
 +        if (level().paperConfig().environment.treasureMaps.enabled) {

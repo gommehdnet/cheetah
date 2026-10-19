@@ -1,6 +1,6 @@
 --- a/net/minecraft/network/protocol/game/ClientboundAnimatePacket.java
 +++ b/net/minecraft/network/protocol/game/ClientboundAnimatePacket.java
-@@ -23,6 +_,13 @@
+@@ -21,6 +_,13 @@
          this.action = action;
      }
  
