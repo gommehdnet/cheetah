@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/DriedGhastBlock.java
 +++ b/net/minecraft/world/level/block/DriedGhastBlock.java
-@@ -171,7 +_,7 @@
+@@ -164,7 +_,7 @@
      @Override
      protected void randomTick(final BlockState state, final ServerLevel level, final BlockPos pos, final RandomSource random) {
          if ((state.getValue(WATERLOGGED) || state.getValue(HYDRATION_LEVEL) > 0) && !level.getBlockTicks().hasScheduledTick(pos, this)) {

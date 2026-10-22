@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/SnifferEggBlock.java
 +++ b/net/minecraft/world/level/block/SnifferEggBlock.java
-@@ -108,7 +_,7 @@
+@@ -101,7 +_,7 @@
          int hatchTime = boosted ? level.paperConfig().entities.sniffer.boostedHatchTime.or(BOOSTED_HATCH_TIME_TICKS) : level.paperConfig().entities.sniffer.hatchTime.or(REGULAR_HATCH_TIME_TICKS); // Paper
          int progressionTickDelay = hatchTime / 3;
          level.gameEvent(GameEvent.BLOCK_PLACE, pos, GameEvent.Context.of(state));
