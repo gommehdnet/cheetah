@@ -1,10 +1,13 @@
 package net.gommehd.cheetah.network.packet;
 
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.Connection;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A builder utility class for creating packet listeners.
@@ -16,6 +19,8 @@ import java.util.function.Function;
  * <p>
  * Use the static methods provided by this class to create the corresponding builder.
  */
+// Preserve the public constructor and support for existing subclasses.
+@SuppressWarnings("checkstyle:HideUtilityClassConstructor")
 public class PacketListenerBuilder {
     /**
      * Creates a new global packet listener builder.
@@ -44,9 +49,9 @@ public class PacketListenerBuilder {
      *
      * @param <T> the type of the builder extending from this base class, enabling method chaining
      */
-    protected static abstract class BaseBuilder<T extends BaseBuilder<T>> {
+    protected abstract static class BaseBuilder<T extends BaseBuilder<T>> {
         protected PacketListener.ListenerPriority priority = PacketListener.ListenerPriority.NORMAL;
-        protected BiFunction<Connection, Exception, Void> errorHandler;
+        protected @Nullable BiFunction<Connection, Exception, @Nullable Void> errorHandler;
 
         @SuppressWarnings("unchecked")
         private T self() {
@@ -65,7 +70,7 @@ public class PacketListenerBuilder {
          */
         public T withPriority(PacketListener.ListenerPriority priority) {
             this.priority = priority;
-            return self();
+            return this.self();
         }
 
         /**
@@ -77,9 +82,9 @@ public class PacketListenerBuilder {
          * @return the current builder instance for method chaining
          * @throws NullPointerException if the provided {@code handler} is {@code null}
          */
-        public T onError(BiFunction<Connection, Exception, Void> handler) {
+        public T onError(BiFunction<Connection, Exception, @Nullable Void> handler) {
             this.errorHandler = Objects.requireNonNull(handler, "handler cannot be null");
-            return self();
+            return this.self();
         }
 
         /**
@@ -121,8 +126,8 @@ public class PacketListenerBuilder {
      * packet monitoring or processing.
      */
     public static class GlobalBuilder extends BaseBuilder<GlobalBuilder> {
-        private BiFunction<Connection, Packet<?>, PacketListener.PacketProcessingResult> sendHandler;
-        private BiFunction<Connection, Packet<?>, PacketListener.PacketProcessingResult> receiveHandler;
+        private @Nullable BiFunction<Connection, Packet<?>, PacketListener.PacketProcessingResult> sendHandler;
+        private @Nullable BiFunction<Connection, Packet<?>, PacketListener.PacketProcessingResult> receiveHandler;
 
         /**
          * Sets a handler for all outgoing packets.
@@ -152,14 +157,14 @@ public class PacketListenerBuilder {
 
         @Override
         public PacketListener register() {
-            PacketListener listener = build();
+            PacketListener listener = this.build();
             PacketListenerRegistry.getInstance().registerGlobalListener(listener);
             return listener;
         }
 
         @Override
         public PacketListener build() {
-            return new GlobalPacketListener(priority, sendHandler, receiveHandler, errorHandler);
+            return new GlobalPacketListener(priority, this.sendHandler, this.receiveHandler, errorHandler);
         }
     }
 
@@ -178,8 +183,8 @@ public class PacketListenerBuilder {
         /**
          * Configures handling for a specific packet type.
          *
-         * @param <T> the type of the packet being handled
          * @param packetType the class object representing the packet type; cannot be null
+         * @param <T>        the type of the packet being handled
          * @return a builder for configuring handlers for the specified packet type
          * @throws NullPointerException if {@code packetType} is null
          */
@@ -190,10 +195,10 @@ public class PacketListenerBuilder {
 
         @Override
         public PacketListener register() {
-            PacketListener listener = build();
+            PacketListener listener = this.build();
             PacketListenerRegistry registry = PacketListenerRegistry.getInstance();
 
-            for (Class<? extends Packet<?>> packetType : handlers.keySet()) {
+            for (Class<? extends Packet<?>> packetType : this.handlers.keySet()) {
                 registry.registerListener(packetType, listener);
             }
 
@@ -202,11 +207,11 @@ public class PacketListenerBuilder {
 
         @Override
         public PacketListener build() {
-            return new SpecificPacketListener(priority, new HashMap<>(handlers), errorHandler);
+            return new SpecificPacketListener(priority, new HashMap<>(this.handlers), errorHandler);
         }
 
         private void addHandler(Class<? extends Packet<?>> packetType, PacketTypeHandler handler) {
-            handlers.put(packetType, handler);
+            this.handlers.put(packetType, handler);
         }
     }
 
@@ -217,11 +222,13 @@ public class PacketListenerBuilder {
      *
      * @param <T> the type of the packet this builder is managing
      */
+    // Preserve the existing non-final public type.
+    @SuppressWarnings("checkstyle:FinalClass")
     public static class PacketTypeHandlerBuilder<T extends Packet<?>> {
         private final SpecificBuilder parent;
         private final Class<T> packetType;
-        private BiFunction<Connection, T, PacketListener.PacketProcessingResult> sendHandler;
-        private BiFunction<Connection, T, PacketListener.PacketProcessingResult> receiveHandler;
+        private @Nullable BiFunction<Connection, T, PacketListener.PacketProcessingResult> sendHandler;
+        private @Nullable BiFunction<Connection, T, PacketListener.PacketProcessingResult> receiveHandler;
 
         private PacketTypeHandlerBuilder(SpecificBuilder parent, Class<T> packetType) {
             this.parent = parent;
@@ -250,7 +257,7 @@ public class PacketListenerBuilder {
          */
         public PacketTypeHandlerBuilder<T> onSend(Function<T, PacketListener.PacketProcessingResult> handler) {
             Objects.requireNonNull(handler, "handler cannot be null");
-            return onSend((conn, packet) -> handler.apply(packet));
+            return this.onSend((conn, packet) -> handler.apply(packet));
         }
 
         /**
@@ -275,7 +282,7 @@ public class PacketListenerBuilder {
          */
         public PacketTypeHandlerBuilder<T> onReceive(Function<T, PacketListener.PacketProcessingResult> handler) {
             Objects.requireNonNull(handler, "handler cannot be null");
-            return onReceive((conn, packet) -> handler.apply(packet));
+            return this.onReceive((conn, packet) -> handler.apply(packet));
         }
 
         /**
@@ -288,20 +295,20 @@ public class PacketListenerBuilder {
          * @return the parent builder to allow further configuration at a higher level
          */
         public SpecificBuilder done() {
-            parent.addHandler(packetType, new PacketTypeHandler(sendHandler, receiveHandler));
-            return parent;
+            this.parent.addHandler(this.packetType, new PacketTypeHandler(this.sendHandler, this.receiveHandler));
+            return this.parent;
         }
 
         /**
          * Configures a handler for a specific packet type within the current builder context.
          *
-         * @param <U> the type of the packet being handled
          * @param packetType the class of the packet type to be handled; cannot be null
+         * @param <U>        the type of the packet being handled
          * @return a builder for configuring handlers specific to the given packet type
          * @throws NullPointerException if {@code packetType} is null
          */
         public <U extends Packet<?>> PacketTypeHandlerBuilder<U> forPacket(Class<U> packetType) {
-            return done().forPacket(packetType);
+            return this.done().forPacket(packetType);
         }
 
         /**
@@ -311,7 +318,7 @@ public class PacketListenerBuilder {
          * @return the created and registered packet listener
          */
         public PacketListener register() {
-            return done().register();
+            return this.done().register();
         }
 
         /**
@@ -321,7 +328,7 @@ public class PacketListenerBuilder {
          * @return the constructed {@link PacketListener} instance
          */
         public PacketListener build() {
-            return done().build();
+            return this.done().build();
         }
     }
 
@@ -340,8 +347,8 @@ public class PacketListenerBuilder {
      * @param sendHandler    a {@code BiFunction} that processes the sending of packets
      * @param receiveHandler a {@code BiFunction} that processes the receiving of packets
      */
-    private record PacketTypeHandler(BiFunction<Connection, ?, PacketListener.PacketProcessingResult> sendHandler,
-                                     BiFunction<Connection, ?, PacketListener.PacketProcessingResult> receiveHandler) {}
+    private record PacketTypeHandler(@Nullable BiFunction<Connection, ?, PacketListener.PacketProcessingResult> sendHandler,
+                                     @Nullable BiFunction<Connection, ?, PacketListener.PacketProcessingResult> receiveHandler) { }
 
     /**
      * A packet listener implementation for handling sending, receiving, and error-related packet events globally.
@@ -357,18 +364,23 @@ public class PacketListenerBuilder {
      * - Error handler: Logic to handle exceptions occurring during packet processing.
      * <p>
      * The listener provides a default pass-through behavior if no handlers are defined or an exception is raised.
+     *
+     * @param priority       the listener priority
+     * @param sendHandler    the optional handler for outgoing packets
+     * @param receiveHandler the optional handler for incoming packets
+     * @param errorHandler   the optional handler for processing errors
      */
-    private record GlobalPacketListener(ListenerPriority priority, BiFunction<Connection, Packet<?>, PacketProcessingResult> sendHandler,
-                                        BiFunction<Connection, Packet<?>, PacketProcessingResult> receiveHandler,
-                                        BiFunction<Connection, Exception, Void> errorHandler) implements PacketListener {
+    private record GlobalPacketListener(ListenerPriority priority, @Nullable BiFunction<Connection, Packet<?>, PacketProcessingResult> sendHandler,
+                                        @Nullable BiFunction<Connection, Packet<?>, PacketProcessingResult> receiveHandler,
+                                        @Nullable BiFunction<Connection, Exception, @Nullable Void> errorHandler) implements PacketListener {
 
         @Override
         public PacketProcessingResult onPacketSend(Connection connection, Packet<?> packet) {
-            if (sendHandler != null) {
+            if (this.sendHandler != null) {
                 try {
-                    return sendHandler.apply(connection, packet);
+                    return this.sendHandler.apply(connection, packet);
                 } catch (Exception e) {
-                    handleError(connection, e);
+                    this.handleError(connection, e);
                 }
             }
             return PacketProcessingResult.pass();
@@ -376,26 +388,26 @@ public class PacketListenerBuilder {
 
         @Override
         public PacketProcessingResult onPacketReceive(Connection connection, Packet<?> packet) {
-            if (receiveHandler != null) {
+            if (this.receiveHandler != null) {
                 try {
-                    return receiveHandler.apply(connection, packet);
+                    return this.receiveHandler.apply(connection, packet);
                 } catch (Exception e) {
-                    handleError(connection, e);
+                    this.handleError(connection, e);
                 }
             }
             return PacketProcessingResult.pass();
         }
 
         @Override
-        public void onPacketError(Connection connection, Packet<?> packet, Exception exception) {
-            handleError(connection, exception);
+        public void onPacketError(Connection connection, @Nullable Packet<?> packet, Exception exception) {
+            this.handleError(connection, exception);
         }
 
         private void handleError(Connection connection, Exception exception) {
-            if (errorHandler != null) {
+            if (this.errorHandler != null) {
                 try {
-                    errorHandler.apply(connection, exception);
-                } catch (Exception ignored) {
+                    this.errorHandler.apply(connection, exception);
+                } catch (Exception _) {
                     // Prevent recursive error handling
                 }
             }
@@ -416,13 +428,17 @@ public class PacketListenerBuilder {
      * <p>
      * Error handling is facilitated by an optional {@link BiFunction} that can define custom behavior
      * when exceptions occur during packet handling operations.
+     *
+     * @param priority     the listener priority
+     * @param handlers     the handlers indexed by packet type
+     * @param errorHandler the optional handler for processing errors
      */
     private record SpecificPacketListener(ListenerPriority priority, Map<Class<? extends Packet<?>>, PacketTypeHandler> handlers,
-                                          BiFunction<Connection, Exception, Void> errorHandler) implements PacketListener {
+                                          @Nullable BiFunction<Connection, Exception, @Nullable Void> errorHandler) implements PacketListener {
 
         @Override
         public PacketProcessingResult onPacketSend(Connection connection, Packet<?> packet) {
-            PacketTypeHandler handler = handlers.get(packet.getClass());
+            PacketTypeHandler handler = this.handlers.get(packet.getClass());
             if (handler != null && handler.sendHandler() != null) {
                 try {
                     @SuppressWarnings("unchecked")
@@ -430,7 +446,7 @@ public class PacketListenerBuilder {
                         (BiFunction<Connection, Packet<?>, PacketProcessingResult>) handler.sendHandler();
                     return castedHandler.apply(connection, packet);
                 } catch (Exception e) {
-                    handleError(connection, e);
+                    this.handleError(connection, e);
                 }
             }
             return PacketProcessingResult.pass();
@@ -438,7 +454,7 @@ public class PacketListenerBuilder {
 
         @Override
         public PacketProcessingResult onPacketReceive(Connection connection, Packet<?> packet) {
-            PacketTypeHandler handler = handlers.get(packet.getClass());
+            PacketTypeHandler handler = this.handlers.get(packet.getClass());
             if (handler != null && handler.receiveHandler() != null) {
                 try {
                     @SuppressWarnings("unchecked")
@@ -446,22 +462,22 @@ public class PacketListenerBuilder {
                         (BiFunction<Connection, Packet<?>, PacketProcessingResult>) handler.receiveHandler();
                     return castedHandler.apply(connection, packet);
                 } catch (Exception e) {
-                    handleError(connection, e);
+                    this.handleError(connection, e);
                 }
             }
             return PacketProcessingResult.pass();
         }
 
         @Override
-        public void onPacketError(Connection connection, Packet<?> packet, Exception exception) {
-            handleError(connection, exception);
+        public void onPacketError(Connection connection, @Nullable Packet<?> packet, Exception exception) {
+            this.handleError(connection, exception);
         }
 
         private void handleError(Connection connection, Exception exception) {
-            if (errorHandler != null) {
+            if (this.errorHandler != null) {
                 try {
-                    errorHandler.apply(connection, exception);
-                } catch (Exception ignored) {
+                    this.errorHandler.apply(connection, exception);
+                } catch (Exception _) {
                     // Prevent recursive error handling
                 }
             }

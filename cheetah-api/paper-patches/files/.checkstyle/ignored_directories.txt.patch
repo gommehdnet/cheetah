@@ -1,7 +1,0 @@
---- a/.checkstyle/ignored_directories.txt
-+++ b/.checkstyle/ignored_directories.txt
-@@ -111,3 +_,4 @@
- paper-api/src/test/java/org/bukkit/conversations/
- paper-api/src/test/java/org/bukkit/metadata/
- paper-api/src/test/java/org/bukkit/util/
-+cheetah-api/src/main/java/net/gommehd/cheetah/event/entity/

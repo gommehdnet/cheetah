@@ -1,10 +1,15 @@
 package net.gommehd.cheetah.network.packet;
 
-import net.minecraft.network.protocol.Packet;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
+import net.minecraft.network.protocol.Packet;
 
 /**
  * The {@code PacketListenerRegistry} class serves as a registry for managing listeners associated
@@ -41,21 +46,21 @@ public class PacketListenerRegistry {
      * <p>
      * The listener is also tracked internally for easier removal when unregistered.
      *
-     * @param <T> the type of the packet to associate the listener with, must extend {@code Packet<?>}
      * @param packetType the class object representing the type of packet the listener should handle; must not be null
-     * @param listener the listener to register; must not be null
+     * @param listener   the listener to register; must not be null
+     * @param <T>        the type of the packet to associate the listener with, must extend {@code Packet<?>}
      * @throws NullPointerException if {@code packetType} or {@code listener} is null
      */
     public <T extends Packet<?>> void registerListener(Class<T> packetType, PacketListener listener) {
         Objects.requireNonNull(packetType, "packetType cannot be null");
         Objects.requireNonNull(listener, "listener cannot be null");
 
-        listeners.computeIfAbsent(packetType, k -> new CopyOnWriteArrayList<>())
+        this.listeners.computeIfAbsent(packetType, k -> new CopyOnWriteArrayList<>())
             .add(listener);
-        sortListenersByPriority(listeners.get(packetType));
+        this.sortListenersByPriority(this.listeners.get(packetType));
 
         // Track listener types for easier unregistering
-        listenerToTypes.computeIfAbsent(listener, k -> new HashSet<>()).add(packetType);
+        this.listenerToTypes.computeIfAbsent(listener, k -> new HashSet<>()).add(packetType);
     }
 
     /**
@@ -71,8 +76,8 @@ public class PacketListenerRegistry {
     public void registerGlobalListener(PacketListener listener) {
         Objects.requireNonNull(listener, "listener cannot be null");
 
-        globalListeners.add(listener);
-        sortListenersByPriority(globalListeners);
+        this.globalListeners.add(listener);
+        this.sortListenersByPriority(this.globalListeners);
     }
 
     /**
@@ -82,7 +87,7 @@ public class PacketListenerRegistry {
      * the provided array of packet types. The listener must not be null, and
      * the array of packet types must not contain null elements.
      *
-     * @param listener the packet listener to register, must not be null
+     * @param listener    the packet listener to register, must not be null
      * @param packetTypes the packet types that the listener should handle
      *                    must not be null and must not contain null elements
      * @throws NullPointerException if listener or packetTypes is null
@@ -93,7 +98,7 @@ public class PacketListenerRegistry {
         Objects.requireNonNull(packetTypes, "packetTypes cannot be null");
 
         for (Class<? extends Packet<?>> packetType : packetTypes) {
-            registerListener(packetType, listener);
+            this.registerListener(packetType, listener);
         }
     }
 
@@ -105,20 +110,20 @@ public class PacketListenerRegistry {
      * priority, with higher priority listeners being invoked first.
      *
      * @param condition the condition to be checked against packet types; must not be null
-     * @param listener the packet listener to register; must not be null
+     * @param listener  the packet listener to register; must not be null
      * @throws NullPointerException if the condition or listener is null
      */
     public void registerConditionalListener(Predicate<Class<? extends Packet<?>>> condition, PacketListener listener) {
         Objects.requireNonNull(condition, "condition cannot be null");
         Objects.requireNonNull(listener, "listener cannot be null");
 
-        conditionalListeners.add(new ConditionalListenerEntry(condition, listener));
+        this.conditionalListeners.add(new ConditionalListenerEntry(condition, listener));
 
         // Clear cache since we have a new conditional listener
-        conditionalListenerCache.clear();
+        this.conditionalListenerCache.clear();
 
         // Sort by priority
-        conditionalListeners.sort((a, b) ->
+        this.conditionalListeners.sort((a, b) ->
             Integer.compare(b.listener().priority().getPriority(), a.listener().priority().getPriority()));
     }
 
@@ -134,21 +139,21 @@ public class PacketListenerRegistry {
         Objects.requireNonNull(listener, "listener cannot be null");
 
         // Remove from global listeners
-        globalListeners.remove(listener);
+        this.globalListeners.remove(listener);
 
         // Remove from conditional listeners
-        conditionalListeners.removeIf(entry -> entry.listener().equals(listener));
-        conditionalListenerCache.clear(); // Clear cache since conditional listeners changed
+        this.conditionalListeners.removeIf(entry -> entry.listener().equals(listener));
+        this.conditionalListenerCache.clear(); // Clear cache since conditional listeners changed
 
         // Remove from specific packet type listeners
-        Set<Class<? extends Packet<?>>> types = listenerToTypes.remove(listener);
+        Set<Class<? extends Packet<?>>> types = this.listenerToTypes.remove(listener);
         if (types != null) {
             for (Class<? extends Packet<?>> type : types) {
-                List<PacketListener> typeListeners = listeners.get(type);
+                List<PacketListener> typeListeners = this.listeners.get(type);
                 if (typeListeners != null) {
                     typeListeners.remove(listener);
                     if (typeListeners.isEmpty()) {
-                        listeners.remove(type);
+                        this.listeners.remove(type);
                     }
                 }
             }
@@ -161,26 +166,26 @@ public class PacketListenerRegistry {
      * it is removed entirely from the mapping.
      *
      * @param packetType the class type of the packet for which the listener is to be unregistered
-     * @param listener the listener instance to be unregistered
+     * @param listener   the listener instance to be unregistered
      * @throws NullPointerException if the packetType or listener is null
      */
     public void unregisterListener(Class<? extends Packet<?>> packetType, PacketListener listener) {
         Objects.requireNonNull(packetType, "packetType cannot be null");
         Objects.requireNonNull(listener, "listener cannot be null");
 
-        List<PacketListener> typeListeners = listeners.get(packetType);
+        List<PacketListener> typeListeners = this.listeners.get(packetType);
         if (typeListeners != null) {
             typeListeners.remove(listener);
             if (typeListeners.isEmpty()) {
-                listeners.remove(packetType);
+                this.listeners.remove(packetType);
             }
         }
 
-        Set<Class<? extends Packet<?>>> types = listenerToTypes.get(listener);
+        Set<Class<? extends Packet<?>>> types = this.listenerToTypes.get(listener);
         if (types != null) {
             types.remove(packetType);
             if (types.isEmpty()) {
-                listenerToTypes.remove(listener);
+                this.listenerToTypes.remove(listener);
             }
         }
     }
@@ -201,26 +206,26 @@ public class PacketListenerRegistry {
     public List<PacketListener> getListeners(Class<?> packetType) {
         Objects.requireNonNull(packetType, "packetType cannot be null");
 
-        List<PacketListener> result = new ArrayList<>(globalListeners);
+        List<PacketListener> result = new ArrayList<>(this.globalListeners);
 
         // Cast to the expected type - this is safe because we only register Packet subclasses
         Class<? extends Packet<?>> safePacketType = (Class<? extends Packet<?>>) packetType;
 
         // Add type-specific listeners
-        List<PacketListener> specificListeners = listeners.get(safePacketType);
+        List<PacketListener> specificListeners = this.listeners.get(safePacketType);
         if (specificListeners != null) {
             result.addAll(specificListeners);
         }
 
         // Add conditional listeners (with caching)
-        List<PacketListener> conditionalListeners = getConditionalListenersForType(safePacketType);
+        List<PacketListener> conditionalListeners = this.getConditionalListenersForType(safePacketType);
         result.addAll(conditionalListeners);
 
         // Check inheritance hierarchy
         Class<?> currentClass = packetType.getSuperclass();
         while (currentClass != null && Packet.class.isAssignableFrom(currentClass)) {
             @SuppressWarnings("unchecked")
-            List<PacketListener> parentListeners = listeners.get((Class<? extends Packet<?>>) currentClass);
+            List<PacketListener> parentListeners = this.listeners.get((Class<? extends Packet<?>>) currentClass);
             if (parentListeners != null) {
                 result.addAll(parentListeners);
             }
@@ -245,21 +250,21 @@ public class PacketListenerRegistry {
      */
     private List<PacketListener> getConditionalListenersForType(Class<? extends Packet<?>> packetType) {
         // Check cache first
-        List<PacketListener> cached = conditionalListenerCache.get(packetType);
+        List<PacketListener> cached = this.conditionalListenerCache.get(packetType);
         if (cached != null) {
             return cached;
         }
 
         // Evaluate conditions and build result
         List<PacketListener> result = new ArrayList<>();
-        for (ConditionalListenerEntry entry : conditionalListeners) {
+        for (ConditionalListenerEntry entry : this.conditionalListeners) {
             if (entry.condition().test(packetType)) {
                 result.add(entry.listener());
             }
         }
 
         // Cache the result
-        conditionalListenerCache.put(packetType, result);
+        this.conditionalListenerCache.put(packetType, result);
         return result;
     }
 
@@ -276,11 +281,11 @@ public class PacketListenerRegistry {
      * @return a set of all registered listeners, never null but may be empty.
      */
     public Set<PacketListener> getAllListeners() {
-        Set<PacketListener> result = new HashSet<>(globalListeners);
-        listeners.values().forEach(result::addAll);
+        Set<PacketListener> result = new HashSet<>(this.globalListeners);
+        this.listeners.values().forEach(result::addAll);
 
         // Add conditional listeners
-        for (ConditionalListenerEntry entry : conditionalListeners) {
+        for (ConditionalListenerEntry entry : this.conditionalListeners) {
             result.add(entry.listener());
         }
 
@@ -293,7 +298,7 @@ public class PacketListenerRegistry {
      * @return a set of packet types (classes) for which listeners are registered, never null but may be empty
      */
     public Set<Class<? extends Packet<?>>> getRegisteredPacketTypes() {
-        return new HashSet<>(listeners.keySet());
+        return new HashSet<>(this.listeners.keySet());
     }
 
     /**
@@ -309,12 +314,12 @@ public class PacketListenerRegistry {
     public boolean isListenerRegistered(PacketListener listener) {
         Objects.requireNonNull(listener, "listener cannot be null");
 
-        if (globalListeners.contains(listener) || listenerToTypes.containsKey(listener)) {
+        if (this.globalListeners.contains(listener) || this.listenerToTypes.containsKey(listener)) {
             return true;
         }
 
         // Check conditional listeners
-        return conditionalListeners.stream()
+        return this.conditionalListeners.stream()
             .anyMatch(entry -> entry.listener().equals(listener));
     }
 
@@ -330,11 +335,11 @@ public class PacketListenerRegistry {
      * After calling this method, no listeners will remain registered in the registry.
      */
     public void clear() {
-        listeners.clear();
-        globalListeners.clear();
-        listenerToTypes.clear();
-        conditionalListeners.clear();
-        conditionalListenerCache.clear();
+        this.listeners.clear();
+        this.globalListeners.clear();
+        this.listenerToTypes.clear();
+        this.conditionalListeners.clear();
+        this.conditionalListenerCache.clear();
     }
 
     /**
@@ -343,13 +348,13 @@ public class PacketListenerRegistry {
      * @return registry statistics, never null
      */
     public RegistryStats getStats() {
-        int totalSpecificListeners = listeners.values().stream().mapToInt(List::size).sum();
+        int totalSpecificListeners = this.listeners.values().stream().mapToInt(List::size).sum();
         return new RegistryStats(
-            globalListeners.size(),
+            this.globalListeners.size(),
             totalSpecificListeners,
-            listeners.size(),
-            getAllListeners().size(),
-            conditionalListeners.size()
+            this.listeners.size(),
+            this.getAllListeners().size(),
+            this.conditionalListeners.size()
         );
     }
 
@@ -366,14 +371,14 @@ public class PacketListenerRegistry {
      * A record representing statistics about the current state of a packet listener registry.
      * Contains various metrics related to registered listeners and packet types.
      *
-     * @param globalListeners      the number of global listeners registered in the registry.
-     * @param specificListeners    the number of type-specific listeners registered.
+     * @param globalListeners       the number of global listeners registered in the registry.
+     * @param specificListeners     the number of type-specific listeners registered.
      * @param registeredPacketTypes the number of unique packet types that have listeners.
      * @param uniqueListeners       the number of unique listeners (shared across global, specific, and conditional).
      * @param conditionalListeners  the number of conditional listeners registered.
      */
     public record RegistryStats(int globalListeners, int specificListeners, int registeredPacketTypes,
-                                    int uniqueListeners, int conditionalListeners) {}
+                                    int uniqueListeners, int conditionalListeners) { }
 
     /**
      * Represents an entry in the {@code PacketListenerRegistry} that associates a
@@ -391,9 +396,12 @@ public class PacketListenerRegistry {
      * Fields:
      * - {@code condition}: A {@code Predicate} that tests the class type of packets.
      * - {@code listener}: A {@code PacketListener} that will handle packets matching the condition.
+     *
+     * @param condition the predicate selecting packet types
+     * @param listener  the listener to notify
      */
     private record ConditionalListenerEntry(
         Predicate<Class<? extends Packet<?>>> condition,
         PacketListener listener
-    ) {}
+    ) { }
 }

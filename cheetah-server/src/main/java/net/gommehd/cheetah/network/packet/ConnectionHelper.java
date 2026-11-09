@@ -8,6 +8,8 @@ import org.jspecify.annotations.Nullable;
 /**
  * Helper utility for connection-related packet processing operations.
  */
+// Preserve the public constructor and support for existing subclasses.
+@SuppressWarnings("checkstyle:HideUtilityClassConstructor")
 public class ConnectionHelper {
     /**
      * Extracts Connection instance from PacketListener context.
@@ -15,8 +17,7 @@ public class ConnectionHelper {
      * @param listener the packet listener
      * @return the connection instance, or null if not found
      */
-    @Nullable
-    public static Connection getCurrentConnection(PacketListener listener) {
+    public static @Nullable Connection getCurrentConnection(PacketListener listener) {
         if (listener instanceof ServerCommonPacketListenerImpl serverListener) {
             return serverListener.connection;
         }

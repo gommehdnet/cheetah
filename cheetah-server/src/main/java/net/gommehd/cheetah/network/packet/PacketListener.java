@@ -1,7 +1,8 @@
 package net.gommehd.cheetah.network.packet;
 
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Interface for handling network packets during their send and receive lifecycle.
@@ -18,7 +19,7 @@ public interface PacketListener {
      * performed (e.g., pass, cancel, modify).
      *
      * @param connection the connection through which the packet is being sent, never null
-     * @param packet the packet that is being sent, never null
+     * @param packet     the packet that is being sent, never null
      * @return a {@link PacketProcessingResult} indicating the result of the packet processing,
      *         such as whether the packet should be passed, canceled, or modified
      */
@@ -31,7 +32,7 @@ public interface PacketListener {
      * or determination of the action to take with the received packet.
      *
      * @param connection the connection through which the packet was received, never null
-     * @param packet the packet that was received, never null
+     * @param packet     the packet that was received, never null
      * @return a {@link PacketProcessingResult} indicating the result of the packet processing,
      *         such as whether the packet should be passed, canceled, or modified
      */
@@ -56,10 +57,10 @@ public interface PacketListener {
      * sending or receiving packets.
      *
      * @param connection the connection associated with the packet, never null
-     * @param packet the packet involved in the error, can be null if unavailable
-     * @param exception the exception that was thrown during packet processing, never null
+     * @param packet     the packet involved in the error, can be null if unavailable
+     * @param exception  the exception that was thrown during packet processing, never null
      */
-    default void onPacketError(Connection connection, Packet<?> packet, Exception exception) {
+    default void onPacketError(Connection connection, @Nullable Packet<?> packet, Exception exception) {
         // Default implementation does nothing
     }
 
@@ -70,8 +71,11 @@ public interface PacketListener {
      * a modified version of the packet.
      * It is used to determine whether to pass the packet
      * onward unmodified, cancel its processing entirely, or proceed with a modified version.
+     *
+     * @param result         the action to perform on the packet
+     * @param modifiedPacket the replacement packet, or null when not modified
      */
-    record PacketProcessingResult(PacketResult result, Packet<?> modifiedPacket) {
+    record PacketProcessingResult(PacketResult result, @Nullable Packet<?> modifiedPacket) {
         public static PacketProcessingResult pass() {
             return new PacketProcessingResult(PacketResult.PASS, null);
         }
@@ -149,7 +153,7 @@ public interface PacketListener {
         }
 
         public int getPriority() {
-            return priority;
+            return this.priority;
         }
     }
 }

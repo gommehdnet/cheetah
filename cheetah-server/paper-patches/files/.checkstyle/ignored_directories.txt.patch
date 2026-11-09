@@ -1,7 +1,0 @@
---- a/.checkstyle/ignored_directories.txt
-+++ b/.checkstyle/ignored_directories.txt
-@@ -222,3 +_,4 @@
- paper-server/src/test/java/org/bukkit/support/provider/
- paper-server/src/test/java/org/bukkit/support/suite/
- paper-server/src/test/java/org/bukkit/support/test/
-+cheetah-server/src/main/java/net/gommehd/cheetah/network/packet/
