@@ -1,10 +1,11 @@
 --- a/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
 +++ b/src/main/java/io/papermc/paper/event/world/StructuresLocateEvent.java
-@@ -50,6 +_,16 @@
+@@ -48,6 +_,17 @@
          this.findUnexplored = findUnexplored;
      }
  
 +    // Cheetah start - added async parameter
++    @ApiStatus.Internal
 +    public StructuresLocateEvent(final World world, final Location origin, final List<Structure> structures, final int radius, final boolean findUnexplored, final boolean async) {
 +        super(world, async);
 +        this.origin = origin;

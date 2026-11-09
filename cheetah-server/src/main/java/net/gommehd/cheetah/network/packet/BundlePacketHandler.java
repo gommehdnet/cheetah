@@ -1,28 +1,31 @@
 package net.gommehd.cheetah.network.packet;
 
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.BundlePacket;
-import net.minecraft.network.protocol.game.ClientboundBundlePacket;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.BundlePacket;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBundlePacket;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles processing of bundle packets and their sub-packets.
+ *
+ * @param processor the processor for regular packets
  */
 public record BundlePacketHandler(DefaultPacketProcessor processor) {
     private static final Logger LOGGER = LoggerFactory.getLogger(BundlePacketHandler.class);
 
-    public Packet<?> processBundlePacket(BundlePacket<?> bundlePacket, Connection connection) {
+    public @Nullable Packet<?> processBundlePacket(BundlePacket<?> bundlePacket, Connection connection) {
         // Process sub-packets
         List<Packet<?>> processedSubPackets = new ArrayList<>();
         boolean anySubPacketModified = false;
 
         for (Packet<?> subPacket : bundlePacket.subPackets()) {
-            Packet<?> processedSubPacket = processor.processRegularPacket(subPacket, connection);
+            Packet<?> processedSubPacket = this.processor.processRegularPacket(subPacket, connection);
             if (processedSubPacket != null) {
                 processedSubPackets.add(processedSubPacket);
                 if (processedSubPacket != subPacket) {
@@ -40,27 +43,27 @@ public record BundlePacketHandler(DefaultPacketProcessor processor) {
 
         // Reconstruct bundle if sub-packets were modified/cancelled
         Packet<?> resultPacket = bundlePacket;
-        if (anySubPacketModified || processedSubPackets.size() != getBundleSubPacketCount(bundlePacket)) {
-            resultPacket = reconstructBundlePacket(bundlePacket, processedSubPackets);
+        if (anySubPacketModified || processedSubPackets.size() != this.getBundleSubPacketCount(bundlePacket)) {
+            resultPacket = this.reconstructBundlePacket(bundlePacket, processedSubPackets);
         }
 
         // Process the bundle packet itself
-        return processor.processRegularPacket(resultPacket, connection);
+        return this.processor.processRegularPacket(resultPacket, connection);
     }
 
     public void notifyBundleError(BundlePacket<?> bundlePacket, Exception error, Connection connection) {
         // Notify listeners about error for each sub-packet
         for (Packet<?> subPacket : bundlePacket.subPackets()) {
-            notifyListenersOfError(subPacket, error, connection);
+            this.notifyListenersOfError(subPacket, error, connection);
         }
 
         // Notify listeners about the bundle packet error
-        notifyListenersOfError(bundlePacket, error, connection);
+        this.notifyListenersOfError(bundlePacket, error, connection);
     }
 
     private void notifyListenersOfError(Packet<?> packet, Exception error, Connection connection) {
         List<PacketListener> packetListeners =
-            processor.getRegistry().getListeners(packet.getClass());
+            this.processor.getRegistry().getListeners(packet.getClass());
 
         for (PacketListener packetListener : packetListeners) {
             try {
@@ -84,7 +87,7 @@ public record BundlePacketHandler(DefaultPacketProcessor processor) {
 
     private int getBundleSubPacketCount(BundlePacket<?> bundlePacket) {
         int count = 0;
-        for (Packet<?> ignored : bundlePacket.subPackets()) {
+        for (Packet<?> _ : bundlePacket.subPackets()) {
             count++;
         }
         return count;

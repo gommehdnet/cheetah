@@ -1,11 +1,12 @@
 package net.gommehd.cheetah.network.packet;
 
+import java.util.List;
 import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.BundlePacket;
+import net.minecraft.network.protocol.Packet;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.List;
 
 /**
  * Default implementation of PacketProcessor that handles both regular and bundle packets.
@@ -22,10 +23,10 @@ public class DefaultPacketProcessor implements PacketProcessor {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends net.minecraft.network.PacketListener> Packet<T> processInbound(Packet<T> packet, Connection connection) {
+    public <T extends net.minecraft.network.PacketListener> @Nullable Packet<T> processInbound(Packet<T> packet, Connection connection) {
         try {
             List<PacketListener> packetListeners =
-                registry.getListeners(packet.getClass());
+                this.registry.getListeners(packet.getClass());
 
             if (packetListeners.isEmpty()) {
                 return packet;
@@ -43,7 +44,7 @@ public class DefaultPacketProcessor implements PacketProcessor {
                     }
                 } catch (Exception e) {
                     LOGGER.warn("Error in packet receive listener for {}", packet.getClass().getSimpleName(), e);
-                    handleListenerError(packetListener, connection, packet, e);
+                    this.handleListenerError(packetListener, connection, packet, e);
                 }
             }
         } catch (Exception e) {
@@ -53,18 +54,18 @@ public class DefaultPacketProcessor implements PacketProcessor {
     }
 
     @Override
-    public Packet<?> processOutbound(Packet<?> packet, Connection connection) {
+    public @Nullable Packet<?> processOutbound(Packet<?> packet, Connection connection) {
         if (packet instanceof BundlePacket<?> bundlePacket) {
-            return bundleHandler.processBundlePacket(bundlePacket, connection);
+            return this.bundleHandler.processBundlePacket(bundlePacket, connection);
         } else {
-            return processRegularPacket(packet, connection);
+            return this.processRegularPacket(packet, connection);
         }
     }
 
-    Packet<?> processRegularPacket(Packet<?> packet, Connection connection) {
+    @Nullable Packet<?> processRegularPacket(Packet<?> packet, Connection connection) {
         try {
             List<PacketListener> packetListeners =
-                registry.getListeners(packet.getClass());
+                this.registry.getListeners(packet.getClass());
 
             if (packetListeners.isEmpty()) {
                 return packet;
@@ -82,7 +83,7 @@ public class DefaultPacketProcessor implements PacketProcessor {
                     }
                 } catch (Exception e) {
                     LOGGER.warn("Error in packet send listener for {}", packet.getClass().getSimpleName(), e);
-                    handleListenerError(packetListener, connection, packet, e);
+                    this.handleListenerError(packetListener, connection, packet, e);
                 }
             }
         } catch (Exception e) {
@@ -95,9 +96,9 @@ public class DefaultPacketProcessor implements PacketProcessor {
     public void notifyError(Packet<?> packet, Exception error, Connection connection) {
         try {
             if (packet instanceof BundlePacket<?> bundlePacket) {
-                bundleHandler.notifyBundleError(bundlePacket, error, connection);
+                this.bundleHandler.notifyBundleError(bundlePacket, error, connection);
             } else {
-                notifyListenersOfError(packet, error, connection);
+                this.notifyListenersOfError(packet, error, connection);
             }
         } catch (Exception notificationError) {
             LOGGER.error("Error while notifying packet listeners of error", notificationError);
@@ -106,7 +107,7 @@ public class DefaultPacketProcessor implements PacketProcessor {
 
     private void notifyListenersOfError(Packet<?> packet, Exception error, Connection connection) {
         List<PacketListener> packetListeners =
-            registry.getListeners(packet.getClass());
+            this.registry.getListeners(packet.getClass());
 
         for (PacketListener packetListener : packetListeners) {
             try {
@@ -127,6 +128,6 @@ public class DefaultPacketProcessor implements PacketProcessor {
 
     // Package-private getter for bundle handler
     PacketListenerRegistry getRegistry() {
-        return registry;
+        return this.registry;
     }
 }
