@@ -18,6 +18,8 @@ public net.minecraft.world.entity.Display DATA_SHADOW_STRENGTH_ID
 public net.minecraft.world.entity.Display DATA_TRANSLATION_ID
 public net.minecraft.world.entity.Display DATA_VIEW_RANGE_ID
 public net.minecraft.world.entity.Display DATA_WIDTH_ID
+public net.minecraft.world.entity.Display DATA_TRANSFORMATION_INTERPOLATION_DURATION_ID
+public net.minecraft.world.entity.Display DATA_TRANSFORMATION_INTERPOLATION_START_DELTA_TICKS_ID
 public net.minecraft.world.entity.Display$BlockDisplay DATA_BLOCK_STATE_ID
 public net.minecraft.world.entity.Display$ItemDisplay DATA_ITEM_DISPLAY_ID
 public net.minecraft.world.entity.Display$ItemDisplay DATA_ITEM_STACK_ID
